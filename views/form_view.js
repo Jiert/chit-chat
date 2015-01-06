@@ -1,16 +1,9 @@
 var _ = require('underscore'),
     Backbone = require('backbone'),
-    BeerModel = require('../models/beer');
+    BeerModel = require('../models/beer'),
+    template = require('../templates/form.hbs');    
 
 module.exports = Backbone.View.extend({
-  
-  template : _('\
-    <label>Name</label>\
-    <input type="text" name="name"></input>\
-    <label>Type</label>\
-    <input type="text" name="type"></input>\
-    <button class="btn addBeer">Submit</button>\
-  ').template(),
 
   events: {
     'click .addBeer': 'onAddBeer'
@@ -29,7 +22,7 @@ module.exports = Backbone.View.extend({
   },
 
   render: function(){
-    this.$el.html(this.template());
+    this.$el.html(template());
 
     return this;
   }
