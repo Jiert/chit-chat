@@ -13872,7 +13872,14 @@ module.exports = Backbone.Router.extend({
   },
 
 });
-},{"./views/application":22,"backbone":7,"underscore":18}],20:[function(require,module,exports){
+},{"./views/application":24,"backbone":7,"underscore":18}],20:[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var HandlebarsCompiler = require('hbsfy/runtime');
+module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  return "<nav id=\"main-nav\" class=\"navbar navbar-default navbar-fixed-top\" role=\"navigation\"> </nav>\n<div id=\"content\" class=\"container\"> </div>";
+  },"useData":true});
+
+},{"hbsfy/runtime":16}],21:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
@@ -13883,21 +13890,38 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
     + escapeExpression(((helper = (helper = helpers.type || (depth0 != null ? depth0.type : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"type","hash":{},"data":data}) : helper)));
 },"useData":true});
 
-},{"hbsfy/runtime":16}],21:[function(require,module,exports){
+},{"hbsfy/runtime":16}],22:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   return "<label>Name</label>\n<input type=\"text\" name=\"name\"></input>\n<label>Type</label>\n<input type=\"text\" name=\"type\"></input>\n<button class=\"btn addBeer\">Submit</button>";
   },"useData":true});
 
-},{"hbsfy/runtime":16}],22:[function(require,module,exports){
+},{"hbsfy/runtime":16}],23:[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var HandlebarsCompiler = require('hbsfy/runtime');
+module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
+  return "        <li><a>Hello!</a></li>\n";
+  },"3":function(depth0,helpers,partials,data) {
+  return "        <li id=\"user-login\">\n          <a>login</a>\n        </li>\n        <li id=\"user-register\">\n          <a>register</a>\n        </li>\n";
+  },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var stack1, buffer = "<div class=\"container\">\n  <div class=\"navbar-header\">\n    <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navbar\" aria-expanded=\"false\" aria-controls=\"navbar\">\n      <span class=\"sr-only\">Toggle navigation</span>\n      <span class=\"icon-bar\"></span>\n      <span class=\"icon-bar\"></span>\n      <span class=\"icon-bar\"></span>\n    </button>\n    <a class=\"navbar-brand\" href=\"#\">Brew Journal</a>\n  </div>\n  <div id=\"navbar\" class=\"navbar-collapse collapse\">\n    <ul class=\"nav navbar-nav\">\n      <li class=\"active\"><a href=\"#\">Home</a></li>    \n    </ul>\n    <ul id=\"user-login-nav\" class=\"nav navbar-nav navbar-right\">\n";
+  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.loggedIn : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(3, data),"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + "    </ul>\n  </div>\n</div>";
+},"useData":true});
+
+},{"hbsfy/runtime":16}],24:[function(require,module,exports){
 var _ = require('underscore'),
     Backbone = require('backbone'),
+
+    template = require('../templates/application.hbs'),
 
     BeerList = require('../collections/beers.js'),
 
     BeerView = require('../views/beer_view'),
-    FormView = require('../views/form_view');
+    FormView = require('../views/form_view'),
+    NavView = require('../views/main_nav');
 
 module.exports = Backbone.View.extend({
 
@@ -13907,7 +13931,7 @@ module.exports = Backbone.View.extend({
     _.bindAll(this, 'onBeers', 'renderBeer');
 
     this.beers = new BeerList();
-    this.beers.on('sync', this.onBeers);
+    // this.beers.on('sync', this.onBeers);
 
     this.render();
   },
@@ -13932,13 +13956,35 @@ module.exports = Backbone.View.extend({
     this.$el.append(formView.render().el);
   },
 
+  renderNav: function(){
+    var navView = this.createSubView(NavView, {});
+
+    this.$mainNav.html(navView.el);
+
+    // body...
+  },
+
+  renderContent: function(){
+    // body...
+  },
+
   render: function() {
-    this.$el.html('Loading Beers...');
+    // this.$el.html('Loading Beers...');
+    this.$el.html(template());
+
+    this.$mainNav = this.$('#main-nav');
+    this.$content = this.$('#content');
+
+    // debugger;
+
+    this.renderNav();
+    this.renderContent();
+
     return this;
   }
 
 });
-},{"../collections/beers.js":1,"../views/beer_view":23,"../views/form_view":24,"backbone":7,"underscore":18}],23:[function(require,module,exports){
+},{"../collections/beers.js":1,"../templates/application.hbs":20,"../views/beer_view":25,"../views/form_view":26,"../views/main_nav":27,"backbone":7,"underscore":18}],25:[function(require,module,exports){
 var _ = require('underscore'),
     Backbone = require('backbone'),
     template = require('../templates/beer.hbs');
@@ -13953,7 +13999,7 @@ module.exports = Backbone.View.extend({
     return this;
   }
 });
-},{"../templates/beer.hbs":20,"backbone":7,"underscore":18}],24:[function(require,module,exports){
+},{"../templates/beer.hbs":21,"backbone":7,"underscore":18}],26:[function(require,module,exports){
 var _ = require('underscore'),
     Backbone = require('backbone'),
     BeerModel = require('../models/beer'),
@@ -13984,4 +14030,27 @@ module.exports = Backbone.View.extend({
   }
 
 });
-},{"../models/beer":5,"../templates/form.hbs":21,"backbone":7,"underscore":18}]},{},[2]);
+},{"../models/beer":5,"../templates/form.hbs":22,"backbone":7,"underscore":18}],27:[function(require,module,exports){
+var _ = require('underscore'),
+    Backbone = require('backbone'),
+    template = require('../templates/main_nav.hbs');
+
+module.exports = Backbone.View.extend({
+
+  events: {},
+
+  initialize: function(options){
+    debugger;
+
+    // _.bindAll(this, 'onBeers', 'renderBeer');
+
+    this.render();
+  },
+
+  render: function() {
+    this.$el.html(template());
+    return this;
+  }
+
+});
+},{"../templates/main_nav.hbs":23,"backbone":7,"underscore":18}]},{},[2]);
