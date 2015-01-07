@@ -3,7 +3,6 @@ var _ = require('underscore'),
     template = require('../templates/beer.hbs');
 
 module.exports = Backbone.View.extend({
-  // template: _('Name: <%= name %> Type: <%= type %>').template(),
 
   initialize: function(){},
 

@@ -13917,11 +13917,64 @@ var _ = require('underscore'),
 
     template = require('../templates/application.hbs'),
 
+    ContentView = require('../views/content'),
+    NavView = require('../views/main_nav');
+
+module.exports = Backbone.View.extend({
+
+  events: {},
+
+  initialize: function(options){
+    this.render();
+  },
+
+  renderNav: function(){
+    var navView = this.createSubView(NavView, {});
+
+    this.$mainNav.html(navView.el);
+  },
+
+  renderContent: function(){
+    var contentView = this.createSubView(ContentView, {});
+
+    this.$content.html(contentView.render().el);
+  },
+
+  render: function() {
+    this.$el.html(template());
+
+    this.$mainNav = this.$('#main-nav');
+    this.$content = this.$('#content');
+
+    this.renderNav();
+    this.renderContent();
+
+    return this;
+  }
+
+});
+},{"../templates/application.hbs":20,"../views/content":26,"../views/main_nav":28,"backbone":7,"underscore":18}],25:[function(require,module,exports){
+var _ = require('underscore'),
+    Backbone = require('backbone'),
+    template = require('../templates/beer.hbs');
+
+module.exports = Backbone.View.extend({
+
+  initialize: function(){},
+
+  render: function(){
+    this.$el.html(template(this.model.toJSON()));
+    return this;
+  }
+});
+},{"../templates/beer.hbs":21,"backbone":7,"underscore":18}],26:[function(require,module,exports){
+var _ = require('underscore'),
+    Backbone = require('backbone'),
+
     BeerList = require('../collections/beers.js'),
 
     BeerView = require('../views/beer_view'),
-    FormView = require('../views/form_view'),
-    NavView = require('../views/main_nav');
+    FormView = require('../views/form_view');
 
 module.exports = Backbone.View.extend({
 
@@ -13931,9 +13984,9 @@ module.exports = Backbone.View.extend({
     _.bindAll(this, 'onBeers', 'renderBeer');
 
     this.beers = new BeerList();
-    // this.beers.on('sync', this.onBeers);
-
-    this.render();
+    this.listenTo(this.beers, {
+      'sync': this.onBeers
+    });
   },
 
   onBeers: function(){
@@ -13956,50 +14009,14 @@ module.exports = Backbone.View.extend({
     this.$el.append(formView.render().el);
   },
 
-  renderNav: function(){
-    var navView = this.createSubView(NavView, {});
-
-    this.$mainNav.html(navView.el);
-
-    // body...
-  },
-
-  renderContent: function(){
-    // body...
-  },
-
   render: function() {
-    // this.$el.html('Loading Beers...');
-    this.$el.html(template());
-
-    this.$mainNav = this.$('#main-nav');
-    this.$content = this.$('#content');
-
-    // debugger;
-
-    this.renderNav();
-    this.renderContent();
+    this.$el.html('Loading Beers...');
 
     return this;
   }
 
 });
-},{"../collections/beers.js":1,"../templates/application.hbs":20,"../views/beer_view":25,"../views/form_view":26,"../views/main_nav":27,"backbone":7,"underscore":18}],25:[function(require,module,exports){
-var _ = require('underscore'),
-    Backbone = require('backbone'),
-    template = require('../templates/beer.hbs');
-
-module.exports = Backbone.View.extend({
-  // template: _('Name: <%= name %> Type: <%= type %>').template(),
-
-  initialize: function(){},
-
-  render: function(){
-    this.$el.html(template(this.model.toJSON()));
-    return this;
-  }
-});
-},{"../templates/beer.hbs":21,"backbone":7,"underscore":18}],26:[function(require,module,exports){
+},{"../collections/beers.js":1,"../views/beer_view":25,"../views/form_view":27,"backbone":7,"underscore":18}],27:[function(require,module,exports){
 var _ = require('underscore'),
     Backbone = require('backbone'),
     BeerModel = require('../models/beer'),
@@ -14030,7 +14047,7 @@ module.exports = Backbone.View.extend({
   }
 
 });
-},{"../models/beer":5,"../templates/form.hbs":22,"backbone":7,"underscore":18}],27:[function(require,module,exports){
+},{"../models/beer":5,"../templates/form.hbs":22,"backbone":7,"underscore":18}],28:[function(require,module,exports){
 var _ = require('underscore'),
     Backbone = require('backbone'),
     template = require('../templates/main_nav.hbs');
@@ -14040,10 +14057,6 @@ module.exports = Backbone.View.extend({
   events: {},
 
   initialize: function(options){
-    debugger;
-
-    // _.bindAll(this, 'onBeers', 'renderBeer');
-
     this.render();
   },
 

@@ -7,10 +7,6 @@ module.exports = Backbone.View.extend({
   events: {},
 
   initialize: function(options){
-    debugger;
-
-    // _.bindAll(this, 'onBeers', 'renderBeer');
-
     this.render();
   },
 
