@@ -13901,7 +13901,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<form>\n  <div class=\"form-group\">\n    <label for=\"exampleInputEmail1\">Email address</label>\n    <input type=\"email\" class=\"form-control\" id=\"exampleInputEmail1\" placeholder=\"Enter email\">\n  </div>\n  <div class=\"form-group\">\n    <label for=\"exampleInputPassword1\">Password</label>\n    <input type=\"password\" class=\"form-control\" id=\"exampleInputPassword1\" placeholder=\"Password\">\n  </div>\n\n  <button class=\"btn btn-primary\">Create Account</button>\n</form>";
+  return "<form>\n  <div class=\"form-group\">\n    <label for=\"exampleInputEmail1\">Email address</label>\n    <input type=\"email\" class=\"form-control\" id=\"exampleInputEmail1\" placeholder=\"Enter email\">\n  </div>\n  <div class=\"form-group\">\n    <label for=\"exampleInputPassword1\">Password</label>\n    <input type=\"password\" class=\"form-control\" id=\"exampleInputPassword1\" placeholder=\"Password\">\n  </div>\n\n  <button id=\"create-account\" class=\"btn btn-primary\">Create Account</button>\n</form>";
   },"useData":true});
 
 },{"hbsfy/runtime":16}],24:[function(require,module,exports){
@@ -14062,10 +14062,17 @@ var _ = require('underscore'),
 
 module.exports = Backbone.View.extend({
 
-  events: {},
+  events: {
+    'click #create-account' : 'onCreateAccountClick'
+  },
 
   initialize: function(options){
     this.render();
+  },
+
+  onCreateAccountClick: function(event){
+    event.preventDefault();
+    console.log('onCreateAccountClick')
   },
 
   render: function() {
@@ -14077,9 +14084,7 @@ module.exports = Backbone.View.extend({
       placement: 'bottom',
       html: true,
       content: loginTemplate(),
-      trigger: 'click',
-      // container: 'body'
-
+      trigger: 'click'
     })
 
     return this;

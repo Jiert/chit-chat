@@ -5,10 +5,17 @@ var _ = require('underscore'),
 
 module.exports = Backbone.View.extend({
 
-  events: {},
+  events: {
+    'click #create-account' : 'onCreateAccountClick'
+  },
 
   initialize: function(options){
     this.render();
+  },
+
+  onCreateAccountClick: function(event){
+    event.preventDefault();
+    console.log('onCreateAccountClick')
   },
 
   render: function() {
@@ -20,9 +27,7 @@ module.exports = Backbone.View.extend({
       placement: 'bottom',
       html: true,
       content: loginTemplate(),
-      trigger: 'click',
-      // container: 'body'
-
+      trigger: 'click'
     })
 
     return this;
