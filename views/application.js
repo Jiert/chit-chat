@@ -12,7 +12,7 @@ module.exports = Backbone.View.extend({
 
   initialize: function(options){
     this.render();
-    console.log('holy fuck balls')
+    console.log('Gulp mother fuckers')
   },
 
   renderNav: function(){
