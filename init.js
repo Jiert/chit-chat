@@ -5,7 +5,7 @@ window._ = require('underscore');
 
 $(function(){
   
-  var firebase = require('client-firebase'),
+  var Firebase = require('./libs/firebase'),
       backboneFire = require('./libs/backbonefire'),
       bootstrap = require('./libs/bootstrap'),
       app = require('./namespace'),

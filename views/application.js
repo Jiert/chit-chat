@@ -12,7 +12,6 @@ module.exports = Backbone.View.extend({
 
   initialize: function(options){
     this.render();
-    console.log('Gulp mother fuckers')
   },
 
   renderNav: function(){
