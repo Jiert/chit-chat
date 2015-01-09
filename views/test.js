@@ -7,7 +7,6 @@ module.exports = Backbone.View.extend({
 
   initialize: function(options){
     this.render();
-    debugger;
   },
 
   render: function() {

@@ -10,9 +10,7 @@ module.exports = Backbone.View.extend({
 
   events: {},
 
-  initialize: function(options){
-    this.render();
-  },
+  initialize: function(options){},
 
   renderNav: function(){
     var navView = this.createSubView(NavView, {});
@@ -27,6 +25,7 @@ module.exports = Backbone.View.extend({
   },
 
   render: function() {
+    console.log('application view render');
     this.$el.html(template());
 
     this.$mainNav = this.$('#main-nav');

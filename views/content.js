@@ -11,15 +11,15 @@ module.exports = Backbone.View.extend({
   events: {},
 
   initialize: function(options){
-    _.bindAll(this, 'onBeers', 'renderBeer');
+    _.bindAll(this, 'renderBeers', 'renderBeer');
 
     this.beers = new BeerList();
     this.listenTo(this.beers, {
-      'sync': this.onBeers
+      'sync': this.renderBeers
     });
   },
 
-  onBeers: function(){
+  renderBeers: function(){
     this.$el.html('');
     this.beers.each(this.renderBeer);
 
@@ -32,7 +32,7 @@ module.exports = Backbone.View.extend({
     });
 
     this.$el.append(beerView.render().el);
-  },
+  },  
 
   renderForm: function(){
     var formView = this.createSubView(FormView, { beers: this.beers });
@@ -42,6 +42,13 @@ module.exports = Backbone.View.extend({
   render: function() {
     this.$el.html('Loading Beers...');
 
+    console.log('content render');
+
+    // TODO: There's got to be a better way to do 
+    // this in tandom with listenTo: sync
+    if (this.beers.length){
+      this.renderBeers();
+    }
     return this;
   }
 

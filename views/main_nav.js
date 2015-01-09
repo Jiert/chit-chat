@@ -13,25 +13,17 @@ module.exports = Backbone.View.extend({
 
   initialize: function(options){
     this.render();
-
-    // window.app = app;
-
   },
 
   onLinkClick: function(event){
     event.preventDefault();
-    // debugger;
-
     var route = $(event.currentTarget).attr('href');
-    // app.navigate("help/troubleshooting", {trigger: true});
+
     app.router.navigate(route, {trigger: true});
-    // debugger;
   },
 
   onCreateAccountClick: function(event){
     event.preventDefault();
-
-    // debugger;
 
     var email = this.$('input[name="exampleInputEmail1"]').val(),
         password = this.$('input[name="exampleInputPassword1"]').val(),

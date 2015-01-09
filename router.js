@@ -5,23 +5,25 @@ var _ = require('underscore'),
 
 module.exports = Backbone.Router.extend({
   routes: {
-    // '': 'defaultRoute',
+    '': 'defaultRoute',
     'beers' : 'beerRoute'
   },
 
   initialize: function() {
     console.log('initialize')
     // debugger;
-    this.appView = new AppView({
-      el: '#everything'
-    });    
+    // this.appView = new AppView({
+    //   el: '#everything'
+    // });    
   },
 
-  // defaultRoute: function() {
-  //   this.appView = new AppView({
-  //     el: '#everything'
-  //   });
-  // },
+  defaultRoute: function() {
+    console.log('defaultRoute')
+    this.appView = new AppView({
+      el: '#everything'
+    });
+    this.appView.render();
+  },
 
   beerRoute: function(){
     // this.ensureApp();
