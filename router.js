@@ -5,6 +5,7 @@ var _ = require('underscore'),
 
 module.exports = Backbone.Router.extend({
   routes: {
+    // '*notFound': 'defaultRoute',
     '': 'defaultRoute',
     'beers' : 'beerRoute'
   },
@@ -27,6 +28,7 @@ module.exports = Backbone.Router.extend({
 
   beerRoute: function(){
     // this.ensureApp();
+
 
     this.activeView = new TestView({
       el: '#content'

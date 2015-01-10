@@ -16,8 +16,12 @@ module.exports = Backbone.View.extend({
   },
 
   onLinkClick: function(event){
+    // debugger;
     event.preventDefault();
     var route = $(event.currentTarget).attr('href');
+
+
+    console.log('route', route)
 
     app.router.navigate(route, {trigger: true});
   },
