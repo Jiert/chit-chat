@@ -12,16 +12,15 @@ module.exports = Backbone.View.extend({
   },
 
   initialize: function(options){
+    _.bindAll(this, 'onLogin');
+
+    this.ref = new Firebase('https://blinding-torch-9943.firebaseio.com');
     this.render();
   },
 
   onLinkClick: function(event){
-    // debugger;
     event.preventDefault();
     var route = $(event.currentTarget).attr('href');
-
-
-    console.log('route', route)
 
     app.router.navigate(route, {trigger: true});
   },
@@ -29,28 +28,44 @@ module.exports = Backbone.View.extend({
   onCreateAccountClick: function(event){
     event.preventDefault();
 
-    var email = this.$('input[name="exampleInputEmail1"]').val(),
-        password = this.$('input[name="exampleInputPassword1"]').val(),
-        ref = new Firebase('https://blinding-torch-9943.firebaseio.com');
+    this.registerEmail = this.$('input[name="exampleInputEmail1"]').val();
+    this.registerPassword = this.$('input[name="exampleInputPassword1"]').val();
 
-    ref.createUser({
-      email    : email,
-      password : password
-    }, function(error) {
+    this.ref.createUser({
+      email    : this.registerEmail,
+      password : this.registerPassword
+    }, _(function(error) {
       if (error === null) {
         console.log("User created successfully");
-      } else {
+        this.onLogin(this.registerEmail, this.registerPassword);
+      } 
+      else {
         console.log("Error creating user:", error);
       }
-    });
+    }).bind(this));
   },
 
+  onLogin: function(email, password){
+    this.ref.authWithPassword({
+      email    : email,
+      password : password
+    }, _(function(error, authData) {
+      if (error) {
+        console.log("Login Failed!", error);
+      } 
+      else {
+        console.log("Authenticated successfully with payload:", authData);
+        this.render();
+      }
+    }).bind(this));
+
+  },
+  
   render: function() {
+    debugger;
     this.$el.html(template());
 
-    this.$regPopover = this.$('#user-register > a');
-
-    this.$regPopover.popover({
+    this.$('#user-register > a').popover({
       placement: 'bottom',
       html: true,
       content: loginTemplate(),
