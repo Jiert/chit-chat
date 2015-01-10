@@ -62,7 +62,6 @@ module.exports = Backbone.View.extend({
   },
   
   render: function() {
-    debugger;
     this.$el.html(template());
 
     this.$('#user-register > a').popover({
