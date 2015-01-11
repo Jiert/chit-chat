@@ -1,9 +1,12 @@
 var _ = require('underscore'),
+    Backbone = require('backbone'),
     app;
 
 _.once(function(){
   app = {
-    router: {}
+    user: {},
+    router: {},
+    events: _({}).extend(Backbone.Events)
   };
 })();
 

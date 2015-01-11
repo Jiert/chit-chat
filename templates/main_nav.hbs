@@ -15,8 +15,9 @@
       <li><a href="#recipes">Recipes</a></li>    
     </ul>
     <ul id="user-login-nav" class="nav navbar-nav navbar-right">
-      {{#if loggedIn}}
+      {{#if authData}}
         <li><a href="#">Hello!</a></li>
+        <li id="logout"><a href="#">logout</a></li>
       {{else}}
         <li id="user-login">
           <a href="#">login</a>

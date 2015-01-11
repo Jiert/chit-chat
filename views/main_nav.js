@@ -8,14 +8,23 @@ module.exports = Backbone.View.extend({
 
   events: {
     'click a' : 'onLinkClick',
-    'click #create-account' : 'onCreateAccountClick'
+    'click #create-account' : 'onCreateAccountClick',
+    'click #logout': 'onLogout'
   },
 
   initialize: function(options){
-    _.bindAll(this, 'onLogin');
+    _.bindAll(this, 'login');
+    // app.ref.onAuth(this.render);
 
-    this.ref = new Firebase('https://blinding-torch-9943.firebaseio.com');
-    this.render();
+    // this.listenTo(app.events, {
+    //   'authData': this.onAuthCallback
+    // });
+
+    // this.render();
+  },
+
+  onLogout: function(){
+    app.ref.unauth();
   },
 
   onLinkClick: function(event){
@@ -25,19 +34,24 @@ module.exports = Backbone.View.extend({
     app.router.navigate(route, {trigger: true});
   },
 
+  // onAuthCallback: function(authData){
+  //   // debugger;
+  //   // this.render();
+  // },
+
   onCreateAccountClick: function(event){
     event.preventDefault();
 
     this.registerEmail = this.$('input[name="exampleInputEmail1"]').val();
     this.registerPassword = this.$('input[name="exampleInputPassword1"]').val();
 
-    this.ref.createUser({
+    app.ref.createUser({
       email    : this.registerEmail,
       password : this.registerPassword
     }, _(function(error) {
       if (error === null) {
         console.log("User created successfully");
-        this.onLogin(this.registerEmail, this.registerPassword);
+        this.login(this.registerEmail, this.registerPassword);
       } 
       else {
         console.log("Error creating user:", error);
@@ -45,8 +59,8 @@ module.exports = Backbone.View.extend({
     }).bind(this));
   },
 
-  onLogin: function(email, password){
-    this.ref.authWithPassword({
+  login: function(email, password){
+    app.ref.authWithPassword({
       email    : email,
       password : password
     }, _(function(error, authData) {
@@ -55,14 +69,16 @@ module.exports = Backbone.View.extend({
       } 
       else {
         console.log("Authenticated successfully with payload:", authData);
-        this.render();
       }
     }).bind(this));
 
   },
   
   render: function() {
-    this.$el.html(template());
+    // debugger;
+    this.$el.html(template({
+      authData: app.ref.getAuth()
+    }));
 
     this.$('#user-register > a').popover({
       placement: 'bottom',

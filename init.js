@@ -52,6 +52,4 @@ $(function(){
 
   Backbone.history.start({pushState: true});
 
-  console.log('init.js')
-
 });
