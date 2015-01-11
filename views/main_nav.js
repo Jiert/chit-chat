@@ -7,24 +7,27 @@ var _ = require('underscore'),
 module.exports = Backbone.View.extend({
 
   events: {
-    'click a' : 'onLinkClick',
+    'click a'               : 'onLinkClick',
+    'click #logout'         : 'onLogoutClick',
+    'click #login'          : 'onLoginClick',
     'click #create-account' : 'onCreateAccountClick',
-    'click #logout': 'onLogout'
   },
 
   initialize: function(options){
     _.bindAll(this, 'login');
-    // app.ref.onAuth(this.render);
-
-    // this.listenTo(app.events, {
-    //   'authData': this.onAuthCallback
-    // });
-
-    // this.render();
   },
 
-  onLogout: function(){
+  onLogoutClick: function(){
     app.ref.unauth();
+  },
+
+  onLoginClick: function(){
+    event.preventDefault();
+
+    var email = this.$('input[name="exampleInputEmail1"]').val(),
+        password = this.$('input[name="exampleInputPassword1"]').val();
+
+    this.login(email, password);
   },
 
   onLinkClick: function(event){
@@ -33,11 +36,6 @@ module.exports = Backbone.View.extend({
 
     app.router.navigate(route, {trigger: true});
   },
-
-  // onAuthCallback: function(authData){
-  //   // debugger;
-  //   // this.render();
-  // },
 
   onCreateAccountClick: function(event){
     event.preventDefault();
@@ -75,7 +73,6 @@ module.exports = Backbone.View.extend({
   },
   
   render: function() {
-    // debugger;
     this.$el.html(template({
       authData: app.ref.getAuth()
     }));
@@ -83,7 +80,14 @@ module.exports = Backbone.View.extend({
     this.$('#user-register > a').popover({
       placement: 'bottom',
       html: true,
-      content: loginTemplate(),
+      content: loginTemplate({ login: false}),
+      trigger: 'click'
+    });
+
+    this.$('#user-login > a').popover({
+      placement: 'bottom',
+      html: true,
+      content: loginTemplate({ login: true }),
       trigger: 'click'
     });
 

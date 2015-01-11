@@ -7,6 +7,9 @@
     <label for="exampleInputPassword1">Password</label>
     <input name="exampleInputPassword1" type="password" class="form-control" placeholder="Password">
   </div>
-
-  <button id="create-account" class="btn btn-primary">Create Account</button>
+  {{#if login}}
+    <button id="login" class="btn btn-primary">Login</button>
+  {{else}}
+    <button id="create-account" class="btn btn-primary">Create Account</button>
+  {{/if}}
 </form>

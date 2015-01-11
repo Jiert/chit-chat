@@ -21,23 +21,13 @@ module.exports = Backbone.View.extend({
     app.ref.onAuth(this.authDataCallback);
   },
 
-  // Get Auth Synchronously
-  // var ref = new Firebase("https://<your-firebase>.firebaseio.com");
-  // var authData = ref.getAuth();
-  // if (authData) {
-  //   console.log("User " + authData.uid + " is logged in with " + authData.provider);
-  // } else {
-  //   console.log("User is logged out");
-  // }
-
   authDataCallback: function(authData) {
-    // app.events.trigger('authData', authData);
     if (authData) {
       app.user.authData = authData;
       console.log("User " + authData.uid + " is logged in with " + authData.provider);
     } 
     else {
-      // debugger;
+      delete app.user.authData;
       console.log("User is logged out");
     }
 
