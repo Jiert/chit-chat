@@ -14002,12 +14002,17 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
-  return "    <button id=\"login\" class=\"btn btn-primary\">Login</button>\n";
+  return "  <div class=\"form-group\">\n    <label for=\"user_name\">User Name</label>\n    <input name=\"user_name\" type=\"text\" class=\"form-control\" placeholder=\"User name\">\n  </div>\n";
   },"3":function(depth0,helpers,partials,data) {
+  return "    <button id=\"login\" class=\"btn btn-primary\">Login</button>\n";
+  },"5":function(depth0,helpers,partials,data) {
   return "    <button id=\"create-account\" class=\"btn btn-primary\">Create Account</button>\n";
   },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  var stack1, buffer = "<form>\n  <div class=\"form-group\">\n    <label for=\"exampleInputEmail1\">Email address</label>\n    <input name=\"exampleInputEmail1\" type=\"email\" class=\"form-control\" placeholder=\"Enter email\">\n  </div>\n  <div class=\"form-group\">\n    <label for=\"exampleInputPassword1\">Password</label>\n    <input name=\"exampleInputPassword1\" type=\"password\" class=\"form-control\" placeholder=\"Password\">\n  </div>\n";
-  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.login : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(3, data),"data":data});
+  var stack1, buffer = "<form>\n";
+  stack1 = helpers.unless.call(depth0, (depth0 != null ? depth0.login : depth0), {"name":"unless","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "  <div class=\"form-group\">\n    <label for=\"email_address\">Email address</label>\n    <input name=\"email_address\" type=\"email\" class=\"form-control\" placeholder=\"Enter address\">\n  </div>\n  <div class=\"form-group\">\n    <label for=\"password\">Password</label>\n    <input name=\"password\" type=\"password\" class=\"form-control\" placeholder=\"Password\">\n  </div>\n";
+  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.login : depth0), {"name":"if","hash":{},"fn":this.program(3, data),"inverse":this.program(5, data),"data":data});
   if (stack1 != null) { buffer += stack1; }
   return buffer + "</form>";
 },"useData":true});
@@ -14023,7 +14028,7 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
   var stack1, buffer = "<div class=\"container\">\n  <div class=\"navbar-header\">\n    <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navbar\" aria-expanded=\"false\" aria-controls=\"navbar\">\n      <span class=\"sr-only\">Toggle navigation</span>\n      <span class=\"icon-bar\"></span>\n      <span class=\"icon-bar\"></span>\n      <span class=\"icon-bar\"></span>\n    </button>\n    <a class=\"navbar-brand\" href=\"#\">Brew Journal</a>\n  </div>\n  <div id=\"navbar\" class=\"navbar-collapse collapse\">\n    <ul class=\"nav navbar-nav\">\n      <li><a href=\"#home\">Home</a></li>    \n      <li><a href=\"#beers\">Beers</a></li>\n      <li><a href=\"#recipes\">Recipes</a></li>    \n    </ul>\n    <ul id=\"user-login-nav\" class=\"nav navbar-nav navbar-right\">\n";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.authData : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(3, data),"data":data});
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "    </ul>\n  </div>\n</div>";
+  return buffer + "    </ul>\n  </div>\n</div>\n\n<div class=\"modal fade\">\n  <div class=\"modal-dialog\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header\">\n        <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>\n        <h4 class=\"modal-title\">Login Or Register</h4>\n      </div>\n      <div class=\"modal-body\">\n        <form>\n          <div class=\"form-group\">\n            <label for=\"user_name\">User Name</label>\n            <input name=\"user_name\" type=\"text\" class=\"form-control\" placeholder=\"User name\">\n          </div>\n          <div class=\"form-group\">\n            <label for=\"email_address\">Email address</label>\n            <input name=\"email_address\" type=\"email\" class=\"form-control\" placeholder=\"Enter address\">\n          </div>\n          <div class=\"form-group\">\n            <label for=\"password\">Password</label>\n            <input name=\"password\" type=\"password\" class=\"form-control\" placeholder=\"Password\">\n          </div>\n        </form>\n      </div>\n      <div class=\"modal-footer\">\n        <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n        <button id=\"create-account\" type=\"button\" class=\"btn btn-primary\">Create Account</button>\n      </div>\n    </div><!-- /.modal-content -->\n  </div><!-- /.modal-dialog -->\n</div><!-- /.modal -->";
 },"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/views/application.js":[function(require,module,exports){
@@ -14200,9 +14205,10 @@ var _ = require('underscore'),
 module.exports = Backbone.View.extend({
 
   events: {
-    'click a'               : 'onLinkClick',
+    // 'click a'               : 'onLinkClick',
     'click #logout'         : 'onLogoutClick',
-    'click #login'          : 'onLoginClick',
+    'click #login'          : 'onLoginSubmit',
+    'click #user-login > a' : 'onLoginClick',
     'click #create-account' : 'onCreateAccountClick',
   },
 
@@ -14215,6 +14221,10 @@ module.exports = Backbone.View.extend({
   },
 
   onLoginClick: function(){
+    this.$('.modal').modal();
+  },
+
+  onLoginSubmit: function(){
     event.preventDefault();
 
     var email = this.$('input[name="exampleInputEmail1"]').val(),
@@ -14224,6 +14234,7 @@ module.exports = Backbone.View.extend({
   },
 
   onLinkClick: function(event){
+    console.log('onLinkClick')
     event.preventDefault();
     var route = $(event.currentTarget).attr('href');
 
@@ -14233,22 +14244,38 @@ module.exports = Backbone.View.extend({
   onCreateAccountClick: function(event){
     event.preventDefault();
 
-    this.registerEmail = this.$('input[name="exampleInputEmail1"]').val();
-    this.registerPassword = this.$('input[name="exampleInputPassword1"]').val();
+    this.email    = this.$('input[name="email_address"]').val();
+    this.userName = this.$('input[name="user_name"]').val();
+    this.password = this.$('input[name="password"]').val();
+
+    // this.registerEmail = this.$('input[name="exampleInputEmail1"]').val();
+    // this.registerPassword = this.$('input[name="exampleInputPassword1"]').val();
 
     app.ref.createUser({
-      email    : this.registerEmail,
-      password : this.registerPassword
+      email    : this.email,
+      password : this.password
+      // userName : this.userName
     }, _(function(error) {
       if (error === null) {
         console.log("User created successfully");
-        this.login(this.registerEmail, this.registerPassword);
+        debugger;
+        app.ref.child("users").child(authData.uid).set(authData);
+        this.login(this.email, this.password);
       } 
       else {
         console.log("Error creating user:", error);
       }
     }).bind(this));
   },
+
+  // ref.onAuth(function(authData) {
+  //   if (authData && isNewUser) {
+  //     // save the user's profile into Firebase so we can list users,
+  //     // use them in Security and Firebase Rules, and show profiles
+  //     ref.child("users").child(authData.uid).set(authData);
+  //   }
+  // });
+
 
   login: function(email, password){
     app.ref.authWithPassword({
@@ -14262,10 +14289,10 @@ module.exports = Backbone.View.extend({
         console.log("Authenticated successfully with payload:", authData);
       }
     }).bind(this));
-
   },
   
   render: function() {
+    debugger;
     this.$el.html(template({
       authData: app.ref.getAuth()
     }));
@@ -14277,12 +14304,14 @@ module.exports = Backbone.View.extend({
       trigger: 'click'
     });
 
-    this.$('#user-login > a').popover({
-      placement: 'bottom',
-      html: true,
-      content: loginTemplate({ login: true }),
-      trigger: 'click'
-    });
+    // this.$('#user-login > a').popover({
+    //   placement: 'bottom',
+    //   html: true,
+    //   content: loginTemplate({ login: true }),
+    //   trigger: 'click'
+    // });
+
+    this.$loginModal = this.$('.modal').modal({ show: false });
 
     return this;
   }

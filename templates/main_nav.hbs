@@ -29,3 +29,41 @@
     </ul>
   </div>
 </div>
+
+<div class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Login Or Register</h4>
+      </div>
+      <div class="modal-body">
+        <form>
+          {{!-- {{#unless login}} --}}
+          <div class="form-group">
+            <label for="user_name">User Name</label>
+            <input name="user_name" type="text" class="form-control" placeholder="User name">
+          </div>
+          {{!-- {{/unless}} --}}
+          <div class="form-group">
+            <label for="email_address">Email address</label>
+            <input name="email_address" type="email" class="form-control" placeholder="Enter address">
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input name="password" type="password" class="form-control" placeholder="Password">
+          </div>
+          {{!-- {{#if login}} --}}
+            {{!-- <button id="login" class="btn btn-primary">Login</button> --}}
+          {{!-- {{else}} --}}
+            {{!-- <button id="create-account" class="btn btn-primary">Create Account</button> --}}
+          {{!-- {{/if}} --}}
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button id="create-account" type="button" class="btn btn-primary">Create Account</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
