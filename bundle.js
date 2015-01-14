@@ -5,7 +5,7 @@ var _ = require('underscore'),
     
 module.exports = Backbone.Firebase.Collection.extend({
   model: Beer,
-  url: 'https://blinding-torch-9943.firebaseio.com/'
+  url: 'https://blinding-torch-9943.firebaseio.com/messages'
 });
 },{"../models/beer":"/Users/Easterday/Projects/beerRecipe/models/beer.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/init.js":[function(require,module,exports){
 window.$ = window.jQuery = require('jquery');
@@ -13985,18 +13985,19 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
-  return "Name: "
-    + escapeExpression(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"name","hash":{},"data":data}) : helper)))
-    + " Type: "
-    + escapeExpression(((helper = (helper = helpers.type || (depth0 != null ? depth0.type : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"type","hash":{},"data":data}) : helper)));
+  return "<p>"
+    + escapeExpression(((helper = (helper = helpers.author || (depth0 != null ? depth0.author : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"author","hash":{},"data":data}) : helper)))
+    + ": "
+    + escapeExpression(((helper = (helper = helpers.message || (depth0 != null ? depth0.message : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"message","hash":{},"data":data}) : helper)))
+    + "</p>";
 },"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/form.hbs":[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<label>Name</label>\n<input type=\"text\" name=\"name\"></input>\n<label>Type</label>\n<input type=\"text\" name=\"type\"></input>\n<button class=\"btn addBeer\">Submit</button>";
-  },"useData":true});
+  return "<form>\n  <div class=\"form-group\">\n    <label for=\"message\">Message</label>\n    <input type=\"text\" class=\"form-control\" id=\"message\" name=\"message\" placeholder=\"Enter message\">\n  </div>\n  <button id=\"submit-message\" type=\"submit\" class=\"btn btn-default\">Submit</button>\n</form>\n\n";
+},"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/login.hbs":[function(require,module,exports){
 // hbsfy compiled Handlebars template
@@ -14025,7 +14026,7 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
   },"3":function(depth0,helpers,partials,data) {
   return "        <li id=\"user-login\">\n          <a href=\"#\">login</a>\n        </li>\n        <li id=\"user-register\">\n          <a href=\"#\">register</a>\n        </li>\n";
   },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  var stack1, buffer = "<div class=\"container\">\n  <div class=\"navbar-header\">\n    <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navbar\" aria-expanded=\"false\" aria-controls=\"navbar\">\n      <span class=\"sr-only\">Toggle navigation</span>\n      <span class=\"icon-bar\"></span>\n      <span class=\"icon-bar\"></span>\n      <span class=\"icon-bar\"></span>\n    </button>\n    <a class=\"navbar-brand\" href=\"#\">Brew Journal</a>\n  </div>\n  <div id=\"navbar\" class=\"navbar-collapse collapse\">\n    <ul class=\"nav navbar-nav\">\n      <li><a href=\"#home\">Home</a></li>    \n      <li><a href=\"#beers\">Beers</a></li>\n      <li><a href=\"#recipes\">Recipes</a></li>    \n    </ul>\n    <ul id=\"user-login-nav\" class=\"nav navbar-nav navbar-right\">\n";
+  var stack1, buffer = "<div class=\"container\">\n  <div class=\"navbar-header\">\n    <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navbar\" aria-expanded=\"false\" aria-controls=\"navbar\">\n      <span class=\"sr-only\">Toggle navigation</span>\n      <span class=\"icon-bar\"></span>\n      <span class=\"icon-bar\"></span>\n      <span class=\"icon-bar\"></span>\n    </button>\n    <a class=\"navbar-brand\" href=\"#\">Chit Chat</a>\n  </div>\n  <div id=\"navbar\" class=\"navbar-collapse collapse\">\n    <ul id=\"user-login-nav\" class=\"nav navbar-nav navbar-right\">\n";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.authData : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(3, data),"data":data});
   if (stack1 != null) { buffer += stack1; }
   return buffer + "    </ul>\n  </div>\n</div>\n\n<div class=\"modal fade\">\n  <div class=\"modal-dialog\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header\">\n        <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>\n        <h4 class=\"modal-title\">Login Or Register</h4>\n      </div>\n      <div class=\"modal-body\">\n        <form>\n          <div class=\"form-group\">\n            <label for=\"user_name\">User Name</label>\n            <input name=\"user_name\" type=\"text\" class=\"form-control\" placeholder=\"User name\">\n          </div>\n          <div class=\"form-group\">\n            <label for=\"email_address\">Email address</label>\n            <input name=\"email_address\" type=\"email\" class=\"form-control\" placeholder=\"Enter address\">\n          </div>\n          <div class=\"form-group\">\n            <label for=\"password\">Password</label>\n            <input name=\"password\" type=\"password\" class=\"form-control\" placeholder=\"Password\">\n          </div>\n        </form>\n      </div>\n      <div class=\"modal-footer\">\n        <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n        <button id=\"create-account\" type=\"button\" class=\"btn btn-primary\">Create Account</button>\n      </div>\n    </div><!-- /.modal-content -->\n  </div><!-- /.modal-dialog -->\n</div><!-- /.modal -->";
@@ -14166,6 +14167,7 @@ module.exports = Backbone.View.extend({
 });
 },{"../collections/beers.js":"/Users/Easterday/Projects/beerRecipe/collections/beers.js","../views/beer_view":"/Users/Easterday/Projects/beerRecipe/views/beer_view.js","../views/form_view":"/Users/Easterday/Projects/beerRecipe/views/form_view.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/form_view.js":[function(require,module,exports){
 var _ = require('underscore'),
+    app = require('../namespace'),
     Backbone = require('backbone'),
     BeerModel = require('../models/beer'),
     template = require('../templates/form.hbs');    
@@ -14173,20 +14175,54 @@ var _ = require('underscore'),
 module.exports = Backbone.View.extend({
 
   events: {
-    'click .addBeer': 'onAddBeer'
+    // 'click .addBeer': 'onAddBeer'
+    'click #submit-message' : 'onMessageSubmit'
   },
 
   initialize: function(options){
     this.model = new BeerModel();
     this.beers = options.beers;
+
+    this.messages = app.ref.child('messages');
   },
 
-  onAddBeer: function(event){
-    this.beers.create({
-      name: this.$('[name="name"]').val(),
-      type: this.$('[name="type"]').val()
+  onMessageSubmit: function(event){
+    event.preventDefault();
+
+    debugger;
+
+    this.messages.push({
+      author: 'jared',
+      message: this.$('[name="message"]').val()
     });
   },
+
+  // var postsRef = ref.child("posts");
+  //   postsRef.push({
+  //     author: "gracehop",
+  //     title: "Announcing COBOL, a New Programming Language"
+  //   });
+  //   postsRef.push({
+  //     author: "alanisawesome",
+  //     title: "The Turing Machine"
+  //   });
+
+  // usersRef.child("alanisawesome").set({
+  //   date_of_birth: "June 23, 1912",
+  //   full_name: "Alan Turing"
+  // });
+  // usersRef.child("gracehop").set({
+  //   date_of_birth: "December 9, 1906",
+  //   full_name: "Grace Hopper"
+  // });
+
+
+  // onAddBeer: function(event){
+  //   this.beers.create({
+  //     name: this.$('[name="name"]').val(),
+  //     type: this.$('[name="type"]').val()
+  //   });
+  // },
 
   render: function(){
     this.$el.html(template());
@@ -14195,7 +14231,7 @@ module.exports = Backbone.View.extend({
   }
 
 });
-},{"../models/beer":"/Users/Easterday/Projects/beerRecipe/models/beer.js","../templates/form.hbs":"/Users/Easterday/Projects/beerRecipe/templates/form.hbs","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/main_nav.js":[function(require,module,exports){
+},{"../models/beer":"/Users/Easterday/Projects/beerRecipe/models/beer.js","../namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","../templates/form.hbs":"/Users/Easterday/Projects/beerRecipe/templates/form.hbs","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/main_nav.js":[function(require,module,exports){
 var _ = require('underscore'),
     app = require('../namespace'),
     Backbone = require('backbone'),

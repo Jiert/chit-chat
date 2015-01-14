@@ -4,5 +4,5 @@ var _ = require('underscore'),
     
 module.exports = Backbone.Firebase.Collection.extend({
   model: Beer,
-  url: 'https://blinding-torch-9943.firebaseio.com/'
+  url: 'https://blinding-torch-9943.firebaseio.com/messages'
 });
