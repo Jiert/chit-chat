@@ -14248,9 +14248,6 @@ module.exports = Backbone.View.extend({
     this.userName = this.$('input[name="user_name"]').val();
     this.password = this.$('input[name="password"]').val();
 
-    // this.registerEmail = this.$('input[name="exampleInputEmail1"]').val();
-    // this.registerPassword = this.$('input[name="exampleInputPassword1"]').val();
-
     app.ref.createUser({
       email    : this.email,
       password : this.password
@@ -14258,8 +14255,6 @@ module.exports = Backbone.View.extend({
     }, _(function(error) {
       if (error === null) {
         console.log("User created successfully");
-        debugger;
-        app.ref.child("users").child(authData.uid).set(authData);
         this.login(this.email, this.password);
       } 
       else {
@@ -14268,6 +14263,7 @@ module.exports = Backbone.View.extend({
     }).bind(this));
   },
 
+  // TODO: Find best time to save user data:
   // ref.onAuth(function(authData) {
   //   if (authData && isNewUser) {
   //     // save the user's profile into Firebase so we can list users,
@@ -14275,7 +14271,6 @@ module.exports = Backbone.View.extend({
   //     ref.child("users").child(authData.uid).set(authData);
   //   }
   // });
-
 
   login: function(email, password){
     app.ref.authWithPassword({
@@ -14292,7 +14287,6 @@ module.exports = Backbone.View.extend({
   },
   
   render: function() {
-    debugger;
     this.$el.html(template({
       authData: app.ref.getAuth()
     }));
