@@ -10,15 +10,13 @@ module.exports = Backbone.View.extend({
   },
 
   render: function(){
-    console.log('Author: ' + this.model.get('author'));
-
     // TODO: Why on earth isn't app defined here?
-    // debugger;
-    var isAuthor = this.model.get('author') === this.user && this.user.userName ? true : false;
+    var userName = this.user && this.user.userName,
+        authorClass = this.model.get('author') === userName ? 'primary' : 'success';
 
     this.$el.html(template({
       model: this.model.toJSON(),
-      style: isAuthor ? 'primary' : 'success'
+      authorClass: authorClass
     }));
     return this;
   }

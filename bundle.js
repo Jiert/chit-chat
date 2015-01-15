@@ -13986,7 +13986,7 @@ var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   var stack1, helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, lambda=this.lambda;
   return "<p><strong><span class=\"text-"
-    + escapeExpression(((helper = (helper = helpers.style || (depth0 != null ? depth0.style : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"style","hash":{},"data":data}) : helper)))
+    + escapeExpression(((helper = (helper = helpers.authorClass || (depth0 != null ? depth0.authorClass : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"authorClass","hash":{},"data":data}) : helper)))
     + "\">"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.author : stack1), depth0))
     + "</span></strong>: "
@@ -14125,15 +14125,13 @@ module.exports = Backbone.View.extend({
   },
 
   render: function(){
-    console.log('Author: ' + this.model.get('author'));
-
     // TODO: Why on earth isn't app defined here?
-    // debugger;
-    var isAuthor = this.model.get('author') === this.user && this.user.userName ? true : false;
+    var userName = this.user && this.user.userName,
+        authorClass = this.model.get('author') === userName ? 'primary' : 'success';
 
     this.$el.html(template({
       model: this.model.toJSON(),
-      style: isAuthor ? 'primary' : 'success'
+      authorClass: authorClass
     }));
     return this;
   }
