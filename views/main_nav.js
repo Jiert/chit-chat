@@ -75,7 +75,7 @@ module.exports = Backbone.View.extend({
     } 
     else if (authData){
       if (this.isNewUser) {
-        _.extend(authData, { userName: this.userName});
+        _.extend(authData, { userName: this.userName });
 
         app.ref.child('users').child(authData.uid).set(authData, this.onSaveUser);
       }
@@ -94,8 +94,12 @@ module.exports = Backbone.View.extend({
   },
 
   render: function() {
+    // TODO: authData should be a model
+    var auth = app.ref.getAuth();
+
     this.$el.html(template({
-      authData: app.ref.getAuth()
+      authData: auth,
+      userName: app.user.authData ? app.user.authData.userName : undefined 
     }));
 
     this.$('#user-register > a').popover({
@@ -104,13 +108,6 @@ module.exports = Backbone.View.extend({
       content: loginTemplate({ login: false}),
       trigger: 'click'
     });
-
-    // this.$('#user-login > a').popover({
-    //   placement: 'bottom',
-    //   html: true,
-    //   content: loginTemplate({ login: true }),
-    //   trigger: 'click'
-    // });
 
     this.$loginModal = this.$('.modal').modal({ show: false });
 

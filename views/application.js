@@ -12,25 +12,38 @@ module.exports = Backbone.View.extend({
   events: {},
 
   initialize: function(options){
-    _.bindAll(this, 'authDataCallback');
+    _.bindAll(this, 'authDataCallback', 'onUser');
   },
 
   authenticateUser: function(){
     // Register the callback to be fired every time auth state changes
+    // TODO: we should be making all these references with models / collectons
+
     app.ref = new Firebase("https://blinding-torch-9943.firebaseio.com");
     app.ref.onAuth(this.authDataCallback);
   },
 
   authDataCallback: function(authData) {
     if (authData) {
-      app.user.authData = authData;
-      console.log("User " + authData.uid + " is logged in with " + authData.provider);
+      // TODO: find a better way to find users undrer app.ref
+      var user = new Firebase('https://blinding-torch-9943.firebaseio.com/users/' + authData.uid);
+      user.once('value', this.onUser);
     } 
     else {
       delete app.user.authData;
       console.log("User is logged out");
+      debugger;
+      this.renderApp();
     }
+  },
 
+  onUser: function(snap){
+    app.user.authData = snap.val();
+    console.log('User logged in: ', app.user.authData);
+    this.renderApp();
+  },
+
+  renderApp: function(){
     this.renderNav();
     this.renderContent();
   },

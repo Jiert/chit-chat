@@ -14022,12 +14022,15 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
-  return "        <li><a href=\"#\">Hello!</a></li>\n        <li id=\"logout\"><a href=\"#\">logout</a></li>\n";
-  },"3":function(depth0,helpers,partials,data) {
+  var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
+  return "        <li><a href=\"#\">Hello, "
+    + escapeExpression(((helper = (helper = helpers.userName || (depth0 != null ? depth0.userName : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"userName","hash":{},"data":data}) : helper)))
+    + "!</a></li>\n        <li id=\"logout\"><a href=\"#\">logout</a></li>\n";
+},"3":function(depth0,helpers,partials,data) {
   return "        <li id=\"user-login\">\n          <a href=\"#\">login</a>\n        </li>\n        <li id=\"user-register\">\n          <a href=\"#\">register</a>\n        </li>\n";
   },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   var stack1, buffer = "<div class=\"container\">\n  <div class=\"navbar-header\">\n    <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navbar\" aria-expanded=\"false\" aria-controls=\"navbar\">\n      <span class=\"sr-only\">Toggle navigation</span>\n      <span class=\"icon-bar\"></span>\n      <span class=\"icon-bar\"></span>\n      <span class=\"icon-bar\"></span>\n    </button>\n    <a class=\"navbar-brand\" href=\"#\">Chit Chat</a>\n  </div>\n  <div id=\"navbar\" class=\"navbar-collapse collapse\">\n    <ul id=\"user-login-nav\" class=\"nav navbar-nav navbar-right\">\n";
-  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.authData : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(3, data),"data":data});
+  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.userName : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(3, data),"data":data});
   if (stack1 != null) { buffer += stack1; }
   return buffer + "    </ul>\n  </div>\n</div>\n\n<div class=\"modal fade\">\n  <div class=\"modal-dialog\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header\">\n        <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>\n        <h4 class=\"modal-title\">Login Or Register</h4>\n      </div>\n      <div class=\"modal-body\">\n        <form>\n          <div class=\"form-group\">\n            <label for=\"user_name\">User Name</label>\n            <input name=\"user_name\" type=\"text\" class=\"form-control\" placeholder=\"User name\">\n          </div>\n          <div class=\"form-group\">\n            <label for=\"email_address\">Email address</label>\n            <input name=\"email_address\" type=\"email\" class=\"form-control\" placeholder=\"Enter address\">\n          </div>\n          <div class=\"form-group\">\n            <label for=\"password\">Password</label>\n            <input name=\"password\" type=\"password\" class=\"form-control\" placeholder=\"Password\">\n          </div>\n        </form>\n      </div>\n      <div class=\"modal-footer\">\n        <button id=\"create-account\" type=\"button\" class=\"btn btn-primary\">Create Account</button>\n      </div>\n    </div><!-- /.modal-content -->\n  </div><!-- /.modal-dialog -->\n</div><!-- /.modal -->";
 },"useData":true});
@@ -14047,25 +14050,38 @@ module.exports = Backbone.View.extend({
   events: {},
 
   initialize: function(options){
-    _.bindAll(this, 'authDataCallback');
+    _.bindAll(this, 'authDataCallback', 'onUser');
   },
 
   authenticateUser: function(){
     // Register the callback to be fired every time auth state changes
+    // TODO: we should be making all these references with models / collectons
+
     app.ref = new Firebase("https://blinding-torch-9943.firebaseio.com");
     app.ref.onAuth(this.authDataCallback);
   },
 
   authDataCallback: function(authData) {
     if (authData) {
-      app.user.authData = authData;
-      console.log("User " + authData.uid + " is logged in with " + authData.provider);
+      // TODO: find a better way to find users undrer app.ref
+      var user = new Firebase('https://blinding-torch-9943.firebaseio.com/users/' + authData.uid);
+      user.once('value', this.onUser);
     } 
     else {
       delete app.user.authData;
       console.log("User is logged out");
+      debugger;
+      this.renderApp();
     }
+  },
 
+  onUser: function(snap){
+    app.user.authData = snap.val();
+    console.log('User logged in: ', app.user.authData);
+    this.renderApp();
+  },
+
+  renderApp: function(){
     this.renderNav();
     this.renderContent();
   },
@@ -14191,9 +14207,13 @@ module.exports = Backbone.View.extend({
 
   onMessageSubmit: function(event){
     event.preventDefault();
-debugger;
+
+    // We're assuming app.user.yadayada will be here because as soon
+    // as a logout event occurs this view will killed
+
+    // TODO: make sure this view is really killed on logout events
     this.messages.push({
-      author: 'jared',
+      author: app.user.authData.userName,
       message: this.$('[name="message"]').val()
     });
   },
@@ -14283,7 +14303,7 @@ module.exports = Backbone.View.extend({
     } 
     else if (authData){
       if (this.isNewUser) {
-        _.extend(authData, { userName: this.userName});
+        _.extend(authData, { userName: this.userName });
 
         app.ref.child('users').child(authData.uid).set(authData, this.onSaveUser);
       }
@@ -14302,8 +14322,12 @@ module.exports = Backbone.View.extend({
   },
 
   render: function() {
+    // TODO: authData should be a model
+    var auth = app.ref.getAuth();
+
     this.$el.html(template({
-      authData: app.ref.getAuth()
+      authData: auth,
+      userName: app.user.authData ? app.user.authData.userName : undefined 
     }));
 
     this.$('#user-register > a').popover({
@@ -14312,13 +14336,6 @@ module.exports = Backbone.View.extend({
       content: loginTemplate({ login: false}),
       trigger: 'click'
     });
-
-    // this.$('#user-login > a').popover({
-    //   placement: 'bottom',
-    //   html: true,
-    //   content: loginTemplate({ login: true }),
-    //   trigger: 'click'
-    // });
 
     this.$loginModal = this.$('.modal').modal({ show: false });
 
