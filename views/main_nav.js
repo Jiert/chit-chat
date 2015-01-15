@@ -7,7 +7,6 @@ var _ = require('underscore'),
 module.exports = Backbone.View.extend({
 
   events: {
-    // 'click a'               : 'onLinkClick',
     'click #logout'         : 'onLogoutClick',
     'click #login'          : 'onLoginSubmit',
     'click #user-login > a' : 'onLoginClick',
@@ -15,7 +14,7 @@ module.exports = Backbone.View.extend({
   },
 
   initialize: function(options){
-    _.bindAll(this, 'login');
+    _.bindAll(this, 'login', 'onLogin', 'onSaveUser', 'onAccountCreated');
   },
 
   onLogoutClick: function(){
@@ -35,14 +34,6 @@ module.exports = Backbone.View.extend({
     this.login(email, password);
   },
 
-  onLinkClick: function(event){
-    console.log('onLinkClick')
-    event.preventDefault();
-    var route = $(event.currentTarget).attr('href');
-
-    app.router.navigate(route, {trigger: true});
-  },
-
   onCreateAccountClick: function(event){
     event.preventDefault();
 
@@ -50,44 +41,58 @@ module.exports = Backbone.View.extend({
     this.userName = this.$('input[name="user_name"]').val();
     this.password = this.$('input[name="password"]').val();
 
+    // TODO: 
+    // * validate against existing user names
+    // * trim user name
+
     app.ref.createUser({
       email    : this.email,
       password : this.password
-      // userName : this.userName
-    }, _(function(error) {
-      if (error === null) {
-        console.log("User created successfully");
-        this.login(this.email, this.password);
-      } 
-      else {
-        console.log("Error creating user:", error);
-      }
-    }).bind(this));
+    }, this.onAccountCreated); 
   },
 
-  // TODO: Find best time to save user data:
-  // ref.onAuth(function(authData) {
-  //   if (authData && isNewUser) {
-  //     // save the user's profile into Firebase so we can list users,
-  //     // use them in Security and Firebase Rules, and show profiles
-  //     ref.child("users").child(authData.uid).set(authData);
-  //   }
-  // });
+  onAccountCreated: function(error){
+    if (error === null) {
+      console.log("User created successfully");
+      this.isNewUser = true;
+      this.login(this.email, this.password);
+    } 
+    else {
+      console.log("Error creating user:", error);
+    }
+  },
 
   login: function(email, password){
     app.ref.authWithPassword({
       email    : email,
       password : password
-    }, _(function(error, authData) {
-      if (error) {
-        console.log("Login Failed!", error);
-      } 
-      else {
-        console.log("Authenticated successfully with payload:", authData);
-      }
-    }).bind(this));
+    }, this.onLogin); 
   },
   
+  onLogin: function(error, authData){
+    if (error) {
+      console.log("Login Failed!", error);
+    } 
+    else if (authData){
+      if (this.isNewUser) {
+        _.extend(authData, { userName: this.userName});
+
+        app.ref.child('users').child(authData.uid).set(authData, this.onSaveUser);
+      }
+      console.log("Authenticated successfully with payload:", authData);
+    }
+  },
+
+  onSaveUser: function(error){
+    if (error){
+      console.log('Error creating user: ', error);
+    }
+    else {
+      console.log('User saved successfully');
+      this.isNewUser = false;
+    }     
+  },
+
   render: function() {
     this.$el.html(template({
       authData: app.ref.getAuth()

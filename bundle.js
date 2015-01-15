@@ -13996,8 +13996,8 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<form>\n  <div class=\"form-group\">\n    <label for=\"message\">Message</label>\n    <input type=\"text\" class=\"form-control\" id=\"message\" name=\"message\" placeholder=\"Enter message\">\n  </div>\n  <button id=\"submit-message\" type=\"submit\" class=\"btn btn-default\">Submit</button>\n</form>\n\n";
-},"useData":true});
+  return "<form>\n  <div class=\"form-group\">\n    <label for=\"message\">Message</label>\n    <input type=\"text\" class=\"form-control\" id=\"message\" name=\"message\" placeholder=\"Enter message\">\n  </div>\n  <button id=\"submit-message\" type=\"submit\" class=\"btn btn-default\">Submit</button>\n</form>";
+  },"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/login.hbs":[function(require,module,exports){
 // hbsfy compiled Handlebars template
@@ -14029,7 +14029,7 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
   var stack1, buffer = "<div class=\"container\">\n  <div class=\"navbar-header\">\n    <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navbar\" aria-expanded=\"false\" aria-controls=\"navbar\">\n      <span class=\"sr-only\">Toggle navigation</span>\n      <span class=\"icon-bar\"></span>\n      <span class=\"icon-bar\"></span>\n      <span class=\"icon-bar\"></span>\n    </button>\n    <a class=\"navbar-brand\" href=\"#\">Chit Chat</a>\n  </div>\n  <div id=\"navbar\" class=\"navbar-collapse collapse\">\n    <ul id=\"user-login-nav\" class=\"nav navbar-nav navbar-right\">\n";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.authData : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(3, data),"data":data});
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "    </ul>\n  </div>\n</div>\n\n<div class=\"modal fade\">\n  <div class=\"modal-dialog\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header\">\n        <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>\n        <h4 class=\"modal-title\">Login Or Register</h4>\n      </div>\n      <div class=\"modal-body\">\n        <form>\n          <div class=\"form-group\">\n            <label for=\"user_name\">User Name</label>\n            <input name=\"user_name\" type=\"text\" class=\"form-control\" placeholder=\"User name\">\n          </div>\n          <div class=\"form-group\">\n            <label for=\"email_address\">Email address</label>\n            <input name=\"email_address\" type=\"email\" class=\"form-control\" placeholder=\"Enter address\">\n          </div>\n          <div class=\"form-group\">\n            <label for=\"password\">Password</label>\n            <input name=\"password\" type=\"password\" class=\"form-control\" placeholder=\"Password\">\n          </div>\n        </form>\n      </div>\n      <div class=\"modal-footer\">\n        <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n        <button id=\"create-account\" type=\"button\" class=\"btn btn-primary\">Create Account</button>\n      </div>\n    </div><!-- /.modal-content -->\n  </div><!-- /.modal-dialog -->\n</div><!-- /.modal -->";
+  return buffer + "    </ul>\n  </div>\n</div>\n\n<div class=\"modal fade\">\n  <div class=\"modal-dialog\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header\">\n        <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>\n        <h4 class=\"modal-title\">Login Or Register</h4>\n      </div>\n      <div class=\"modal-body\">\n        <form>\n          <div class=\"form-group\">\n            <label for=\"user_name\">User Name</label>\n            <input name=\"user_name\" type=\"text\" class=\"form-control\" placeholder=\"User name\">\n          </div>\n          <div class=\"form-group\">\n            <label for=\"email_address\">Email address</label>\n            <input name=\"email_address\" type=\"email\" class=\"form-control\" placeholder=\"Enter address\">\n          </div>\n          <div class=\"form-group\">\n            <label for=\"password\">Password</label>\n            <input name=\"password\" type=\"password\" class=\"form-control\" placeholder=\"Password\">\n          </div>\n        </form>\n      </div>\n      <div class=\"modal-footer\">\n        <button id=\"create-account\" type=\"button\" class=\"btn btn-primary\">Create Account</button>\n      </div>\n    </div><!-- /.modal-content -->\n  </div><!-- /.modal-dialog -->\n</div><!-- /.modal -->";
 },"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/views/application.js":[function(require,module,exports){
@@ -14111,6 +14111,7 @@ module.exports = Backbone.View.extend({
 });
 },{"../templates/beer.hbs":"/Users/Easterday/Projects/beerRecipe/templates/beer.hbs","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/content.js":[function(require,module,exports){
 var _ = require('underscore'),
+    app = require('../namespace'),
     Backbone = require('backbone'),
 
     BeerList = require('../collections/beers.js'),
@@ -14135,7 +14136,10 @@ module.exports = Backbone.View.extend({
     this.$el.html('');
     this.beers.each(this.renderBeer);
 
-    this.renderForm();
+    if (app.ref.getAuth()){
+      this.renderForm();
+    }
+
   },
 
   renderBeer: function(model){
@@ -14165,7 +14169,7 @@ module.exports = Backbone.View.extend({
   }
 
 });
-},{"../collections/beers.js":"/Users/Easterday/Projects/beerRecipe/collections/beers.js","../views/beer_view":"/Users/Easterday/Projects/beerRecipe/views/beer_view.js","../views/form_view":"/Users/Easterday/Projects/beerRecipe/views/form_view.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/form_view.js":[function(require,module,exports){
+},{"../collections/beers.js":"/Users/Easterday/Projects/beerRecipe/collections/beers.js","../namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","../views/beer_view":"/Users/Easterday/Projects/beerRecipe/views/beer_view.js","../views/form_view":"/Users/Easterday/Projects/beerRecipe/views/form_view.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/form_view.js":[function(require,module,exports){
 var _ = require('underscore'),
     app = require('../namespace'),
     Backbone = require('backbone'),
@@ -14175,7 +14179,6 @@ var _ = require('underscore'),
 module.exports = Backbone.View.extend({
 
   events: {
-    // 'click .addBeer': 'onAddBeer'
     'click #submit-message' : 'onMessageSubmit'
   },
 
@@ -14188,41 +14191,12 @@ module.exports = Backbone.View.extend({
 
   onMessageSubmit: function(event){
     event.preventDefault();
-
-    debugger;
-
+debugger;
     this.messages.push({
       author: 'jared',
       message: this.$('[name="message"]').val()
     });
   },
-
-  // var postsRef = ref.child("posts");
-  //   postsRef.push({
-  //     author: "gracehop",
-  //     title: "Announcing COBOL, a New Programming Language"
-  //   });
-  //   postsRef.push({
-  //     author: "alanisawesome",
-  //     title: "The Turing Machine"
-  //   });
-
-  // usersRef.child("alanisawesome").set({
-  //   date_of_birth: "June 23, 1912",
-  //   full_name: "Alan Turing"
-  // });
-  // usersRef.child("gracehop").set({
-  //   date_of_birth: "December 9, 1906",
-  //   full_name: "Grace Hopper"
-  // });
-
-
-  // onAddBeer: function(event){
-  //   this.beers.create({
-  //     name: this.$('[name="name"]').val(),
-  //     type: this.$('[name="type"]').val()
-  //   });
-  // },
 
   render: function(){
     this.$el.html(template());
@@ -14241,7 +14215,6 @@ var _ = require('underscore'),
 module.exports = Backbone.View.extend({
 
   events: {
-    // 'click a'               : 'onLinkClick',
     'click #logout'         : 'onLogoutClick',
     'click #login'          : 'onLoginSubmit',
     'click #user-login > a' : 'onLoginClick',
@@ -14249,7 +14222,7 @@ module.exports = Backbone.View.extend({
   },
 
   initialize: function(options){
-    _.bindAll(this, 'login');
+    _.bindAll(this, 'login', 'onLogin', 'onSaveUser', 'onAccountCreated');
   },
 
   onLogoutClick: function(){
@@ -14269,14 +14242,6 @@ module.exports = Backbone.View.extend({
     this.login(email, password);
   },
 
-  onLinkClick: function(event){
-    console.log('onLinkClick')
-    event.preventDefault();
-    var route = $(event.currentTarget).attr('href');
-
-    app.router.navigate(route, {trigger: true});
-  },
-
   onCreateAccountClick: function(event){
     event.preventDefault();
 
@@ -14284,44 +14249,58 @@ module.exports = Backbone.View.extend({
     this.userName = this.$('input[name="user_name"]').val();
     this.password = this.$('input[name="password"]').val();
 
+    // TODO: 
+    // * validate against existing user names
+    // * trim user name
+
     app.ref.createUser({
       email    : this.email,
       password : this.password
-      // userName : this.userName
-    }, _(function(error) {
-      if (error === null) {
-        console.log("User created successfully");
-        this.login(this.email, this.password);
-      } 
-      else {
-        console.log("Error creating user:", error);
-      }
-    }).bind(this));
+    }, this.onAccountCreated); 
   },
 
-  // TODO: Find best time to save user data:
-  // ref.onAuth(function(authData) {
-  //   if (authData && isNewUser) {
-  //     // save the user's profile into Firebase so we can list users,
-  //     // use them in Security and Firebase Rules, and show profiles
-  //     ref.child("users").child(authData.uid).set(authData);
-  //   }
-  // });
+  onAccountCreated: function(error){
+    if (error === null) {
+      console.log("User created successfully");
+      this.isNewUser = true;
+      this.login(this.email, this.password);
+    } 
+    else {
+      console.log("Error creating user:", error);
+    }
+  },
 
   login: function(email, password){
     app.ref.authWithPassword({
       email    : email,
       password : password
-    }, _(function(error, authData) {
-      if (error) {
-        console.log("Login Failed!", error);
-      } 
-      else {
-        console.log("Authenticated successfully with payload:", authData);
-      }
-    }).bind(this));
+    }, this.onLogin); 
   },
   
+  onLogin: function(error, authData){
+    if (error) {
+      console.log("Login Failed!", error);
+    } 
+    else if (authData){
+      if (this.isNewUser) {
+        _.extend(authData, { userName: this.userName});
+
+        app.ref.child('users').child(authData.uid).set(authData, this.onSaveUser);
+      }
+      console.log("Authenticated successfully with payload:", authData);
+    }
+  },
+
+  onSaveUser: function(error){
+    if (error){
+      console.log('Error creating user: ', error);
+    }
+    else {
+      console.log('User saved successfully');
+      this.isNewUser = false;
+    }     
+  },
+
   render: function() {
     this.$el.html(template({
       authData: app.ref.getAuth()

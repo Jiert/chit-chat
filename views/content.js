@@ -1,4 +1,5 @@
 var _ = require('underscore'),
+    app = require('../namespace'),
     Backbone = require('backbone'),
 
     BeerList = require('../collections/beers.js'),
@@ -23,7 +24,10 @@ module.exports = Backbone.View.extend({
     this.$el.html('');
     this.beers.each(this.renderBeer);
 
-    this.renderForm();
+    if (app.ref.getAuth()){
+      this.renderForm();
+    }
+
   },
 
   renderBeer: function(model){
