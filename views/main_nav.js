@@ -28,8 +28,9 @@ module.exports = Backbone.View.extend({
   onLoginSubmit: function(){
     event.preventDefault();
 
-    var email = this.$('input[name="exampleInputEmail1"]').val(),
-        password = this.$('input[name="exampleInputPassword1"]').val();
+    // TODO: Make sure there are no collisions with the registration form
+    var email = this.$('input[name="email_address"]').val(),
+        password = this.$('input[name="password"]').val();
 
     this.login(email, password);
   },

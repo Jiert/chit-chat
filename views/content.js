@@ -9,8 +9,6 @@ var _ = require('underscore'),
 
 module.exports = Backbone.View.extend({
 
-  events: {},
-
   initialize: function(options){
     _.bindAll(this, 'renderBeers', 'renderBeer');
 
@@ -27,12 +25,12 @@ module.exports = Backbone.View.extend({
     if (app.ref.getAuth()){
       this.renderForm();
     }
-
   },
 
   renderBeer: function(model){
     var beerView = this.createSubView(BeerView, {
-      model: model
+      model: model,
+      user: app.user.authData
     });
 
     this.$el.append(beerView.render().el);

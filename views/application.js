@@ -32,7 +32,6 @@ module.exports = Backbone.View.extend({
     else {
       delete app.user.authData;
       console.log("User is logged out");
-      debugger;
       this.renderApp();
     }
   },

@@ -13984,11 +13984,13 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
-  return "<p>"
-    + escapeExpression(((helper = (helper = helpers.author || (depth0 != null ? depth0.author : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"author","hash":{},"data":data}) : helper)))
-    + ": "
-    + escapeExpression(((helper = (helper = helpers.message || (depth0 != null ? depth0.message : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"message","hash":{},"data":data}) : helper)))
+  var stack1, helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, lambda=this.lambda;
+  return "<p><strong><span class=\"text-"
+    + escapeExpression(((helper = (helper = helpers.style || (depth0 != null ? depth0.style : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"style","hash":{},"data":data}) : helper)))
+    + "\">"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.author : stack1), depth0))
+    + "</span></strong>: "
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.message : stack1), depth0))
     + "</p>";
 },"useData":true});
 
@@ -14032,7 +14034,7 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
   var stack1, buffer = "<div class=\"container\">\n  <div class=\"navbar-header\">\n    <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navbar\" aria-expanded=\"false\" aria-controls=\"navbar\">\n      <span class=\"sr-only\">Toggle navigation</span>\n      <span class=\"icon-bar\"></span>\n      <span class=\"icon-bar\"></span>\n      <span class=\"icon-bar\"></span>\n    </button>\n    <a class=\"navbar-brand\" href=\"#\">Chit Chat</a>\n  </div>\n  <div id=\"navbar\" class=\"navbar-collapse collapse\">\n    <ul id=\"user-login-nav\" class=\"nav navbar-nav navbar-right\">\n";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.userName : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(3, data),"data":data});
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "    </ul>\n  </div>\n</div>\n\n<div class=\"modal fade\">\n  <div class=\"modal-dialog\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header\">\n        <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>\n        <h4 class=\"modal-title\">Login Or Register</h4>\n      </div>\n      <div class=\"modal-body\">\n        <form>\n          <div class=\"form-group\">\n            <label for=\"user_name\">User Name</label>\n            <input name=\"user_name\" type=\"text\" class=\"form-control\" placeholder=\"User name\">\n          </div>\n          <div class=\"form-group\">\n            <label for=\"email_address\">Email address</label>\n            <input name=\"email_address\" type=\"email\" class=\"form-control\" placeholder=\"Enter address\">\n          </div>\n          <div class=\"form-group\">\n            <label for=\"password\">Password</label>\n            <input name=\"password\" type=\"password\" class=\"form-control\" placeholder=\"Password\">\n          </div>\n        </form>\n      </div>\n      <div class=\"modal-footer\">\n        <button id=\"create-account\" type=\"button\" class=\"btn btn-primary\">Create Account</button>\n      </div>\n    </div><!-- /.modal-content -->\n  </div><!-- /.modal-dialog -->\n</div><!-- /.modal -->";
+  return buffer + "    </ul>\n  </div>\n</div>\n\n<div class=\"modal fade\">\n  <div class=\"modal-dialog\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header\">\n        <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>\n        <h4 class=\"modal-title\">Login</h4>\n      </div>\n      <div class=\"modal-body\">\n        <form>\n          \n          <div class=\"form-group\">\n            <label for=\"email_address\">Email address</label>\n            <input name=\"email_address\" type=\"email\" class=\"form-control\" placeholder=\"Enter address\">\n          </div>\n          <div class=\"form-group\">\n            <label for=\"password\">Password</label>\n            <input name=\"password\" type=\"password\" class=\"form-control\" placeholder=\"Password\">\n          </div>\n        </form>\n      </div>\n      <div class=\"modal-footer\">\n        <button id=\"login\" type=\"button\" class=\"btn btn-primary\">Login</button>\n      </div>\n    </div><!-- /.modal-content -->\n  </div><!-- /.modal-dialog -->\n</div><!-- /.modal -->";
 },"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/views/application.js":[function(require,module,exports){
@@ -14070,7 +14072,6 @@ module.exports = Backbone.View.extend({
     else {
       delete app.user.authData;
       console.log("User is logged out");
-      debugger;
       this.renderApp();
     }
   },
@@ -14113,15 +14114,27 @@ module.exports = Backbone.View.extend({
 });
 },{"../namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","../templates/application.hbs":"/Users/Easterday/Projects/beerRecipe/templates/application.hbs","../views/content":"/Users/Easterday/Projects/beerRecipe/views/content.js","../views/main_nav":"/Users/Easterday/Projects/beerRecipe/views/main_nav.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/beer_view.js":[function(require,module,exports){
 var _ = require('underscore'),
+    // app = require('../namespace'),
     Backbone = require('backbone'),
     template = require('../templates/beer.hbs');
 
 module.exports = Backbone.View.extend({
 
-  initialize: function(){},
+  initialize: function(options){
+    this.user = options.user;
+  },
 
   render: function(){
-    this.$el.html(template(this.model.toJSON()));
+    console.log('Author: ' + this.model.get('author'));
+
+    // TODO: Why on earth isn't app defined here?
+    // debugger;
+    var isAuthor = this.model.get('author') === this.user && this.user.userName ? true : false;
+
+    this.$el.html(template({
+      model: this.model.toJSON(),
+      style: isAuthor ? 'primary' : 'success'
+    }));
     return this;
   }
 });
@@ -14136,8 +14149,6 @@ var _ = require('underscore'),
     FormView = require('../views/form_view');
 
 module.exports = Backbone.View.extend({
-
-  events: {},
 
   initialize: function(options){
     _.bindAll(this, 'renderBeers', 'renderBeer');
@@ -14155,12 +14166,12 @@ module.exports = Backbone.View.extend({
     if (app.ref.getAuth()){
       this.renderForm();
     }
-
   },
 
   renderBeer: function(model){
     var beerView = this.createSubView(BeerView, {
-      model: model
+      model: model,
+      user: app.user.authData
     });
 
     this.$el.append(beerView.render().el);
@@ -14256,8 +14267,9 @@ module.exports = Backbone.View.extend({
   onLoginSubmit: function(){
     event.preventDefault();
 
-    var email = this.$('input[name="exampleInputEmail1"]').val(),
-        password = this.$('input[name="exampleInputPassword1"]').val();
+    // TODO: Make sure there are no collisions with the registration form
+    var email = this.$('input[name="email_address"]').val(),
+        password = this.$('input[name="password"]').val();
 
     this.login(email, password);
   },
