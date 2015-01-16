@@ -13998,7 +13998,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<form>\n  <div class=\"form-group\">\n    <label for=\"message\">Message</label>\n    <input type=\"text\" class=\"form-control\" id=\"message\" name=\"message\" placeholder=\"Enter message\">\n  </div>\n  <button id=\"submit-message\" type=\"submit\" class=\"btn btn-default\">Submit</button>\n</form>";
+  return "<form>\n  <div class=\"form-group\">\n     <div class=\"input-group\">\n       <input id=\"message\" name=\"message\" type=\"text\" class=\"form-control\" placeholder=\"Speak up\">\n       <span class=\"input-group-btn\">\n         <button id=\"submit-message\" class=\"btn btn-default\" type=\"button\">Chat</button>\n       </span>\n     </div>\n   </div>\n</form>";
   },"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/login.hbs":[function(require,module,exports){
@@ -14034,7 +14034,7 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
   var stack1, buffer = "<div class=\"container\">\n  <div class=\"navbar-header\">\n    <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navbar\" aria-expanded=\"false\" aria-controls=\"navbar\">\n      <span class=\"sr-only\">Toggle navigation</span>\n      <span class=\"icon-bar\"></span>\n      <span class=\"icon-bar\"></span>\n      <span class=\"icon-bar\"></span>\n    </button>\n    <a class=\"navbar-brand\" href=\"#\">Chit Chat</a>\n  </div>\n  <div id=\"navbar\" class=\"navbar-collapse collapse\">\n    <ul id=\"user-login-nav\" class=\"nav navbar-nav navbar-right\">\n";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.userName : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(3, data),"data":data});
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "    </ul>\n  </div>\n</div>\n\n<div class=\"modal fade\">\n  <div class=\"modal-dialog\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header\">\n        <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>\n        <h4 class=\"modal-title\">Login</h4>\n      </div>\n      <div class=\"modal-body\">\n        <form>\n          \n          <div class=\"form-group\">\n            <label for=\"email_address\">Email address</label>\n            <input name=\"email_address\" type=\"email\" class=\"form-control\" placeholder=\"Enter address\">\n          </div>\n          <div class=\"form-group\">\n            <label for=\"password\">Password</label>\n            <input name=\"password\" type=\"password\" class=\"form-control\" placeholder=\"Password\">\n          </div>\n        </form>\n      </div>\n      <div class=\"modal-footer\">\n        <button id=\"login\" type=\"button\" class=\"btn btn-primary\">Login</button>\n      </div>\n    </div><!-- /.modal-content -->\n  </div><!-- /.modal-dialog -->\n</div><!-- /.modal -->";
+  return buffer + "    </ul>\n  </div>\n</div>\n\n<div class=\"modal fade\">\n  <div class=\"modal-dialog\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header\">\n        <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>\n        <h4 class=\"modal-title\">Login</h4>\n      </div>\n      <div class=\"modal-body\">\n        <form>\n          <div class=\"form-group\">\n            <label for=\"email_address\">Email address</label>\n            <input name=\"email_address\" type=\"email\" class=\"form-control\" placeholder=\"Enter address\">\n          </div>\n          <div class=\"form-group\">\n            <label for=\"password\">Password</label>\n            <input name=\"password\" type=\"password\" class=\"form-control\" placeholder=\"Password\">\n          </div>\n        </form>\n      </div>\n      <div class=\"modal-footer\">\n        <button id=\"login\" type=\"button\" class=\"btn btn-primary\">Login</button>\n      </div>\n    </div>\n  </div>\n</div>";
 },"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/views/application.js":[function(require,module,exports){
@@ -14153,17 +14153,25 @@ module.exports = Backbone.View.extend({
 
     this.beers = new BeerList();
     this.listenTo(this.beers, {
-      'sync': this.renderBeers
+      // TODO: This isn't the wy to go. We should only append new messages, 
+      // rather than re-rendering each time we save just one message
+      'sync': this.renderBeers,
+      // 'add' : this.renderBeer
     });
   },
 
-  renderBeers: function(){
+  renderBeers: function(event){
+    console.log('renderBeers event' , event);
+
     this.$el.html('');
     this.beers.each(this.renderBeer);
 
     if (app.ref.getAuth()){
       this.renderForm();
     }
+
+    // TODO: Sort out this massive memory leak!
+    console.log('Holy memory leak! this.subviews: ' , this.subViews.length);
   },
 
   renderBeer: function(model){
@@ -14221,14 +14229,25 @@ module.exports = Backbone.View.extend({
     // as a logout event occurs this view will killed
 
     // TODO: make sure this view is really killed on logout events
-    this.messages.push({
-      author: app.user.authData.userName,
-      message: this.$('[name="message"]').val()
-    });
+
+    var message = this.$message.val();
+
+    if (message){
+      this.messages.push({
+        author: app.user.authData.userName,
+        message: this.$('[name="message"]').val()
+      });
+    }
+    else {
+      this.$message.parent().toggleClass('has-warning', true);
+    }
   },
 
   render: function(){
+    console.log('form view render');
     this.$el.html(template());
+
+    this.$message = this.$('#message');
 
     return this;
   }

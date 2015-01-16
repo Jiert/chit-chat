@@ -24,14 +24,25 @@ module.exports = Backbone.View.extend({
     // as a logout event occurs this view will killed
 
     // TODO: make sure this view is really killed on logout events
-    this.messages.push({
-      author: app.user.authData.userName,
-      message: this.$('[name="message"]').val()
-    });
+
+    var message = this.$message.val();
+
+    if (message){
+      this.messages.push({
+        author: app.user.authData.userName,
+        message: this.$('[name="message"]').val()
+      });
+    }
+    else {
+      this.$message.parent().toggleClass('has-warning', true);
+    }
   },
 
   render: function(){
+    console.log('form view render');
     this.$el.html(template());
+
+    this.$message = this.$('#message');
 
     return this;
   }

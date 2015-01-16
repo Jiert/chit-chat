@@ -14,17 +14,25 @@ module.exports = Backbone.View.extend({
 
     this.beers = new BeerList();
     this.listenTo(this.beers, {
-      'sync': this.renderBeers
+      // TODO: This isn't the wy to go. We should only append new messages, 
+      // rather than re-rendering each time we save just one message
+      'sync': this.renderBeers,
+      // 'add' : this.renderBeer
     });
   },
 
-  renderBeers: function(){
+  renderBeers: function(event){
+    console.log('renderBeers event' , event);
+
     this.$el.html('');
     this.beers.each(this.renderBeer);
 
     if (app.ref.getAuth()){
       this.renderForm();
     }
+
+    // TODO: Sort out this massive memory leak!
+    console.log('Holy memory leak! this.subviews: ' , this.subViews.length);
   },
 
   renderBeer: function(model){
