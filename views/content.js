@@ -21,8 +21,18 @@ module.exports = Backbone.View.extend({
     });
   },
 
+  cleanUp: function(){
+    if (this.subViews && this.subViews.length){
+      _(this.subViews).each(function(subView){
+        subView.destroy();
+      });
+    }
+  },
+
   renderBeers: function(event){
     console.log('renderBeers event' , event);
+
+    this.cleanUp();
 
     this.$el.html('');
     this.beers.each(this.renderBeer);
@@ -32,7 +42,9 @@ module.exports = Backbone.View.extend({
     }
 
     // TODO: Sort out this massive memory leak!
-    console.log('Holy memory leak! this.subviews: ' , this.subViews.length);
+    // So, we're cleaning up now, which is fine, 
+    // But we need to not call renderBeers everytime
+    // we post a new message.
   },
 
   renderBeer: function(model){
