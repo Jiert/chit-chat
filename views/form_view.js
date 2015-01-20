@@ -1,7 +1,7 @@
 var _ = require('underscore'),
     app = require('../namespace'),
     Backbone = require('backbone'),
-    BeerModel = require('../models/beer'),
+    MessageModel = require('../models/message'),
     template = require('../templates/form.hbs');    
 
 module.exports = Backbone.View.extend({
@@ -11,8 +11,8 @@ module.exports = Backbone.View.extend({
   },
 
   initialize: function(options){
-    this.model = new BeerModel();
-    this.beers = options.beers;
+    this.model = new MessageModel();
+    this.messages = options.messages;
 
     this.messages = app.ref.child('messages');
   },

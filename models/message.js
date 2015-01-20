@@ -4,7 +4,7 @@ var _ = require('underscore'),
 module.exports  = Backbone.Model.extend({
   defaults: function() {
     return {
-      title: "New Beer",
+      title: "New Message",
     };
   },
 });

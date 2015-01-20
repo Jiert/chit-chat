@@ -1,8 +1,8 @@
 var _ = require('underscore'),
     Backbone = require('backbone'),
-    Beer = require('../models/beer');
+    Message = require('../models/message');
     
 module.exports = Backbone.Firebase.Collection.extend({
-  model: Beer,
+  model: Message,
   url: 'https://blinding-torch-9943.firebaseio.com/messages'
 });

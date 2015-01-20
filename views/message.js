@@ -1,7 +1,7 @@
 var _ = require('underscore'),
     // app = require('../namespace'),
     Backbone = require('backbone'),
-    template = require('../templates/beer.hbs');
+    template = require('../templates/message.hbs');
 
 module.exports = Backbone.View.extend({
 

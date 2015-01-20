@@ -1,13 +1,13 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/Easterday/Projects/beerRecipe/collections/beers.js":[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/Easterday/Projects/beerRecipe/collections/messages.js":[function(require,module,exports){
 var _ = require('underscore'),
     Backbone = require('backbone'),
-    Beer = require('../models/beer');
+    Message = require('../models/message');
     
 module.exports = Backbone.Firebase.Collection.extend({
-  model: Beer,
+  model: Message,
   url: 'https://blinding-torch-9943.firebaseio.com/messages'
 });
-},{"../models/beer":"/Users/Easterday/Projects/beerRecipe/models/beer.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/init.js":[function(require,module,exports){
+},{"../models/message":"/Users/Easterday/Projects/beerRecipe/models/message.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/init.js":[function(require,module,exports){
 window.$ = window.jQuery = require('jquery');
 window.Backbone = require('backbone');
 window.Backbone.$ = $;
@@ -1086,14 +1086,14 @@ Q.prototype.removeUser=Q.prototype.Ke;Q.prototype.ee=function(a,b){D("Firebase.c
 Q.prototype.de=function(a,b){D("Firebase.changeEmail",2,2,arguments.length);I("Firebase.changeEmail",1,a,!1);J("Firebase.changeEmail",a,"oldEmail");J("Firebase.changeEmail",a,"newEmail");J("Firebase.changeEmail",a,"password");G("Firebase.changeEmail",2,b,!1);this.k.R.de(a,b)};Q.prototype.changeEmail=Q.prototype.de;
 Q.prototype.Le=function(a,b){D("Firebase.resetPassword",2,2,arguments.length);I("Firebase.resetPassword",1,a,!1);J("Firebase.resetPassword",a,"email");G("Firebase.resetPassword",2,b,!1);this.k.R.Le(a,b)};Q.prototype.resetPassword=Q.prototype.Le;Q.goOffline=function(){D("Firebase.goOffline",0,0,arguments.length);X.Mb().pb()};Q.goOnline=function(){D("Firebase.goOnline",0,0,arguments.length);X.Mb().gc()};
 function ob(a,b){w(!b||!0===a||!1===a,"Can't turn on custom loggers persistently.");!0===a?("undefined"!==typeof console&&("function"===typeof console.log?mb=q(console.log,console):"object"===typeof console.log&&(mb=function(a){console.log(a)})),b&&Aa.set("logging_enabled",!0)):a?mb=a:(mb=null,Aa.remove("logging_enabled"))}Q.enableLogging=ob;Q.ServerValue={TIMESTAMP:{".sv":"timestamp"}};Q.SDK_VERSION="2.1.0";Q.INTERNAL=Y;Q.Context=X;Q.TEST_ACCESS=$;})();
-},{}],"/Users/Easterday/Projects/beerRecipe/models/beer.js":[function(require,module,exports){
+},{}],"/Users/Easterday/Projects/beerRecipe/models/message.js":[function(require,module,exports){
 var _ = require('underscore'),
     Backbone = require('backbone');
 
 module.exports  = Backbone.Model.extend({
   defaults: function() {
     return {
-      title: "New Beer",
+      title: "New Message",
     };
   },
 });
@@ -13980,20 +13980,6 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
   return "<nav id=\"main-nav\" class=\"navbar navbar-default navbar-fixed-top\" role=\"navigation\"> </nav>\n<div id=\"content\" class=\"container\"> </div>";
   },"useData":true});
 
-},{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/beer.hbs":[function(require,module,exports){
-// hbsfy compiled Handlebars template
-var HandlebarsCompiler = require('hbsfy/runtime');
-module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  var stack1, helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, lambda=this.lambda;
-  return "<p><strong><span class=\"text-"
-    + escapeExpression(((helper = (helper = helpers.authorClass || (depth0 != null ? depth0.authorClass : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"authorClass","hash":{},"data":data}) : helper)))
-    + "\">"
-    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.author : stack1), depth0))
-    + "</span></strong>: "
-    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.message : stack1), depth0))
-    + "</p>";
-},"useData":true});
-
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/form.hbs":[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
@@ -14035,6 +14021,20 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.userName : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(3, data),"data":data});
   if (stack1 != null) { buffer += stack1; }
   return buffer + "    </ul>\n  </div>\n</div>\n\n<div class=\"modal fade\">\n  <div class=\"modal-dialog\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header\">\n        <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>\n        <h4 class=\"modal-title\">Login</h4>\n      </div>\n      <div class=\"modal-body\">\n        <form>\n          <div class=\"form-group\">\n            <label for=\"email_address\">Email address</label>\n            <input name=\"email_address\" type=\"email\" class=\"form-control\" placeholder=\"Enter address\">\n          </div>\n          <div class=\"form-group\">\n            <label for=\"password\">Password</label>\n            <input name=\"password\" type=\"password\" class=\"form-control\" placeholder=\"Password\">\n          </div>\n        </form>\n      </div>\n      <div class=\"modal-footer\">\n        <button id=\"login\" type=\"button\" class=\"btn btn-primary\">Login</button>\n      </div>\n    </div>\n  </div>\n</div>";
+},"useData":true});
+
+},{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/message.hbs":[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var HandlebarsCompiler = require('hbsfy/runtime');
+module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var stack1, helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, lambda=this.lambda;
+  return "<p><strong><span class=\"text-"
+    + escapeExpression(((helper = (helper = helpers.authorClass || (depth0 != null ? depth0.authorClass : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"authorClass","hash":{},"data":data}) : helper)))
+    + "\">"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.author : stack1), depth0))
+    + "</span></strong>: "
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.message : stack1), depth0))
+    + "</p>";
 },"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/views/application.js":[function(require,module,exports){
@@ -14112,50 +14112,30 @@ module.exports = Backbone.View.extend({
   }
 
 });
-},{"../namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","../templates/application.hbs":"/Users/Easterday/Projects/beerRecipe/templates/application.hbs","../views/content":"/Users/Easterday/Projects/beerRecipe/views/content.js","../views/main_nav":"/Users/Easterday/Projects/beerRecipe/views/main_nav.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/beer_view.js":[function(require,module,exports){
-var _ = require('underscore'),
-    // app = require('../namespace'),
-    Backbone = require('backbone'),
-    template = require('../templates/beer.hbs');
+},{"../namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","../templates/application.hbs":"/Users/Easterday/Projects/beerRecipe/templates/application.hbs","../views/content":"/Users/Easterday/Projects/beerRecipe/views/content.js","../views/main_nav":"/Users/Easterday/Projects/beerRecipe/views/main_nav.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/content.js":[function(require,module,exports){
+// TODO: This view should handle the main messge views
 
-module.exports = Backbone.View.extend({
-
-  initialize: function(options){
-    this.user = options.user;
-  },
-
-  render: function(){
-    // TODO: Why on earth isn't app defined here?
-    var userName = this.user && this.user.userName,
-        authorClass = this.model.get('author') === userName ? 'primary' : 'success';
-
-    this.$el.html(template({
-      model: this.model.toJSON(),
-      authorClass: authorClass
-    }));
-    return this;
-  }
-});
-},{"../templates/beer.hbs":"/Users/Easterday/Projects/beerRecipe/templates/beer.hbs","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/content.js":[function(require,module,exports){
 var _ = require('underscore'),
     app = require('../namespace'),
     Backbone = require('backbone'),
 
-    BeerList = require('../collections/beers.js'),
+    MessagesList = require('../collections/messages.js'),
 
-    BeerView = require('../views/beer_view'),
+    MessageView = require('../views/message'),
     FormView = require('../views/form_view');
 
 module.exports = Backbone.View.extend({
 
-  initialize: function(options){
-    _.bindAll(this, 'renderBeers', 'renderBeer');
+  className: 'main-content',
 
-    this.beers = new BeerList();
-    this.listenTo(this.beers, {
+  initialize: function(options){
+    _.bindAll(this, 'renderMessages', 'renderMessage');
+
+    this.messages = new MessagesList();
+    this.listenTo(this.messages, {
       // TODO: This isn't the wy to go. We should only append new messages, 
       // rather than re-rendering each time we save just one message
-      'sync': this.renderBeers,
+      'sync': this.renderMessages,
       // 'add' : this.renderBeer
     });
   },
@@ -14168,13 +14148,13 @@ module.exports = Backbone.View.extend({
     }
   },
 
-  renderBeers: function(event){
-    console.log('renderBeers event' , event);
+  renderMessages: function(event){
+    console.log('renderMessages event' , event);
 
     this.cleanUp();
 
     this.$el.html('');
-    this.beers.each(this.renderBeer);
+    this.messages.each(this.renderMessage);
 
     if (app.ref.getAuth()){
       this.renderForm();
@@ -14186,39 +14166,39 @@ module.exports = Backbone.View.extend({
     // we post a new message.
   },
 
-  renderBeer: function(model){
-    var beerView = this.createSubView(BeerView, {
+  renderMessage: function(model){
+    var messageView = this.createSubView(MessageView, {
       model: model,
       user: app.user.authData
     });
 
-    this.$el.append(beerView.render().el);
+    this.$el.append(messageView.render().el);
   },  
 
   renderForm: function(){
-    var formView = this.createSubView(FormView, { beers: this.beers });
+    var formView = this.createSubView(FormView, { messages: this.messages });
     this.$el.append(formView.render().el);
   },
 
   render: function() {
-    this.$el.html('Loading Beers...');
+    this.$el.html('Loading Messages...');
 
     console.log('content render');
 
     // TODO: There's got to be a better way to do 
     // this in tandom with listenTo: sync
-    if (this.beers.length){
-      this.renderBeers();
+    if (this.messages.length){
+      this.renderMessages();
     }
     return this;
   }
 
 });
-},{"../collections/beers.js":"/Users/Easterday/Projects/beerRecipe/collections/beers.js","../namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","../views/beer_view":"/Users/Easterday/Projects/beerRecipe/views/beer_view.js","../views/form_view":"/Users/Easterday/Projects/beerRecipe/views/form_view.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/form_view.js":[function(require,module,exports){
+},{"../collections/messages.js":"/Users/Easterday/Projects/beerRecipe/collections/messages.js","../namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","../views/form_view":"/Users/Easterday/Projects/beerRecipe/views/form_view.js","../views/message":"/Users/Easterday/Projects/beerRecipe/views/message.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/form_view.js":[function(require,module,exports){
 var _ = require('underscore'),
     app = require('../namespace'),
     Backbone = require('backbone'),
-    BeerModel = require('../models/beer'),
+    MessageModel = require('../models/message'),
     template = require('../templates/form.hbs');    
 
 module.exports = Backbone.View.extend({
@@ -14228,8 +14208,8 @@ module.exports = Backbone.View.extend({
   },
 
   initialize: function(options){
-    this.model = new BeerModel();
-    this.beers = options.beers;
+    this.model = new MessageModel();
+    this.messages = options.messages;
 
     this.messages = app.ref.child('messages');
   },
@@ -14265,7 +14245,7 @@ module.exports = Backbone.View.extend({
   }
 
 });
-},{"../models/beer":"/Users/Easterday/Projects/beerRecipe/models/beer.js","../namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","../templates/form.hbs":"/Users/Easterday/Projects/beerRecipe/templates/form.hbs","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/main_nav.js":[function(require,module,exports){
+},{"../models/message":"/Users/Easterday/Projects/beerRecipe/models/message.js","../namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","../templates/form.hbs":"/Users/Easterday/Projects/beerRecipe/templates/form.hbs","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/main_nav.js":[function(require,module,exports){
 var _ = require('underscore'),
     app = require('../namespace'),
     Backbone = require('backbone'),
@@ -14384,7 +14364,31 @@ module.exports = Backbone.View.extend({
   }
 
 });
-},{"../namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","../templates/login.hbs":"/Users/Easterday/Projects/beerRecipe/templates/login.hbs","../templates/main_nav.hbs":"/Users/Easterday/Projects/beerRecipe/templates/main_nav.hbs","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/test.js":[function(require,module,exports){
+},{"../namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","../templates/login.hbs":"/Users/Easterday/Projects/beerRecipe/templates/login.hbs","../templates/main_nav.hbs":"/Users/Easterday/Projects/beerRecipe/templates/main_nav.hbs","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/message.js":[function(require,module,exports){
+var _ = require('underscore'),
+    // app = require('../namespace'),
+    Backbone = require('backbone'),
+    template = require('../templates/message.hbs');
+
+module.exports = Backbone.View.extend({
+
+  initialize: function(options){
+    this.user = options.user;
+  },
+
+  render: function(){
+    // TODO: Why on earth isn't app defined here?
+    var userName = this.user && this.user.userName,
+        authorClass = this.model.get('author') === userName ? 'primary' : 'success';
+
+    this.$el.html(template({
+      model: this.model.toJSON(),
+      authorClass: authorClass
+    }));
+    return this;
+  }
+});
+},{"../templates/message.hbs":"/Users/Easterday/Projects/beerRecipe/templates/message.hbs","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/test.js":[function(require,module,exports){
 var _ = require('underscore'),
     Backbone = require('backbone');
 
