@@ -17,3 +17,13 @@ body #main-sidebar-nav {
   background-color: #f5f5f5;
   border-right: 1px solid #eee;
 }
+body #main-sidebar-nav .nav-sidebar > .active > a,
+body #main-sidebar-nav .nav-sidebar > .active > a:hover,
+body #main-sidebar-nav .nav-sidebar > .active > a:focus {
+  color: #fff;
+  background-color: #428bca;
+}
+body #main-content .messageS {
+  max-height: 400px;
+  overflow: scroll;
+}

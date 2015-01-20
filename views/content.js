@@ -4,33 +4,35 @@ var _ = require('underscore'),
     app = require('../namespace'),
     Backbone = require('backbone'),
 
-    MessagesCollection = require('../collections/messages'),
+    // MessagesCollection = require('../collections/messages'),
 
     SidebarView = require('../views/sidebar_nav'),
-    MessageView = require('../views/message'),
-    FormView = require('../views/form_view'),
+    RoomView = require('../views/room'),
+    // MessageView = require('../views/message'),
+    // FormView = require('../views/form_view'),
 
     template = require('../templates/content.hbs');
 
 module.exports = Backbone.View.extend({
 
   initialize: function(options){
-    _.bindAll(this, 'renderMessages', 'renderMessage', 'renderSidebar');
+    _.bindAll(this, 'renderSidebar');
 
-    this.messages = new MessagesCollection();
-    this.listenTo(this.messages, {
-      // TODO: This isn't the wy to go. We should only append new messages, 
-      // rather than re-rendering each time we save just one message
-      'sync': this.renderMessages,
-    });
+    // this.messages = new MessagesCollection();
+    // this.listenTo(this.messages, {
+    //   // TODO: This isn't the wy to go. We should only append new messages, 
+    //   // rather than re-rendering each time we save just one message
+    //   'sync': this.renderMessages,
+    // });
   },
 
+  // TODO: GOD DAMNIT FIX THIS SHTI
   cleanUp: function(){
     if (this.subViews && this.subViews.length){
       _(this.subViews).each(function(subView){
         subView.destroy();
       });
-    }
+    } 
   },
 
   renderSidebar: function(){
@@ -39,38 +41,47 @@ module.exports = Backbone.View.extend({
     this.$mainSidebarNav.html(sidebarView.render().el);
   },
 
-  renderMessages: function(event){
-    console.log('renderMessages event' , event);
+  renderRooms: function(){
+    // TODO: Get real rooms collection here instead of
+    // Dummying it up
 
-    this.$mainContent.html('');
+    var roomView = this.createSubView( RoomView, {});
 
-    // TODO: This is a total hack and needs to be killed
-    // this.cleanUp();
-    this.messages.each(this.renderMessage);
-
-    if (app.ref.getAuth()){
-      this.renderForm();
-    }
-
-    // TODO: Sort out this massive memory leak!
-    // So, we're cleaning up now, which is fine, 
-    // But we need to not call renderMessagess everytime
-    // we post a new message.
+    this.$mainContent.html(roomView.render().el);
   },
 
-  renderMessage: function(model){
-    var messageView = this.createSubView( MessageView, {
-      model: model,
-      user: app.user.authData
-    });
+  // renderMessages: function(event){
+  //   console.log('renderMessages event' , event);
 
-    this.$mainContent.append(messageView.render().el);
-  },  
+  //   this.$mainContent.html('');
 
-  renderForm: function(){
-    var formView = this.createSubView(FormView, { messages: this.messages });
-    this.$mainContent.append(formView.render().el);
-  },
+  //   // TODO: This is a total hack and needs to be killed
+  //   // this.cleanUp();
+  //   this.messages.each(this.renderMessage);
+
+  //   if (app.ref.getAuth()){
+  //     this.renderForm();
+  //   }
+
+  //   // TODO: Sort out this massive memory leak!
+  //   // So, we're cleaning up now, which is fine, 
+  //   // But we need to not call renderMessagess everytime
+  //   // we post a new message.
+  // },
+
+  // renderMessage: function(model){
+  //   var messageView = this.createSubView( MessageView, {
+  //     model: model,
+  //     user: app.user.authData
+  //   });
+
+  //   this.$mainContent.append(messageView.render().el);
+  // },  
+
+  // renderForm: function(){
+  //   var formView = this.createSubView(FormView, { messages: this.messages });
+  //   this.$mainContent.append(formView.render().el);
+  // },
 
   render: function() {
     this.$el.html(template());
@@ -81,6 +92,7 @@ module.exports = Backbone.View.extend({
     console.log('content render');
 
     this.renderSidebar();
+    this.renderRooms();
 
     // TODO: There's got to be a better way to do 
     // this in tandom with listenTo: sync

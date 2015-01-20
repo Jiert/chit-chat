@@ -13983,8 +13983,8 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<div class=\"row\">\n  <div id=\"main-sidebar-nav\" class=\"col-sm-3 col-md-2 sidebar\"></div>\n  <div id=\"main-content\" class=\"col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main\">\n    Loading Messages...\n  </div>\n</div>";
-  },"useData":true});
+  return "<div class=\"row\">\n  <div id=\"main-sidebar-nav\" class=\"col-md-3 sidebar\"></div>\n  <div class=\"  col-md-9 col-md-offset-3 main\">\n    <div id=\"main-content\" class=\"row\">\n      <div class=\"col-md-12\">Loading Rooms...</div>\n    </div>\n  </div>\n</div>";
+},"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/form.hbs":[function(require,module,exports){
 // hbsfy compiled Handlebars template
@@ -14043,12 +14043,19 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
     + "</p>";
 },"useData":true});
 
+},{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/room.hbs":[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var HandlebarsCompiler = require('hbsfy/runtime');
+module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  return "<div class=\"panel panel-default\">\n  <div class=\"panel-heading\">\n    <h3 class=\"panel-title\">Default</h3>\n  </div>\n  <div class=\"messages panel-body\">\n    Loading Messages...\n  </div>\n  <div class=\"message-input panel-footer\"></div>\n</div>";
+  },"useData":true});
+
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/sidebar_nav.hbs":[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<ul class=\"nav nav-sidebar\">\n  <li class=\"active\"><a href=\"#\">Overview <span class=\"sr-only\">(current)</span></a></li>\n  <li><a href=\"#\">Reports</a></li>\n  <li><a href=\"#\">Analytics</a></li>\n  <li><a href=\"#\">Export</a></li>\n</ul>\n<ul class=\"nav nav-sidebar\">\n  <li><a href=\"\">Nav item</a></li>\n  <li><a href=\"\">Nav item again</a></li>\n  <li><a href=\"\">One more nav</a></li>\n  <li><a href=\"\">Another nav item</a></li>\n  <li><a href=\"\">More navigation</a></li>\n</ul>\n<ul class=\"nav nav-sidebar\">\n  <li><a href=\"\">Nav item again</a></li>\n  <li><a href=\"\">One more nav</a></li>\n  <li><a href=\"\">Another nav item</a></li>\n</ul>\n";
-  },"useData":true});
+  return "<input type=\"text\" class=\"form-control\" placeholder=\"Search...\">\n<h4>Sort by:</h4>\n<select class=\"form-control\">\n  <option>Number Active</option>\n  <option>Name</option>\n</select>\n<h3>Rooms</h3>\n<ul class=\"nav nav-sidebar\">\n  <li class=\"active\"><a href=\"#\">Default <span class=\"pull-right badge\">37</span></a></li>\n  <li><a href=\"#\">The Big Lebowski <span class=\"pull-right badge\">25</span></a></li>\n  <li><a href=\"#\">JavaScript <span class=\"pull-right badge\">17</span></a></li>\n  <li><a href=\"#\">Quat Copters <span class=\"pull-right badge\">9</span></a></li>\n</ul>";
+},"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/views/application.js":[function(require,module,exports){
 var _ = require('underscore'),
@@ -14132,33 +14139,35 @@ var _ = require('underscore'),
     app = require('../namespace'),
     Backbone = require('backbone'),
 
-    MessagesCollection = require('../collections/messages'),
+    // MessagesCollection = require('../collections/messages'),
 
     SidebarView = require('../views/sidebar_nav'),
-    MessageView = require('../views/message'),
-    FormView = require('../views/form_view'),
+    RoomView = require('../views/room'),
+    // MessageView = require('../views/message'),
+    // FormView = require('../views/form_view'),
 
     template = require('../templates/content.hbs');
 
 module.exports = Backbone.View.extend({
 
   initialize: function(options){
-    _.bindAll(this, 'renderMessages', 'renderMessage', 'renderSidebar');
+    _.bindAll(this, 'renderSidebar');
 
-    this.messages = new MessagesCollection();
-    this.listenTo(this.messages, {
-      // TODO: This isn't the wy to go. We should only append new messages, 
-      // rather than re-rendering each time we save just one message
-      'sync': this.renderMessages,
-    });
+    // this.messages = new MessagesCollection();
+    // this.listenTo(this.messages, {
+    //   // TODO: This isn't the wy to go. We should only append new messages, 
+    //   // rather than re-rendering each time we save just one message
+    //   'sync': this.renderMessages,
+    // });
   },
 
+  // TODO: GOD DAMNIT FIX THIS SHTI
   cleanUp: function(){
     if (this.subViews && this.subViews.length){
       _(this.subViews).each(function(subView){
         subView.destroy();
       });
-    }
+    } 
   },
 
   renderSidebar: function(){
@@ -14167,38 +14176,47 @@ module.exports = Backbone.View.extend({
     this.$mainSidebarNav.html(sidebarView.render().el);
   },
 
-  renderMessages: function(event){
-    console.log('renderMessages event' , event);
+  renderRooms: function(){
+    // TODO: Get real rooms collection here instead of
+    // Dummying it up
 
-    this.$mainContent.html('');
+    var roomView = this.createSubView( RoomView, {});
 
-    // TODO: This is a total hack and needs to be killed
-    // this.cleanUp();
-    this.messages.each(this.renderMessage);
-
-    if (app.ref.getAuth()){
-      this.renderForm();
-    }
-
-    // TODO: Sort out this massive memory leak!
-    // So, we're cleaning up now, which is fine, 
-    // But we need to not call renderMessagess everytime
-    // we post a new message.
+    this.$mainContent.html(roomView.render().el);
   },
 
-  renderMessage: function(model){
-    var messageView = this.createSubView( MessageView, {
-      model: model,
-      user: app.user.authData
-    });
+  // renderMessages: function(event){
+  //   console.log('renderMessages event' , event);
 
-    this.$mainContent.append(messageView.render().el);
-  },  
+  //   this.$mainContent.html('');
 
-  renderForm: function(){
-    var formView = this.createSubView(FormView, { messages: this.messages });
-    this.$mainContent.append(formView.render().el);
-  },
+  //   // TODO: This is a total hack and needs to be killed
+  //   // this.cleanUp();
+  //   this.messages.each(this.renderMessage);
+
+  //   if (app.ref.getAuth()){
+  //     this.renderForm();
+  //   }
+
+  //   // TODO: Sort out this massive memory leak!
+  //   // So, we're cleaning up now, which is fine, 
+  //   // But we need to not call renderMessagess everytime
+  //   // we post a new message.
+  // },
+
+  // renderMessage: function(model){
+  //   var messageView = this.createSubView( MessageView, {
+  //     model: model,
+  //     user: app.user.authData
+  //   });
+
+  //   this.$mainContent.append(messageView.render().el);
+  // },  
+
+  // renderForm: function(){
+  //   var formView = this.createSubView(FormView, { messages: this.messages });
+  //   this.$mainContent.append(formView.render().el);
+  // },
 
   render: function() {
     this.$el.html(template());
@@ -14209,6 +14227,7 @@ module.exports = Backbone.View.extend({
     console.log('content render');
 
     this.renderSidebar();
+    this.renderRooms();
 
     // TODO: There's got to be a better way to do 
     // this in tandom with listenTo: sync
@@ -14219,7 +14238,7 @@ module.exports = Backbone.View.extend({
   }
 
 });
-},{"../collections/messages":"/Users/Easterday/Projects/beerRecipe/collections/messages.js","../namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","../templates/content.hbs":"/Users/Easterday/Projects/beerRecipe/templates/content.hbs","../views/form_view":"/Users/Easterday/Projects/beerRecipe/views/form_view.js","../views/message":"/Users/Easterday/Projects/beerRecipe/views/message.js","../views/sidebar_nav":"/Users/Easterday/Projects/beerRecipe/views/sidebar_nav.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/form_view.js":[function(require,module,exports){
+},{"../namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","../templates/content.hbs":"/Users/Easterday/Projects/beerRecipe/templates/content.hbs","../views/room":"/Users/Easterday/Projects/beerRecipe/views/room.js","../views/sidebar_nav":"/Users/Easterday/Projects/beerRecipe/views/sidebar_nav.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/form_view.js":[function(require,module,exports){
 var _ = require('underscore'),
     app = require('../namespace'),
     Backbone = require('backbone'),
@@ -14414,7 +14433,82 @@ module.exports = Backbone.View.extend({
     return this;
   }
 });
-},{"../templates/message.hbs":"/Users/Easterday/Projects/beerRecipe/templates/message.hbs","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/sidebar_nav.js":[function(require,module,exports){
+},{"../templates/message.hbs":"/Users/Easterday/Projects/beerRecipe/templates/message.hbs","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/room.js":[function(require,module,exports){
+var _ = require('underscore'),
+    Backbone = require('backbone'),
+    app = require('../namespace'),
+
+    MessagesCollection = require('../collections/messages'),
+    
+    MessageView = require('../views/message'),
+    FormView = require('../views/form_view'),
+    
+    template = require('../templates/room.hbs');
+
+module.exports = Backbone.View.extend({
+
+  events: {},
+
+  className: 'col-md-6',
+
+  initialize: function(options){
+    _.bindAll(this, 'renderMessages', 'renderMessage');
+
+
+    this.messages = new MessagesCollection();
+    this.listenTo(this.messages, {
+      // TODO: This isn't the wy to go. We should only append new messages, 
+      // rather than re-rendering each time we save just one message
+      'sync': this.renderMessages,
+    });
+  },
+
+  renderMessages: function(event){
+    console.log('renderMessages event' , event);
+
+    // debugger;
+
+    this.$messages.html('');
+
+    // TODO: This is a total hack and needs to be killed
+    // this.cleanUp();
+    this.messages.each(this.renderMessage);
+
+    if (app.ref.getAuth()){
+      this.renderForm();
+    }
+
+    // TODO: Sort out this massive memory leak!
+    // So, we're cleaning up now, which is fine, 
+    // But we need to not call renderMessagess everytime
+    // we post a new message.
+  },
+
+  renderMessage: function(model){
+    var messageView = this.createSubView( MessageView, {
+      model: model,
+      user: app.user.authData
+    });
+
+    this.$messages.append(messageView.render().el);
+  }, 
+
+  renderForm: function(){
+    var formView = this.createSubView(FormView, { messages: this.messages });
+    this.$messageInput.html(formView.render().el);
+  },
+
+  render: function() {
+    this.$el.html(template());
+
+    this.$messages = this.$('.messages');
+    this.$messageInput = this.$('.message-input');
+
+    return this;
+  }
+
+});
+},{"../collections/messages":"/Users/Easterday/Projects/beerRecipe/collections/messages.js","../namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","../templates/room.hbs":"/Users/Easterday/Projects/beerRecipe/templates/room.hbs","../views/form_view":"/Users/Easterday/Projects/beerRecipe/views/form_view.js","../views/message":"/Users/Easterday/Projects/beerRecipe/views/message.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/sidebar_nav.js":[function(require,module,exports){
 var _ = require('underscore'),
     Backbone = require('backbone'),
 
@@ -14424,9 +14518,7 @@ module.exports = Backbone.View.extend({
 
   events: {},
 
-  initialize: function(options){
-    this.render();
-  },
+  initialize: function(options){},
 
   render: function() {
     this.$el.html(template());
