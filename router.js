@@ -1,12 +1,11 @@
 var _ = require('underscore'),
     Backbone = require('backbone'),
-    AppView = require('./views/application'),
-    TestView = require('./views/test');
+    AppView = require('./views/application');
 
 module.exports = Backbone.Router.extend({
   routes: {
     '': 'defaultRoute',
-    'beers' : 'beerRoute'
+    // 'beers' : 'beerRoute'
   },
 
   initialize: function() {},
@@ -18,10 +17,10 @@ module.exports = Backbone.Router.extend({
     this.appView.render();
   },
 
-  beerRoute: function(){
-    this.activeView = new TestView({
-      el: '#content'
-    });
-  }
+  // beerRoute: function(){
+  //   this.activeView = new TestView({
+  //     el: '#content'
+  //   });
+  // }
 
 });

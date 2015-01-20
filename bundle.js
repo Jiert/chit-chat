@@ -13948,13 +13948,12 @@ return jQuery;
 },{}],"/Users/Easterday/Projects/beerRecipe/router.js":[function(require,module,exports){
 var _ = require('underscore'),
     Backbone = require('backbone'),
-    AppView = require('./views/application'),
-    TestView = require('./views/test');
+    AppView = require('./views/application');
 
 module.exports = Backbone.Router.extend({
   routes: {
     '': 'defaultRoute',
-    'beers' : 'beerRoute'
+    // 'beers' : 'beerRoute'
   },
 
   initialize: function() {},
@@ -13966,18 +13965,25 @@ module.exports = Backbone.Router.extend({
     this.appView.render();
   },
 
-  beerRoute: function(){
-    this.activeView = new TestView({
-      el: '#content'
-    });
-  }
+  // beerRoute: function(){
+  //   this.activeView = new TestView({
+  //     el: '#content'
+  //   });
+  // }
 
 });
-},{"./views/application":"/Users/Easterday/Projects/beerRecipe/views/application.js","./views/test":"/Users/Easterday/Projects/beerRecipe/views/test.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/templates/application.hbs":[function(require,module,exports){
+},{"./views/application":"/Users/Easterday/Projects/beerRecipe/views/application.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/templates/application.hbs":[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<nav id=\"main-nav\" class=\"navbar navbar-default navbar-fixed-top\" role=\"navigation\"> </nav>\n<div id=\"content\" class=\"container\"> </div>";
+  return "<nav id=\"main-nav\" class=\"navbar navbar-default navbar-fixed-top\" role=\"navigation\"> </nav>\n<div id=\"content\" class=\"container-fluid\"></div>";
+  },"useData":true});
+
+},{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/content.hbs":[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var HandlebarsCompiler = require('hbsfy/runtime');
+module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  return "<div class=\"row\">\n  <div id=\"main-sidebar-nav\" class=\"col-sm-3 col-md-2 sidebar\"></div>\n  <div id=\"main-content\" class=\"col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main\">\n    Loading Messages...\n  </div>\n</div>";
   },"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/form.hbs":[function(require,module,exports){
@@ -14017,7 +14023,7 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
 },"3":function(depth0,helpers,partials,data) {
   return "        <li id=\"user-login\">\n          <a href=\"#\">login</a>\n        </li>\n        <li id=\"user-register\">\n          <a href=\"#\">register</a>\n        </li>\n";
   },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  var stack1, buffer = "<div class=\"container\">\n  <div class=\"navbar-header\">\n    <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navbar\" aria-expanded=\"false\" aria-controls=\"navbar\">\n      <span class=\"sr-only\">Toggle navigation</span>\n      <span class=\"icon-bar\"></span>\n      <span class=\"icon-bar\"></span>\n      <span class=\"icon-bar\"></span>\n    </button>\n    <a class=\"navbar-brand\" href=\"#\">Chit Chat</a>\n  </div>\n  <div id=\"navbar\" class=\"navbar-collapse collapse\">\n    <ul id=\"user-login-nav\" class=\"nav navbar-nav navbar-right\">\n";
+  var stack1, buffer = "<div class=\"container-fluid\">\n  <div class=\"navbar-header\">\n    <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navbar\" aria-expanded=\"false\" aria-controls=\"navbar\">\n      <span class=\"sr-only\">Toggle navigation</span>\n      <span class=\"icon-bar\"></span>\n      <span class=\"icon-bar\"></span>\n      <span class=\"icon-bar\"></span>\n    </button>\n    <a class=\"navbar-brand\" href=\"#\">Chit Chat</a>\n  </div>\n  <div id=\"navbar\" class=\"navbar-collapse collapse\">\n    <ul id=\"user-login-nav\" class=\"nav navbar-nav navbar-right\">\n";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.userName : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(3, data),"data":data});
   if (stack1 != null) { buffer += stack1; }
   return buffer + "    </ul>\n  </div>\n</div>\n\n<div class=\"modal fade\">\n  <div class=\"modal-dialog\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header\">\n        <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>\n        <h4 class=\"modal-title\">Login</h4>\n      </div>\n      <div class=\"modal-body\">\n        <form>\n          <div class=\"form-group\">\n            <label for=\"email_address\">Email address</label>\n            <input name=\"email_address\" type=\"email\" class=\"form-control\" placeholder=\"Enter address\">\n          </div>\n          <div class=\"form-group\">\n            <label for=\"password\">Password</label>\n            <input name=\"password\" type=\"password\" class=\"form-control\" placeholder=\"Password\">\n          </div>\n        </form>\n      </div>\n      <div class=\"modal-footer\">\n        <button id=\"login\" type=\"button\" class=\"btn btn-primary\">Login</button>\n      </div>\n    </div>\n  </div>\n</div>";
@@ -14036,6 +14042,13 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.message : stack1), depth0))
     + "</p>";
 },"useData":true});
+
+},{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/sidebar_nav.hbs":[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var HandlebarsCompiler = require('hbsfy/runtime');
+module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  return "<ul class=\"nav nav-sidebar\">\n  <li class=\"active\"><a href=\"#\">Overview <span class=\"sr-only\">(current)</span></a></li>\n  <li><a href=\"#\">Reports</a></li>\n  <li><a href=\"#\">Analytics</a></li>\n  <li><a href=\"#\">Export</a></li>\n</ul>\n<ul class=\"nav nav-sidebar\">\n  <li><a href=\"\">Nav item</a></li>\n  <li><a href=\"\">Nav item again</a></li>\n  <li><a href=\"\">One more nav</a></li>\n  <li><a href=\"\">Another nav item</a></li>\n  <li><a href=\"\">More navigation</a></li>\n</ul>\n<ul class=\"nav nav-sidebar\">\n  <li><a href=\"\">Nav item again</a></li>\n  <li><a href=\"\">One more nav</a></li>\n  <li><a href=\"\">Another nav item</a></li>\n</ul>\n";
+  },"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/views/application.js":[function(require,module,exports){
 var _ = require('underscore'),
@@ -14119,24 +14132,24 @@ var _ = require('underscore'),
     app = require('../namespace'),
     Backbone = require('backbone'),
 
-    MessagesList = require('../collections/messages.js'),
+    MessagesCollection = require('../collections/messages'),
 
+    SidebarView = require('../views/sidebar_nav'),
     MessageView = require('../views/message'),
-    FormView = require('../views/form_view');
+    FormView = require('../views/form_view'),
+
+    template = require('../templates/content.hbs');
 
 module.exports = Backbone.View.extend({
 
-  className: 'main-content',
-
   initialize: function(options){
-    _.bindAll(this, 'renderMessages', 'renderMessage');
+    _.bindAll(this, 'renderMessages', 'renderMessage', 'renderSidebar');
 
-    this.messages = new MessagesList();
+    this.messages = new MessagesCollection();
     this.listenTo(this.messages, {
       // TODO: This isn't the wy to go. We should only append new messages, 
       // rather than re-rendering each time we save just one message
       'sync': this.renderMessages,
-      // 'add' : this.renderBeer
     });
   },
 
@@ -14148,12 +14161,19 @@ module.exports = Backbone.View.extend({
     }
   },
 
+  renderSidebar: function(){
+    var sidebarView = this.createSubView( SidebarView, {});
+
+    this.$mainSidebarNav.html(sidebarView.render().el);
+  },
+
   renderMessages: function(event){
     console.log('renderMessages event' , event);
 
-    this.cleanUp();
+    this.$mainContent.html('');
 
-    this.$el.html('');
+    // TODO: This is a total hack and needs to be killed
+    // this.cleanUp();
     this.messages.each(this.renderMessage);
 
     if (app.ref.getAuth()){
@@ -14162,39 +14182,44 @@ module.exports = Backbone.View.extend({
 
     // TODO: Sort out this massive memory leak!
     // So, we're cleaning up now, which is fine, 
-    // But we need to not call renderBeers everytime
+    // But we need to not call renderMessagess everytime
     // we post a new message.
   },
 
   renderMessage: function(model){
-    var messageView = this.createSubView(MessageView, {
+    var messageView = this.createSubView( MessageView, {
       model: model,
       user: app.user.authData
     });
 
-    this.$el.append(messageView.render().el);
+    this.$mainContent.append(messageView.render().el);
   },  
 
   renderForm: function(){
     var formView = this.createSubView(FormView, { messages: this.messages });
-    this.$el.append(formView.render().el);
+    this.$mainContent.append(formView.render().el);
   },
 
   render: function() {
-    this.$el.html('Loading Messages...');
+    this.$el.html(template());
+
+    this.$mainContent = this.$('#main-content');
+    this.$mainSidebarNav = this.$('#main-sidebar-nav');
 
     console.log('content render');
 
+    this.renderSidebar();
+
     // TODO: There's got to be a better way to do 
     // this in tandom with listenTo: sync
-    if (this.messages.length){
-      this.renderMessages();
-    }
+    // if (this.messages.length){
+    //   this.renderMessages();
+    // }
     return this;
   }
 
 });
-},{"../collections/messages.js":"/Users/Easterday/Projects/beerRecipe/collections/messages.js","../namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","../views/form_view":"/Users/Easterday/Projects/beerRecipe/views/form_view.js","../views/message":"/Users/Easterday/Projects/beerRecipe/views/message.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/form_view.js":[function(require,module,exports){
+},{"../collections/messages":"/Users/Easterday/Projects/beerRecipe/collections/messages.js","../namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","../templates/content.hbs":"/Users/Easterday/Projects/beerRecipe/templates/content.hbs","../views/form_view":"/Users/Easterday/Projects/beerRecipe/views/form_view.js","../views/message":"/Users/Easterday/Projects/beerRecipe/views/message.js","../views/sidebar_nav":"/Users/Easterday/Projects/beerRecipe/views/sidebar_nav.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/form_view.js":[function(require,module,exports){
 var _ = require('underscore'),
     app = require('../namespace'),
     Backbone = require('backbone'),
@@ -14377,6 +14402,7 @@ module.exports = Backbone.View.extend({
   },
 
   render: function(){
+    console.log('rendering message')
     // TODO: Why on earth isn't app defined here?
     var userName = this.user && this.user.userName,
         authorClass = this.model.get('author') === userName ? 'primary' : 'success';
@@ -14388,9 +14414,11 @@ module.exports = Backbone.View.extend({
     return this;
   }
 });
-},{"../templates/message.hbs":"/Users/Easterday/Projects/beerRecipe/templates/message.hbs","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/test.js":[function(require,module,exports){
+},{"../templates/message.hbs":"/Users/Easterday/Projects/beerRecipe/templates/message.hbs","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/sidebar_nav.js":[function(require,module,exports){
 var _ = require('underscore'),
-    Backbone = require('backbone');
+    Backbone = require('backbone'),
+
+    template = require('../templates/sidebar_nav.hbs');
 
 module.exports = Backbone.View.extend({
 
@@ -14401,9 +14429,9 @@ module.exports = Backbone.View.extend({
   },
 
   render: function() {
-    this.$el.html('testings');
+    this.$el.html(template());
     return this;
   }
 
 });
-},{"backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}]},{},["/Users/Easterday/Projects/beerRecipe/init.js"]);
+},{"../templates/sidebar_nav.hbs":"/Users/Easterday/Projects/beerRecipe/templates/sidebar_nav.hbs","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}]},{},["/Users/Easterday/Projects/beerRecipe/init.js"]);

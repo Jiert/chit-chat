@@ -1,5 +1,7 @@
 var _ = require('underscore'),
-    Backbone = require('backbone');
+    Backbone = require('backbone'),
+
+    template = require('../templates/sidebar_nav.hbs');
 
 module.exports = Backbone.View.extend({
 
@@ -10,7 +12,7 @@ module.exports = Backbone.View.extend({
   },
 
   render: function() {
-    this.$el.html('testings');
+    this.$el.html(template());
     return this;
   }
 

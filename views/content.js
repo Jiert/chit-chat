@@ -4,24 +4,24 @@ var _ = require('underscore'),
     app = require('../namespace'),
     Backbone = require('backbone'),
 
-    MessagesList = require('../collections/messages.js'),
+    MessagesCollection = require('../collections/messages'),
 
+    SidebarView = require('../views/sidebar_nav'),
     MessageView = require('../views/message'),
-    FormView = require('../views/form_view');
+    FormView = require('../views/form_view'),
+
+    template = require('../templates/content.hbs');
 
 module.exports = Backbone.View.extend({
 
-  className: 'main-content',
-
   initialize: function(options){
-    _.bindAll(this, 'renderMessages', 'renderMessage');
+    _.bindAll(this, 'renderMessages', 'renderMessage', 'renderSidebar');
 
-    this.messages = new MessagesList();
+    this.messages = new MessagesCollection();
     this.listenTo(this.messages, {
       // TODO: This isn't the wy to go. We should only append new messages, 
       // rather than re-rendering each time we save just one message
       'sync': this.renderMessages,
-      // 'add' : this.renderBeer
     });
   },
 
@@ -33,12 +33,19 @@ module.exports = Backbone.View.extend({
     }
   },
 
+  renderSidebar: function(){
+    var sidebarView = this.createSubView( SidebarView, {});
+
+    this.$mainSidebarNav.html(sidebarView.render().el);
+  },
+
   renderMessages: function(event){
     console.log('renderMessages event' , event);
 
-    this.cleanUp();
+    this.$mainContent.html('');
 
-    this.$el.html('');
+    // TODO: This is a total hack and needs to be killed
+    // this.cleanUp();
     this.messages.each(this.renderMessage);
 
     if (app.ref.getAuth()){
@@ -47,34 +54,39 @@ module.exports = Backbone.View.extend({
 
     // TODO: Sort out this massive memory leak!
     // So, we're cleaning up now, which is fine, 
-    // But we need to not call renderBeers everytime
+    // But we need to not call renderMessagess everytime
     // we post a new message.
   },
 
   renderMessage: function(model){
-    var messageView = this.createSubView(MessageView, {
+    var messageView = this.createSubView( MessageView, {
       model: model,
       user: app.user.authData
     });
 
-    this.$el.append(messageView.render().el);
+    this.$mainContent.append(messageView.render().el);
   },  
 
   renderForm: function(){
     var formView = this.createSubView(FormView, { messages: this.messages });
-    this.$el.append(formView.render().el);
+    this.$mainContent.append(formView.render().el);
   },
 
   render: function() {
-    this.$el.html('Loading Messages...');
+    this.$el.html(template());
+
+    this.$mainContent = this.$('#main-content');
+    this.$mainSidebarNav = this.$('#main-sidebar-nav');
 
     console.log('content render');
 
+    this.renderSidebar();
+
     // TODO: There's got to be a better way to do 
     // this in tandom with listenTo: sync
-    if (this.messages.length){
-      this.renderMessages();
-    }
+    // if (this.messages.length){
+    //   this.renderMessages();
+    // }
     return this;
   }
 
