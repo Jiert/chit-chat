@@ -20,16 +20,16 @@ module.exports = Backbone.View.extend({
     this.listenTo(this.messages, {
       // TODO: This isn't the wy to go. We should only append new messages, 
       // rather than re-rendering each time we save just one message
-      // 'sync': this.renderMessages,
-      'sync': this.onSync,
+      'sync': this.renderMessages,
+      // 'sync': this.onSync,
     });
   },
 
   // TODO: Hmmm, I was hoping this would help fire the scroll
   // whenever a login / logout event occurs
-  onSync: function(){
-    _(this.renderMessages).defer();
-  },
+  // onSync: function(){
+  //   _(this.renderMessages).defer();
+  // },
 
   renderMessages: function(){
     console.log('renderMessages');

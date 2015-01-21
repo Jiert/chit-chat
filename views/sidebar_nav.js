@@ -5,9 +5,15 @@ var _ = require('underscore'),
 
 module.exports = Backbone.View.extend({
 
-  events: {},
+  events: {
+    'click #create-room' : 'onCreateRoomClick'
+  },
 
   initialize: function(options){},
+
+  onCreateRoomClick: function(){
+    debugger;
+  },
 
   render: function() {
     this.$el.html(template());

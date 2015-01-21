@@ -13,23 +13,16 @@ module.exports = Backbone.View.extend({
 
   initialize: function(options){
     _.bindAll(this, 'renderSidebar');
+  },
 
+  getRooms: function(){
     // Set up Rooms collection
     this.rooms = new RoomsCollection();
 
     // TODO: Maybe a better way to listen to rooms
     this.listenTo(this.rooms, {
-      'sync' : this.onRooms
+      'sync' : this.renderRooms
     });
-  },
-
-  // TODO: GOD DAMNIT FIX THIS SHTI
-  cleanUp: function(){
-    if (this.subViews && this.subViews.length){
-      _(this.subViews).each(function(subView){
-        subView.destroy();
-      });
-    } 
   },
 
   renderSidebar: function(){
@@ -42,7 +35,21 @@ module.exports = Backbone.View.extend({
     // TODO: Get real rooms collection here instead of
     // Dummying it up
 
-    var roomView = this.createSubView( RoomView, {});
+    if (this.rooms.length){
+      this.rooms.each(this.renderRoom);
+    }
+    else {
+      // this.$mainContent.html('There are no rooms currently active.');
+      var roomView = this.createSubView( RoomView, {});
+      this.$mainContent.html(roomView.render().el);
+    }
+
+  },
+
+  renderRoom: function(room){
+    var roomView = this.createSubView( RoomView, {
+      room: room
+    });
 
     this.$mainContent.html(roomView.render().el);
   },
@@ -56,7 +63,7 @@ module.exports = Backbone.View.extend({
     console.log('content render');
 
     this.renderSidebar();
-    this.renderRooms();
+    this.getRooms();
 
     return this;
   }

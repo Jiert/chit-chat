@@ -14074,7 +14074,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<input type=\"text\" class=\"form-control\" placeholder=\"Search...\">\n<h4>Sort by:</h4>\n<select class=\"form-control\">\n  <option>Number Active</option>\n  <option>Name</option>\n</select>\n<h3>Rooms</h3>\n<ul class=\"nav nav-sidebar\">\n  <li class=\"active\"><a href=\"#\">Default <span class=\"pull-right badge\">37</span></a></li>\n  <li><a href=\"#\">The Big Lebowski <span class=\"pull-right badge\">25</span></a></li>\n  <li><a href=\"#\">JavaScript <span class=\"pull-right badge\">17</span></a></li>\n  <li><a href=\"#\">Quat Copters <span class=\"pull-right badge\">9</span></a></li>\n</ul>";
+  return "<input type=\"text\" class=\"form-control\" placeholder=\"Search...\">\n<h4>Sort by:</h4>\n<select class=\"form-control\">\n  <option>Number Active</option>\n  <option>Name</option>\n</select>\n<h3>Rooms</h3>\n<p><button class=\"btn btn-primary btn-block\" id=\"create-room\">Create Room</button><p>\n\n<ul class=\"nav nav-sidebar\">\n  <li class=\"active\"><a href=\"#\">Default <span class=\"pull-right badge\">37</span></a></li>\n  <li><a href=\"#\">The Big Lebowski <span class=\"pull-right badge\">25</span></a></li>\n  <li><a href=\"#\">JavaScript <span class=\"pull-right badge\">17</span></a></li>\n  <li><a href=\"#\">Quat Copters <span class=\"pull-right badge\">9</span></a></li>\n</ul>";
 },"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/views/application.js":[function(require,module,exports){
@@ -14168,23 +14168,16 @@ module.exports = Backbone.View.extend({
 
   initialize: function(options){
     _.bindAll(this, 'renderSidebar');
+  },
 
+  getRooms: function(){
     // Set up Rooms collection
     this.rooms = new RoomsCollection();
 
     // TODO: Maybe a better way to listen to rooms
     this.listenTo(this.rooms, {
-      'sync' : this.onRooms
+      'sync' : this.renderRooms
     });
-  },
-
-  // TODO: GOD DAMNIT FIX THIS SHTI
-  cleanUp: function(){
-    if (this.subViews && this.subViews.length){
-      _(this.subViews).each(function(subView){
-        subView.destroy();
-      });
-    } 
   },
 
   renderSidebar: function(){
@@ -14197,7 +14190,21 @@ module.exports = Backbone.View.extend({
     // TODO: Get real rooms collection here instead of
     // Dummying it up
 
-    var roomView = this.createSubView( RoomView, {});
+    if (this.rooms.length){
+      this.rooms.each(this.renderRoom);
+    }
+    else {
+      // this.$mainContent.html('There are no rooms currently active.');
+      var roomView = this.createSubView( RoomView, {});
+      this.$mainContent.html(roomView.render().el);
+    }
+
+  },
+
+  renderRoom: function(room){
+    var roomView = this.createSubView( RoomView, {
+      room: room
+    });
 
     this.$mainContent.html(roomView.render().el);
   },
@@ -14211,7 +14218,7 @@ module.exports = Backbone.View.extend({
     console.log('content render');
 
     this.renderSidebar();
-    this.renderRooms();
+    this.getRooms();
 
     return this;
   }
@@ -14435,16 +14442,16 @@ module.exports = Backbone.View.extend({
     this.listenTo(this.messages, {
       // TODO: This isn't the wy to go. We should only append new messages, 
       // rather than re-rendering each time we save just one message
-      // 'sync': this.renderMessages,
-      'sync': this.onSync,
+      'sync': this.renderMessages,
+      // 'sync': this.onSync,
     });
   },
 
   // TODO: Hmmm, I was hoping this would help fire the scroll
   // whenever a login / logout event occurs
-  onSync: function(){
-    _(this.renderMessages).defer();
-  },
+  // onSync: function(){
+  //   _(this.renderMessages).defer();
+  // },
 
   renderMessages: function(){
     console.log('renderMessages');
@@ -14520,9 +14527,15 @@ var _ = require('underscore'),
 
 module.exports = Backbone.View.extend({
 
-  events: {},
+  events: {
+    'click #create-room' : 'onCreateRoomClick'
+  },
 
   initialize: function(options){},
+
+  onCreateRoomClick: function(){
+    debugger;
+  },
 
   render: function() {
     this.$el.html(template());
