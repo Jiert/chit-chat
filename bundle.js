@@ -14006,6 +14006,13 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
   return "<div class=\"row\">\n  <div id=\"main-sidebar-nav\" class=\"col-md-3 sidebar\"></div>\n  <div class=\"  col-md-9 col-md-offset-3 main\">\n    <div id=\"main-content\" class=\"row\">\n      <div class=\"col-md-12\">Loading Rooms...</div>\n    </div>\n  </div>\n</div>";
 },"useData":true});
 
+},{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/create_room.hbs":[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var HandlebarsCompiler = require('hbsfy/runtime');
+module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  return "<div class=\"modal-body\">\n  <form>\n    <div class=\"form-group\">\n      <label for=\"name\">Room Name</label>\n      <input name=\"name\" type=\"text\" class=\"form-control\" placeholder=\"Room name...\">\n    </div>\n  </form>\n</div>\n<div class=\"modal-footer\">\n  <button id=\"submit-room\" type=\"button\" class=\"btn btn-primary\">Create</button>\n</div>";
+  },"useData":true});
+
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/form.hbs":[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
@@ -14063,6 +14070,18 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
     + "</p>";
 },"useData":true});
 
+},{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/modal.hbs":[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var HandlebarsCompiler = require('hbsfy/runtime');
+module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var stack1, helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, buffer = "<div class=\"modal-dialog\">\n  <div class=\"modal-content\">\n    <div class=\"modal-header\">\n      <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>\n      <h4 class=\"modal-title\">"
+    + escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"title","hash":{},"data":data}) : helper)))
+    + "</h4>\n    </div>\n   ";
+  stack1 = ((helper = (helper = helpers.content || (depth0 != null ? depth0.content : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"content","hash":{},"data":data}) : helper));
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + "\n  </div>\n</div>\n";
+},"useData":true});
+
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/room.hbs":[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
@@ -14073,8 +14092,13 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/sidebar_nav.hbs":[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
-module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<input type=\"text\" class=\"form-control\" placeholder=\"Search...\">\n<h4>Sort by:</h4>\n<select class=\"form-control\">\n  <option>Number Active</option>\n  <option>Name</option>\n</select>\n<h3>Rooms</h3>\n<p><button class=\"btn btn-primary btn-block\" id=\"create-room\">Create Room</button><p>\n\n<ul class=\"nav nav-sidebar\">\n  <li class=\"active\"><a href=\"#\">Default <span class=\"pull-right badge\">37</span></a></li>\n  <li><a href=\"#\">The Big Lebowski <span class=\"pull-right badge\">25</span></a></li>\n  <li><a href=\"#\">JavaScript <span class=\"pull-right badge\">17</span></a></li>\n  <li><a href=\"#\">Quat Copters <span class=\"pull-right badge\">9</span></a></li>\n</ul>";
+module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
+  return "<p><button class=\"btn btn-primary btn-block\" id=\"create-room\">Create Room</button><p>\n";
+  },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var stack1, buffer = "<input type=\"text\" class=\"form-control\" placeholder=\"Search...\">\n<h4>Sort by:</h4>\n<select class=\"form-control\">\n  <option>Number Active</option>\n  <option>Name</option>\n</select>\n<h3>Rooms</h3>\n\n";
+  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.user : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + "\n<ul class=\"nav nav-sidebar\">\n  <li class=\"active\"><a href=\"#\">Default <span class=\"pull-right badge\">37</span></a></li>\n  <li><a href=\"#\">The Big Lebowski <span class=\"pull-right badge\">25</span></a></li>\n  <li><a href=\"#\">JavaScript <span class=\"pull-right badge\">17</span></a></li>\n  <li><a href=\"#\">Quat Copters <span class=\"pull-right badge\">9</span></a></li>\n</ul>\n\n";
 },"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/views/application.js":[function(require,module,exports){
@@ -14388,7 +14412,8 @@ module.exports = Backbone.View.extend({
       trigger: 'click'
     });
 
-    this.$loginModal = this.$('.modal').modal({ show: false });
+    // TODO: Do we need this?
+    // this.$loginModal = this.$('.modal').modal({ show: false });
 
     return this;
   }
@@ -14419,7 +14444,42 @@ module.exports = Backbone.View.extend({
     return this;
   }
 });
-},{"../templates/message.hbs":"/Users/Easterday/Projects/beerRecipe/templates/message.hbs","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/room.js":[function(require,module,exports){
+},{"../templates/message.hbs":"/Users/Easterday/Projects/beerRecipe/templates/message.hbs","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/modal.js":[function(require,module,exports){
+var _ = require('underscore'),
+    Backbone = require('backbone'),
+    app = require('../namespace'),
+
+    template = require('../templates/modal.hbs');
+
+module.exports = Backbone.View.extend({
+
+  className: 'modal fade',
+  events: {},
+
+  initialize: function(options){
+    this.contentBody = options.content;
+    // debugger;
+  },
+
+  show: function(){
+    this.$el.modal();
+  },
+
+  render: function() {
+    this.$el.html(template({
+      title: 'title', 
+      content: this.contentBody()
+    }));
+    
+    // $('body').append(this.$el);
+
+    // this.$el.modal();
+
+    return this;
+  }
+
+});
+},{"../namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","../templates/modal.hbs":"/Users/Easterday/Projects/beerRecipe/templates/modal.hbs","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/room.js":[function(require,module,exports){
 var _ = require('underscore'),
     Backbone = require('backbone'),
     app = require('../namespace'),
@@ -14522,8 +14582,12 @@ module.exports = Backbone.View.extend({
 },{"../collections/messages":"/Users/Easterday/Projects/beerRecipe/collections/messages.js","../namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","../templates/room.hbs":"/Users/Easterday/Projects/beerRecipe/templates/room.hbs","../views/form_view":"/Users/Easterday/Projects/beerRecipe/views/form_view.js","../views/message":"/Users/Easterday/Projects/beerRecipe/views/message.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/sidebar_nav.js":[function(require,module,exports){
 var _ = require('underscore'),
     Backbone = require('backbone'),
+    app = require('../namespace'),
 
-    template = require('../templates/sidebar_nav.hbs');
+    ModalView = require('../views/modal'),
+
+    template = require('../templates/sidebar_nav.hbs'),
+    createModal = require('../templates/create_room.hbs');
 
 module.exports = Backbone.View.extend({
 
@@ -14531,16 +14595,35 @@ module.exports = Backbone.View.extend({
     'click #create-room' : 'onCreateRoomClick'
   },
 
-  initialize: function(options){},
+  initialize: function(options){
+    // console.log('sidebar_nav init; ', app.ref.getAuth())
+  },
 
   onCreateRoomClick: function(){
-    debugger;
+    // debugger;
+    // this.$createModal.modal();
+
+    this.modalView = this.createSubView( ModalView, {
+      content: createModal
+    });
+
+    $('body').append(this.modalView.render().el);
+
+    this.modalView.show();
   },
 
   render: function() {
-    this.$el.html(template());
+    this.$el.html(template({
+      user: app.ref.getAuth()
+    }));
+
+
+
+    // this.$createModal = this.$('.modal');
+    
     return this;
+
   }
 
 });
-},{"../templates/sidebar_nav.hbs":"/Users/Easterday/Projects/beerRecipe/templates/sidebar_nav.hbs","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}]},{},["/Users/Easterday/Projects/beerRecipe/init.js"]);
+},{"../namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","../templates/create_room.hbs":"/Users/Easterday/Projects/beerRecipe/templates/create_room.hbs","../templates/sidebar_nav.hbs":"/Users/Easterday/Projects/beerRecipe/templates/sidebar_nav.hbs","../views/modal":"/Users/Easterday/Projects/beerRecipe/views/modal.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}]},{},["/Users/Easterday/Projects/beerRecipe/init.js"]);

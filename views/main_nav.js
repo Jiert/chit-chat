@@ -110,7 +110,8 @@ module.exports = Backbone.View.extend({
       trigger: 'click'
     });
 
-    this.$loginModal = this.$('.modal').modal({ show: false });
+    // TODO: Do we need this?
+    // this.$loginModal = this.$('.modal').modal({ show: false });
 
     return this;
   }

@@ -6,7 +6,10 @@
   <option>Name</option>
 </select>
 <h3>Rooms</h3>
+
+{{#if user}}
 <p><button class="btn btn-primary btn-block" id="create-room">Create Room</button><p>
+{{/if}}
 
 <ul class="nav nav-sidebar">
   <li class="active"><a href="#">Default <span class="pull-right badge">37</span></a></li>
@@ -14,3 +17,26 @@
   <li><a href="#">JavaScript <span class="pull-right badge">17</span></a></li>
   <li><a href="#">Quat Copters <span class="pull-right badge">9</span></a></li>
 </ul>
+
+{{!-- TODO: There's a better way to create these modals --}}
+{{!-- <div class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Create Room</h4>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="name">Room Name</label>
+            <input name="name" type="text" class="form-control" placeholder="Room name...">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button id="submit-room" type="button" class="btn btn-primary">Create</button>
+      </div>
+    </div>
+  </div>
+</div> --}}
