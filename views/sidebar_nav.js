@@ -5,7 +5,7 @@ var _ = require('underscore'),
     ModalView = require('../views/modal'),
 
     template = require('../templates/sidebar_nav.hbs'),
-    createModal = require('../templates/create_room.hbs');
+    createRoom = require('../templates/create_room.hbs');
 
 module.exports = Backbone.View.extend({
 
@@ -18,16 +18,23 @@ module.exports = Backbone.View.extend({
   },
 
   onCreateRoomClick: function(){
-    // debugger;
-    // this.$createModal.modal();
-
     this.modalView = this.createSubView( ModalView, {
-      content: createModal
+      onConfirmed: this.onConfirmRoom,
+      modalBody: createRoom
     });
 
+
+
+    // TODO: I don't like this syntax, should
+    // be a cleaner way to do this
     $('body').append(this.modalView.render().el);
 
     this.modalView.show();
+  },
+
+  onConfirmRoom: function(){
+    console.log('onConfirmRoom');
+    // debugger;
   },
 
   render: function() {

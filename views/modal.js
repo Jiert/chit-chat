@@ -7,12 +7,25 @@ var _ = require('underscore'),
 module.exports = Backbone.View.extend({
 
   className: 'modal fade',
-  events: {},
+  modalBody: 'Hello World!',
+  events: {
+   'click .submit' : 'onSubmit' 
+  },
 
   initialize: function(options){
-    this.contentBody = options.content;
-    // debugger;
+    // I know this is a tad dangerous
+    _(this).extend(options);
+    
+    
+    // this.contentBody = options.content;
   },
+
+  onConfirmed: function(){
+    // debugger;
+    console.log('base view onConfirmed');
+  },
+
+
 
   show: function(){
     this.$el.modal();
@@ -21,7 +34,7 @@ module.exports = Backbone.View.extend({
   render: function() {
     this.$el.html(template({
       title: 'title', 
-      content: this.contentBody()
+      modalBody: _.isFunction(this.modalBody) ? this.modalBody() : this.modalBody
     }));
     
     // $('body').append(this.$el);

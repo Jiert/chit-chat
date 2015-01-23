@@ -14010,7 +14010,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<div class=\"modal-body\">\n  <form>\n    <div class=\"form-group\">\n      <label for=\"name\">Room Name</label>\n      <input name=\"name\" type=\"text\" class=\"form-control\" placeholder=\"Room name...\">\n    </div>\n  </form>\n</div>\n<div class=\"modal-footer\">\n  <button id=\"submit-room\" type=\"button\" class=\"btn btn-primary\">Create</button>\n</div>";
+  return "<form>\n  <div class=\"form-group\">\n    <label for=\"name\">Room Name</label>\n    <input name=\"name\" type=\"text\" class=\"form-control\" placeholder=\"Room name...\">\n  </div>\n</form>";
   },"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/form.hbs":[function(require,module,exports){
@@ -14076,10 +14076,10 @@ var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   var stack1, helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, buffer = "<div class=\"modal-dialog\">\n  <div class=\"modal-content\">\n    <div class=\"modal-header\">\n      <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>\n      <h4 class=\"modal-title\">"
     + escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"title","hash":{},"data":data}) : helper)))
-    + "</h4>\n    </div>\n   ";
-  stack1 = ((helper = (helper = helpers.content || (depth0 != null ? depth0.content : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"content","hash":{},"data":data}) : helper));
+    + "</h4>\n    </div>\n    <div class=\"modal-body\">\n     ";
+  stack1 = ((helper = (helper = helpers.modalBody || (depth0 != null ? depth0.modalBody : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"modalBody","hash":{},"data":data}) : helper));
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "\n  </div>\n</div>\n";
+  return buffer + "\n    </div>\n    <div class=\"modal-footer\">\n      <button type=\"button\" class=\"btn btn-primary submit\">Create</button>\n    </div>\n  </div>\n</div>\n";
 },"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/room.hbs":[function(require,module,exports){
@@ -14454,12 +14454,25 @@ var _ = require('underscore'),
 module.exports = Backbone.View.extend({
 
   className: 'modal fade',
-  events: {},
+  modalBody: 'Hello World!',
+  events: {
+   'click .submit' : 'onSubmit' 
+  },
 
   initialize: function(options){
-    this.contentBody = options.content;
-    // debugger;
+    // I know this is a tad dangerous
+    _(this).extend(options);
+    
+    
+    // this.contentBody = options.content;
   },
+
+  onConfirmed: function(){
+    // debugger;
+    console.log('base view onConfirmed');
+  },
+
+
 
   show: function(){
     this.$el.modal();
@@ -14468,7 +14481,7 @@ module.exports = Backbone.View.extend({
   render: function() {
     this.$el.html(template({
       title: 'title', 
-      content: this.contentBody()
+      modalBody: _.isFunction(this.modalBody) ? this.modalBody() : this.modalBody
     }));
     
     // $('body').append(this.$el);
@@ -14587,7 +14600,7 @@ var _ = require('underscore'),
     ModalView = require('../views/modal'),
 
     template = require('../templates/sidebar_nav.hbs'),
-    createModal = require('../templates/create_room.hbs');
+    createRoom = require('../templates/create_room.hbs');
 
 module.exports = Backbone.View.extend({
 
@@ -14600,16 +14613,23 @@ module.exports = Backbone.View.extend({
   },
 
   onCreateRoomClick: function(){
-    // debugger;
-    // this.$createModal.modal();
-
     this.modalView = this.createSubView( ModalView, {
-      content: createModal
+      onConfirmed: this.onConfirmRoom,
+      modalBody: createRoom
     });
 
+
+
+    // TODO: I don't like this syntax, should
+    // be a cleaner way to do this
     $('body').append(this.modalView.render().el);
 
     this.modalView.show();
+  },
+
+  onConfirmRoom: function(){
+    console.log('onConfirmRoom');
+    // debugger;
   },
 
   render: function() {
