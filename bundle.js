@@ -30,6 +30,9 @@ $(function(){
       app = require('./namespace'),
       MainRouter = require('./router');
 
+  // TODO: Remove this after development
+  window.app = app;
+
   Backbone.View.prototype.createSubView = function(ViewClass, options) {
     if (!this.subViews) this.subViews = [];
 
@@ -69,7 +72,7 @@ $(function(){
 
   app.router = new MainRouter();
 
-  Backbone.history.start({pushState: true});
+  Backbone.history.start({ pushState: true });
 
 });
 },{"./libs/backbonefire":"/Users/Easterday/Projects/beerRecipe/libs/backbonefire.js","./libs/bootstrap":"/Users/Easterday/Projects/beerRecipe/libs/bootstrap.js","./libs/firebase":"/Users/Easterday/Projects/beerRecipe/libs/firebase.js","./namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","./router":"/Users/Easterday/Projects/beerRecipe/router.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","jquery":"/Users/Easterday/Projects/beerRecipe/node_modules/jquery/dist/jquery.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/libs/backbonefire.js":[function(require,module,exports){
@@ -14100,13 +14103,27 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
   var stack1, buffer = "<h3>Rooms</h3>\n\n";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.user : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "\n";
+  return buffer + "\n<ul class=\"nav nav-sidebar rooms\"></ul>";
+},"useData":true});
+
+},{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/sidebar_nav_room.hbs":[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var HandlebarsCompiler = require('hbsfy/runtime');
+module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
+  return "<li><a href=\"#\">"
+    + escapeExpression(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"name","hash":{},"data":data}) : helper)))
+    + " <span class=\"pull-right badge\">"
+    + escapeExpression(((helper = (helper = helpers.active || (depth0 != null ? depth0.active : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"active","hash":{},"data":data}) : helper)))
+    + "</span></a></li>";
 },"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/views/application.js":[function(require,module,exports){
 var _ = require('underscore'),
     app = require('../namespace'),
     Backbone = require('backbone'),
+
+    RoomsCollection = require('../collections/rooms'),
 
     template = require('../templates/application.hbs'),
 
@@ -14127,11 +14144,15 @@ module.exports = Backbone.View.extend({
 
     app.ref = new Firebase("https://blinding-torch-9943.firebaseio.com");
     app.ref.onAuth(this.authDataCallback);
+
+    // I'm putting this here so it can be listened to by any view in the app
+    app.rooms = new RoomsCollection();
   },
 
   authDataCallback: function(authData) {
     if (authData) {
       // TODO: find a better way to find users undrer app.ref
+      // This needs to be a model
       var user = new Firebase('https://blinding-torch-9943.firebaseio.com/users/' + authData.uid);
       user.once('value', this.onUser);
     } 
@@ -14145,6 +14166,8 @@ module.exports = Backbone.View.extend({
   onUser: function(snap){
     app.user.authData = snap.val();
     console.log('User logged in: ', app.user.authData);
+
+    // I question if this is the best thing to do
     this.renderApp();
   },
 
@@ -14178,12 +14201,12 @@ module.exports = Backbone.View.extend({
   }
 
 });
-},{"../namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","../templates/application.hbs":"/Users/Easterday/Projects/beerRecipe/templates/application.hbs","../views/content":"/Users/Easterday/Projects/beerRecipe/views/content.js","../views/main_nav":"/Users/Easterday/Projects/beerRecipe/views/main_nav.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/content.js":[function(require,module,exports){
+},{"../collections/rooms":"/Users/Easterday/Projects/beerRecipe/collections/rooms.js","../namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","../templates/application.hbs":"/Users/Easterday/Projects/beerRecipe/templates/application.hbs","../views/content":"/Users/Easterday/Projects/beerRecipe/views/content.js","../views/main_nav":"/Users/Easterday/Projects/beerRecipe/views/main_nav.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/content.js":[function(require,module,exports){
 var _ = require('underscore'),
     app = require('../namespace'),
     Backbone = require('backbone'),
 
-    RoomsCollection = require('../collections/rooms'),
+    // RoomsCollection = require('../collections/rooms'),
 
     SidebarView = require('../views/sidebar_nav'),
     RoomView = require('../views/room'),
@@ -14196,36 +14219,38 @@ module.exports = Backbone.View.extend({
     _.bindAll(this, 'renderSidebar');
   },
 
-  getRooms: function(){
-    // Set up Rooms collection
-    this.rooms = new RoomsCollection();
+  // getRooms: function(){
+  //   // Set up Rooms collection
+  //   // this.rooms = new RoomsCollection();
 
-    // TODO: Maybe a better way to listen to rooms
-    this.listenTo(this.rooms, {
-      'sync' : this.renderRooms
-    });
-  },
+  //   // TODO: Maybe a better way to listen to rooms
+  //   // this.listenTo(app.rooms, {
+  //   //   'sync' : this.renderRooms
+  //   // });
+  // },
 
   renderSidebar: function(){
     var sidebarView = this.createSubView( SidebarView, {});
-
     this.$mainSidebarNav.html(sidebarView.render().el);
   },
 
-  renderRooms: function(){
-    // TODO: Get real rooms collection here instead of
-    // Dummying it up
+  // renderRooms: function(){
+  //   // TODO: Get real rooms collection here instead of
+  //   // Dummying it up
 
-    if (this.rooms.length){
-      this.rooms.each(this.renderRoom);
-    }
-    else {
-      // this.$mainContent.html('There are no rooms currently active.');
-      var roomView = this.createSubView( RoomView, {});
-      this.$mainContent.html(roomView.render().el);
-    }
+  //   // We don't want new rooms being added automatically
+  //   // Only render a room if a user has clicked on it,
+  //   // But maybe render a room if the user just created it
 
-  },
+  //   // Maybe use local storage to keep track of rooms that the user
+  //   // Has clicked on.
+
+  //   // For Now:
+  //   var roomView = this.createSubView( RoomView, {});
+  //   this.$mainContent.html(roomView.render().el);
+
+  //   // this.renderRoom();
+  // },
 
   renderRoom: function(room){
     var roomView = this.createSubView( RoomView, {
@@ -14244,13 +14269,14 @@ module.exports = Backbone.View.extend({
     console.log('content render');
 
     this.renderSidebar();
-    this.getRooms();
+    this.renderRoom();
+    // this.getRooms();
 
     return this;
   }
 
 });
-},{"../collections/rooms":"/Users/Easterday/Projects/beerRecipe/collections/rooms.js","../namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","../templates/content.hbs":"/Users/Easterday/Projects/beerRecipe/templates/content.hbs","../views/room":"/Users/Easterday/Projects/beerRecipe/views/room.js","../views/sidebar_nav":"/Users/Easterday/Projects/beerRecipe/views/sidebar_nav.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/form_view.js":[function(require,module,exports){
+},{"../namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","../templates/content.hbs":"/Users/Easterday/Projects/beerRecipe/templates/content.hbs","../views/room":"/Users/Easterday/Projects/beerRecipe/views/room.js","../views/sidebar_nav":"/Users/Easterday/Projects/beerRecipe/views/sidebar_nav.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/form_view.js":[function(require,module,exports){
 var _ = require('underscore'),
     app = require('../namespace'),
     Backbone = require('backbone'),
@@ -14479,6 +14505,7 @@ module.exports = Backbone.View.extend({
   },
 
   // Please override 
+  onLoaded  : function(){},
   onConfirm : function(){},
   onShow    : function(){},
   onShown   : function(){},
@@ -14486,10 +14513,13 @@ module.exports = Backbone.View.extend({
   onHidden  : function(){
     this.destroy();
   },
-  onLoaded: function(){},
 
   show: function(){
     this.$el.modal('show');
+  },
+
+  hide: function(){
+    this.$el.modal('hide');
   },
 
   render: function() {
@@ -14613,6 +14643,7 @@ var _ = require('underscore'),
     ModalView = require('../views/modal'),
 
     template = require('../templates/sidebar_nav.hbs'),
+    roomLabel = require('../templates/sidebar_nav_room.hbs'),
     createRoom = require('../templates/create_room.hbs');
 
 module.exports = Backbone.View.extend({
@@ -14621,7 +14652,13 @@ module.exports = Backbone.View.extend({
     'click #create-room' : 'onCreateRoomClick'
   },
 
-  initialize: function(options){},
+  initialize: function(options){
+    _.bindAll( this, 'renderRoom', 'onConfirmRoom');
+
+    this.listenTo( app.rooms, {
+      'sync' : this.onRooms
+    });
+  },
 
   onCreateRoomClick: function(){
     this.modalView = this.createSubView( ModalView, {
@@ -14631,11 +14668,31 @@ module.exports = Backbone.View.extend({
     });
   },
 
+  onRooms: function(){
+    // TODO: I don't like this nonsense of re-rendering
+    // This entire list ever time there's a new name.
+    // It would be ideal to only insert 'new' models
+    this.$rooms.html('');
+
+    app.rooms.each(this.renderRoom);
+  },
+
+  renderRoom: function(room){
+    this.$rooms.append(roomLabel({
+      name: room.get('name'),
+      active: room.get('active') || 0
+    }));
+  },
+
   // TODO: Sort out the best way to get a 
   // confirmed callback from the modal view
   onConfirmRoom: function(){
-    debugger;
-    console.log('onConfirmRoom');
+    app.rooms.push({
+      creator: app.user.authData.userName,
+      name: this.modalView.$('input').val()
+    });
+
+    this.modalView.hide();
   },
 
   render: function() {
@@ -14643,8 +14700,10 @@ module.exports = Backbone.View.extend({
       user: app.ref.getAuth()
     }));
 
+    this.$rooms = this.$('.rooms');
+
     return this;
   }
 
 });
-},{"../namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","../templates/create_room.hbs":"/Users/Easterday/Projects/beerRecipe/templates/create_room.hbs","../templates/sidebar_nav.hbs":"/Users/Easterday/Projects/beerRecipe/templates/sidebar_nav.hbs","../views/modal":"/Users/Easterday/Projects/beerRecipe/views/modal.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}]},{},["/Users/Easterday/Projects/beerRecipe/init.js"]);
+},{"../namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","../templates/create_room.hbs":"/Users/Easterday/Projects/beerRecipe/templates/create_room.hbs","../templates/sidebar_nav.hbs":"/Users/Easterday/Projects/beerRecipe/templates/sidebar_nav.hbs","../templates/sidebar_nav_room.hbs":"/Users/Easterday/Projects/beerRecipe/templates/sidebar_nav_room.hbs","../views/modal":"/Users/Easterday/Projects/beerRecipe/views/modal.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}]},{},["/Users/Easterday/Projects/beerRecipe/init.js"]);

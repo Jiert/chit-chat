@@ -2,6 +2,8 @@ var _ = require('underscore'),
     app = require('../namespace'),
     Backbone = require('backbone'),
 
+    RoomsCollection = require('../collections/rooms'),
+
     template = require('../templates/application.hbs'),
 
     ContentView = require('../views/content'),
@@ -21,11 +23,15 @@ module.exports = Backbone.View.extend({
 
     app.ref = new Firebase("https://blinding-torch-9943.firebaseio.com");
     app.ref.onAuth(this.authDataCallback);
+
+    // I'm putting this here so it can be listened to by any view in the app
+    app.rooms = new RoomsCollection();
   },
 
   authDataCallback: function(authData) {
     if (authData) {
       // TODO: find a better way to find users undrer app.ref
+      // This needs to be a model
       var user = new Firebase('https://blinding-torch-9943.firebaseio.com/users/' + authData.uid);
       user.once('value', this.onUser);
     } 
@@ -39,6 +45,8 @@ module.exports = Backbone.View.extend({
   onUser: function(snap){
     app.user.authData = snap.val();
     console.log('User logged in: ', app.user.authData);
+
+    // I question if this is the best thing to do
     this.renderApp();
   },
 

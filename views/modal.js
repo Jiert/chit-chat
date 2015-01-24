@@ -30,6 +30,7 @@ module.exports = Backbone.View.extend({
   },
 
   // Please override 
+  onLoaded  : function(){},
   onConfirm : function(){},
   onShow    : function(){},
   onShown   : function(){},
@@ -37,10 +38,13 @@ module.exports = Backbone.View.extend({
   onHidden  : function(){
     this.destroy();
   },
-  onLoaded: function(){},
 
   show: function(){
     this.$el.modal('show');
+  },
+
+  hide: function(){
+    this.$el.modal('hide');
   },
 
   render: function() {

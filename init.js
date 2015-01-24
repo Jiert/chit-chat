@@ -11,6 +11,9 @@ $(function(){
       app = require('./namespace'),
       MainRouter = require('./router');
 
+  // TODO: Remove this after development
+  window.app = app;
+
   Backbone.View.prototype.createSubView = function(ViewClass, options) {
     if (!this.subViews) this.subViews = [];
 
@@ -50,6 +53,6 @@ $(function(){
 
   app.router = new MainRouter();
 
-  Backbone.history.start({pushState: true});
+  Backbone.history.start({ pushState: true });
 
 });

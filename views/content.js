@@ -2,7 +2,7 @@ var _ = require('underscore'),
     app = require('../namespace'),
     Backbone = require('backbone'),
 
-    RoomsCollection = require('../collections/rooms'),
+    // RoomsCollection = require('../collections/rooms'),
 
     SidebarView = require('../views/sidebar_nav'),
     RoomView = require('../views/room'),
@@ -15,36 +15,38 @@ module.exports = Backbone.View.extend({
     _.bindAll(this, 'renderSidebar');
   },
 
-  getRooms: function(){
-    // Set up Rooms collection
-    this.rooms = new RoomsCollection();
+  // getRooms: function(){
+  //   // Set up Rooms collection
+  //   // this.rooms = new RoomsCollection();
 
-    // TODO: Maybe a better way to listen to rooms
-    this.listenTo(this.rooms, {
-      'sync' : this.renderRooms
-    });
-  },
+  //   // TODO: Maybe a better way to listen to rooms
+  //   // this.listenTo(app.rooms, {
+  //   //   'sync' : this.renderRooms
+  //   // });
+  // },
 
   renderSidebar: function(){
     var sidebarView = this.createSubView( SidebarView, {});
-
     this.$mainSidebarNav.html(sidebarView.render().el);
   },
 
-  renderRooms: function(){
-    // TODO: Get real rooms collection here instead of
-    // Dummying it up
+  // renderRooms: function(){
+  //   // TODO: Get real rooms collection here instead of
+  //   // Dummying it up
 
-    if (this.rooms.length){
-      this.rooms.each(this.renderRoom);
-    }
-    else {
-      // this.$mainContent.html('There are no rooms currently active.');
-      var roomView = this.createSubView( RoomView, {});
-      this.$mainContent.html(roomView.render().el);
-    }
+  //   // We don't want new rooms being added automatically
+  //   // Only render a room if a user has clicked on it,
+  //   // But maybe render a room if the user just created it
 
-  },
+  //   // Maybe use local storage to keep track of rooms that the user
+  //   // Has clicked on.
+
+  //   // For Now:
+  //   var roomView = this.createSubView( RoomView, {});
+  //   this.$mainContent.html(roomView.render().el);
+
+  //   // this.renderRoom();
+  // },
 
   renderRoom: function(room){
     var roomView = this.createSubView( RoomView, {
@@ -63,7 +65,8 @@ module.exports = Backbone.View.extend({
     console.log('content render');
 
     this.renderSidebar();
-    this.getRooms();
+    this.renderRoom();
+    // this.getRooms();
 
     return this;
   }
