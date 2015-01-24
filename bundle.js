@@ -14098,7 +14098,7 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
   var stack1, buffer = "<input type=\"text\" class=\"form-control\" placeholder=\"Search...\">\n<h4>Sort by:</h4>\n<select class=\"form-control\">\n  <option>Number Active</option>\n  <option>Name</option>\n</select>\n<h3>Rooms</h3>\n\n";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.user : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "\n<ul class=\"nav nav-sidebar\">\n  <li class=\"active\"><a href=\"#\">Default <span class=\"pull-right badge\">37</span></a></li>\n  <li><a href=\"#\">The Big Lebowski <span class=\"pull-right badge\">25</span></a></li>\n  <li><a href=\"#\">JavaScript <span class=\"pull-right badge\">17</span></a></li>\n  <li><a href=\"#\">Quat Copters <span class=\"pull-right badge\">9</span></a></li>\n</ul>\n\n";
+  return buffer + "\n<ul class=\"nav nav-sidebar\">\n  <li class=\"active\"><a href=\"#\">Default <span class=\"pull-right badge\">37</span></a></li>\n  <li><a href=\"#\">The Big Lebowski <span class=\"pull-right badge\">25</span></a></li>\n  <li><a href=\"#\">JavaScript <span class=\"pull-right badge\">17</span></a></li>\n  <li><a href=\"#\">Quat Copters <span class=\"pull-right badge\">9</span></a></li>\n</ul>";
 },"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/views/application.js":[function(require,module,exports){
@@ -14455,27 +14455,42 @@ module.exports = Backbone.View.extend({
 
   className: 'modal fade',
   modalBody: 'Hello World!',
-  events: {
-   'click .submit' : 'onSubmit' 
-  },
+  events: {},
 
   initialize: function(options){
+    _.bindAll(this, 'onShow', 'onShown', 'onHide', 'onHidden');
+
     // I know this is a tad dangerous
     _(this).extend(options);
     
-    
-    // this.contentBody = options.content;
+    this.listenTo(this.$el, {
+      'show.bs.modal'   : this.onShow,
+      'shown.bs.modal'  : this.onShown,
+      'hide.bs.modal'   : this.onHide,
+      'hidden.bs.modal' : this.onHidden,
+      'loaded.bs.modal' : this.onLoaded
+    });
+
+    this.render();
   },
 
   onConfirmed: function(){
-    // debugger;
     console.log('base view onConfirmed');
   },
 
-
+  // Please override 
+  onShow  : function(){console.log('onshow');},
+  onShown : function(){console.log('onshown');},
+  onHide  : function(){console.log('onhide');},
+  onHidden: function(){
+    // I winder if this is best...
+    console.log('onHidden');
+    this.destroy();
+  },
+  onLoaded: function(){},
 
   show: function(){
-    this.$el.modal();
+    this.$el.modal('show');
   },
 
   render: function() {
@@ -14483,11 +14498,9 @@ module.exports = Backbone.View.extend({
       title: 'title', 
       modalBody: _.isFunction(this.modalBody) ? this.modalBody() : this.modalBody
     }));
+
+    $('body').append(this.$el.modal());
     
-    // $('body').append(this.$el);
-
-    // this.$el.modal();
-
     return this;
   }
 
@@ -14608,28 +14621,19 @@ module.exports = Backbone.View.extend({
     'click #create-room' : 'onCreateRoomClick'
   },
 
-  initialize: function(options){
-    // console.log('sidebar_nav init; ', app.ref.getAuth())
-  },
+  initialize: function(options){},
 
   onCreateRoomClick: function(){
     this.modalView = this.createSubView( ModalView, {
       onConfirmed: this.onConfirmRoom,
       modalBody: createRoom
     });
-
-
-
-    // TODO: I don't like this syntax, should
-    // be a cleaner way to do this
-    $('body').append(this.modalView.render().el);
-
-    this.modalView.show();
   },
 
+  // TODO: Sort out the best way to get a 
+  // confirmed callback from the modal view
   onConfirmRoom: function(){
     console.log('onConfirmRoom');
-    // debugger;
   },
 
   render: function() {
@@ -14637,12 +14641,7 @@ module.exports = Backbone.View.extend({
       user: app.ref.getAuth()
     }));
 
-
-
-    // this.$createModal = this.$('.modal');
-    
     return this;
-
   }
 
 });

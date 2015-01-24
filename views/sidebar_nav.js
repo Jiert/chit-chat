@@ -13,28 +13,19 @@ module.exports = Backbone.View.extend({
     'click #create-room' : 'onCreateRoomClick'
   },
 
-  initialize: function(options){
-    // console.log('sidebar_nav init; ', app.ref.getAuth())
-  },
+  initialize: function(options){},
 
   onCreateRoomClick: function(){
     this.modalView = this.createSubView( ModalView, {
       onConfirmed: this.onConfirmRoom,
       modalBody: createRoom
     });
-
-
-
-    // TODO: I don't like this syntax, should
-    // be a cleaner way to do this
-    $('body').append(this.modalView.render().el);
-
-    this.modalView.show();
   },
 
+  // TODO: Sort out the best way to get a 
+  // confirmed callback from the modal view
   onConfirmRoom: function(){
     console.log('onConfirmRoom');
-    // debugger;
   },
 
   render: function() {
@@ -42,12 +33,7 @@ module.exports = Backbone.View.extend({
       user: app.ref.getAuth()
     }));
 
-
-
-    // this.$createModal = this.$('.modal');
-    
     return this;
-
   }
 
 });
