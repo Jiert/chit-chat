@@ -14079,7 +14079,9 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
     + "</h4>\n    </div>\n    <div class=\"modal-body\">\n     ";
   stack1 = ((helper = (helper = helpers.modalBody || (depth0 != null ? depth0.modalBody : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"modalBody","hash":{},"data":data}) : helper));
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "\n    </div>\n    <div class=\"modal-footer\">\n      <button type=\"button\" class=\"btn btn-primary submit\">Create</button>\n    </div>\n  </div>\n</div>\n";
+  return buffer + "\n    </div>\n    <div class=\"modal-footer\">\n      <button type=\"button\" class=\"btn\" data-dismiss=\"modal\" aria-label=\"Close\">Cancel</button>\n      <button type=\"button\" class=\"btn btn-primary confirm\">"
+    + escapeExpression(((helper = (helper = helpers.confirmText || (depth0 != null ? depth0.confirmText : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"confirmText","hash":{},"data":data}) : helper)))
+    + "</button>\n    </div>\n  </div>\n</div>\n";
 },"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/room.hbs":[function(require,module,exports){
@@ -14095,10 +14097,10 @@ var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
   return "<p><button class=\"btn btn-primary btn-block\" id=\"create-room\">Create Room</button><p>\n";
   },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  var stack1, buffer = "<input type=\"text\" class=\"form-control\" placeholder=\"Search...\">\n<h4>Sort by:</h4>\n<select class=\"form-control\">\n  <option>Number Active</option>\n  <option>Name</option>\n</select>\n<h3>Rooms</h3>\n\n";
+  var stack1, buffer = "<h3>Rooms</h3>\n\n";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.user : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "\n<ul class=\"nav nav-sidebar\">\n  <li class=\"active\"><a href=\"#\">Default <span class=\"pull-right badge\">37</span></a></li>\n  <li><a href=\"#\">The Big Lebowski <span class=\"pull-right badge\">25</span></a></li>\n  <li><a href=\"#\">JavaScript <span class=\"pull-right badge\">17</span></a></li>\n  <li><a href=\"#\">Quat Copters <span class=\"pull-right badge\">9</span></a></li>\n</ul>";
+  return buffer + "\n";
 },"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/views/application.js":[function(require,module,exports){
@@ -14453,14 +14455,16 @@ var _ = require('underscore'),
 
 module.exports = Backbone.View.extend({
 
+  confirmText: 'Confirm',
   className: 'modal fade',
   modalBody: 'Hello World!',
-  events: {},
+  events: {
+    'click .confirm' : 'onConfirm'
+  },
 
   initialize: function(options){
     _.bindAll(this, 'onShow', 'onShown', 'onHide', 'onHidden');
 
-    // I know this is a tad dangerous
     _(this).extend(options);
     
     this.listenTo(this.$el, {
@@ -14474,17 +14478,12 @@ module.exports = Backbone.View.extend({
     this.render();
   },
 
-  onConfirmed: function(){
-    console.log('base view onConfirmed');
-  },
-
   // Please override 
-  onShow  : function(){console.log('onshow');},
-  onShown : function(){console.log('onshown');},
-  onHide  : function(){console.log('onhide');},
-  onHidden: function(){
-    // I winder if this is best...
-    console.log('onHidden');
+  onConfirm : function(){},
+  onShow    : function(){},
+  onShown   : function(){},
+  onHide    : function(){},
+  onHidden  : function(){
     this.destroy();
   },
   onLoaded: function(){},
@@ -14495,7 +14494,8 @@ module.exports = Backbone.View.extend({
 
   render: function() {
     this.$el.html(template({
-      title: 'title', 
+      title: 'title',
+      confirmText : this.confirmText,
       modalBody: _.isFunction(this.modalBody) ? this.modalBody() : this.modalBody
     }));
 
@@ -14625,14 +14625,16 @@ module.exports = Backbone.View.extend({
 
   onCreateRoomClick: function(){
     this.modalView = this.createSubView( ModalView, {
-      onConfirmed: this.onConfirmRoom,
-      modalBody: createRoom
+      onConfirm   : this.onConfirmRoom,
+      modalBody   : createRoom,
+      confirmText : 'Create Room'
     });
   },
 
   // TODO: Sort out the best way to get a 
   // confirmed callback from the modal view
   onConfirmRoom: function(){
+    debugger;
     console.log('onConfirmRoom');
   },
 

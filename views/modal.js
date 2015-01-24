@@ -6,14 +6,16 @@ var _ = require('underscore'),
 
 module.exports = Backbone.View.extend({
 
+  confirmText: 'Confirm',
   className: 'modal fade',
   modalBody: 'Hello World!',
-  events: {},
+  events: {
+    'click .confirm' : 'onConfirm'
+  },
 
   initialize: function(options){
     _.bindAll(this, 'onShow', 'onShown', 'onHide', 'onHidden');
 
-    // I know this is a tad dangerous
     _(this).extend(options);
     
     this.listenTo(this.$el, {
@@ -27,17 +29,12 @@ module.exports = Backbone.View.extend({
     this.render();
   },
 
-  onConfirmed: function(){
-    console.log('base view onConfirmed');
-  },
-
   // Please override 
-  onShow  : function(){console.log('onshow');},
-  onShown : function(){console.log('onshown');},
-  onHide  : function(){console.log('onhide');},
-  onHidden: function(){
-    // I winder if this is best...
-    console.log('onHidden');
+  onConfirm : function(){},
+  onShow    : function(){},
+  onShown   : function(){},
+  onHide    : function(){},
+  onHidden  : function(){
     this.destroy();
   },
   onLoaded: function(){},
@@ -48,7 +45,8 @@ module.exports = Backbone.View.extend({
 
   render: function() {
     this.$el.html(template({
-      title: 'title', 
+      title: 'title',
+      confirmText : this.confirmText,
       modalBody: _.isFunction(this.modalBody) ? this.modalBody() : this.modalBody
     }));
 

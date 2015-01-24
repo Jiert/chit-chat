@@ -17,14 +17,16 @@ module.exports = Backbone.View.extend({
 
   onCreateRoomClick: function(){
     this.modalView = this.createSubView( ModalView, {
-      onConfirmed: this.onConfirmRoom,
-      modalBody: createRoom
+      onConfirm   : this.onConfirmRoom,
+      modalBody   : createRoom,
+      confirmText : 'Create Room'
     });
   },
 
   // TODO: Sort out the best way to get a 
   // confirmed callback from the modal view
   onConfirmRoom: function(){
+    debugger;
     console.log('onConfirmRoom');
   },
 
