@@ -4,8 +4,12 @@ var _ = require('underscore'),
     Message = require('../models/message');
     
 module.exports = Backbone.Firebase.Collection.extend({
+
+  initialize: function(models, options){
+    this.url = 'https://blinding-torch-9943.firebaseio.com/rooms/'+ options.room +'/messages';
+  },
+
   model: Message,
-  url: 'https://blinding-torch-9943.firebaseio.com/messages'
 });
 },{"../models/message":"/Users/Easterday/Projects/beerRecipe/models/message.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/collections/rooms.js":[function(require,module,exports){
 var _ = require('underscore'),
@@ -13976,7 +13980,6 @@ var _ = require('underscore'),
 module.exports = Backbone.Router.extend({
   routes: {
     '': 'defaultRoute',
-    // 'beers' : 'beerRoute'
   },
 
   initialize: function() {},
@@ -13987,12 +13990,6 @@ module.exports = Backbone.Router.extend({
     });
     this.appView.render();
   },
-
-  // beerRoute: function(){
-  //   this.activeView = new TestView({
-  //     el: '#content'
-  //   });
-  // }
 
 });
 },{"./views/application":"/Users/Easterday/Projects/beerRecipe/views/application.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/templates/application.hbs":[function(require,module,exports){
@@ -14091,8 +14088,11 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<div class=\"panel panel-default\">\n  <div class=\"panel-heading\">\n    <h3 class=\"panel-title\">Default</h3>\n  </div>\n  <div class=\"messages panel-body\">\n    Loading Messages...\n  </div>\n  <div class=\"message-input panel-footer\"></div>\n</div>";
-  },"useData":true});
+  var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
+  return "<div class=\"panel panel-default\">\n  <div class=\"panel-heading\">\n    <h3 class=\"panel-title\">"
+    + escapeExpression(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"name","hash":{},"data":data}) : helper)))
+    + "</h3>\n  </div>\n  <div class=\"messages panel-body\">\n    Loading Messages...\n  </div>\n  <div class=\"message-input panel-footer\"></div>\n</div>";
+},"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/sidebar_nav.hbs":[function(require,module,exports){
 // hbsfy compiled Handlebars template
@@ -14100,7 +14100,7 @@ var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
   return "<p><button class=\"btn btn-primary btn-block\" id=\"create-room\">Create Room</button><p>\n";
   },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  var stack1, buffer = "<h3>Rooms</h3>\n\n";
+  var stack1, buffer = "\n";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.user : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data});
   if (stack1 != null) { buffer += stack1; }
   return buffer + "\n<ul class=\"nav nav-sidebar rooms\"></ul>";
@@ -14206,8 +14206,6 @@ var _ = require('underscore'),
     app = require('../namespace'),
     Backbone = require('backbone'),
 
-    // RoomsCollection = require('../collections/rooms'),
-
     SidebarView = require('../views/sidebar_nav'),
     RoomView = require('../views/room'),
 
@@ -14216,48 +14214,39 @@ var _ = require('underscore'),
 module.exports = Backbone.View.extend({
 
   initialize: function(options){
-    _.bindAll(this, 'renderSidebar');
+    _.bindAll(this, 'renderSidebar', 'renderRoom');
+
+    // TODO: Maybe a better way to listen to rooms
+    this.listenTo(app.rooms, {
+      'sync' : this.renderRooms
+    });
   },
-
-  // getRooms: function(){
-  //   // Set up Rooms collection
-  //   // this.rooms = new RoomsCollection();
-
-  //   // TODO: Maybe a better way to listen to rooms
-  //   // this.listenTo(app.rooms, {
-  //   //   'sync' : this.renderRooms
-  //   // });
-  // },
 
   renderSidebar: function(){
     var sidebarView = this.createSubView( SidebarView, {});
     this.$mainSidebarNav.html(sidebarView.render().el);
   },
 
-  // renderRooms: function(){
-  //   // TODO: Get real rooms collection here instead of
-  //   // Dummying it up
+  renderRooms: function(){
+    this.$mainContent.html('');
 
-  //   // We don't want new rooms being added automatically
-  //   // Only render a room if a user has clicked on it,
-  //   // But maybe render a room if the user just created it
+    // We don't want new rooms being added automatically
+    // Only render a room if a user has clicked on it,
+    // But maybe render a room if the user just created it
 
-  //   // Maybe use local storage to keep track of rooms that the user
-  //   // Has clicked on.
+    // Maybe use local storage to keep track of rooms that the user
+    // Has clicked on.
 
-  //   // For Now:
-  //   var roomView = this.createSubView( RoomView, {});
-  //   this.$mainContent.html(roomView.render().el);
-
-  //   // this.renderRoom();
-  // },
+    // For Now:
+    app.rooms.each( this.renderRoom );
+  },
 
   renderRoom: function(room){
     var roomView = this.createSubView( RoomView, {
       room: room
     });
 
-    this.$mainContent.html(roomView.render().el);
+    this.$mainContent.append(roomView.render().el);
   },
 
   render: function() {
@@ -14266,11 +14255,7 @@ module.exports = Backbone.View.extend({
     this.$mainContent = this.$('#main-content');
     this.$mainSidebarNav = this.$('#main-sidebar-nav');
 
-    console.log('content render');
-
     this.renderSidebar();
-    this.renderRoom();
-    // this.getRooms();
 
     return this;
   }
@@ -14280,7 +14265,6 @@ module.exports = Backbone.View.extend({
 var _ = require('underscore'),
     app = require('../namespace'),
     Backbone = require('backbone'),
-    MessageModel = require('../models/message'),
     template = require('../templates/form.hbs');    
 
 module.exports = Backbone.View.extend({
@@ -14290,10 +14274,7 @@ module.exports = Backbone.View.extend({
   },
 
   initialize: function(options){
-    this.model = new MessageModel();
     this.messages = options.messages;
-
-    this.messages = app.ref.child('messages');
   },
 
   onMessageSubmit: function(event){
@@ -14303,7 +14284,6 @@ module.exports = Backbone.View.extend({
     // as a logout event occurs this view will killed
 
     // TODO: make sure this view is really killed on logout events
-
     var message = this.$message.val();
 
     if (message){
@@ -14318,16 +14298,13 @@ module.exports = Backbone.View.extend({
   },
 
   render: function(){
-    console.log('form view render');
     this.$el.html(template());
-
     this.$message = this.$('#message');
-
     return this;
   }
 
 });
-},{"../models/message":"/Users/Easterday/Projects/beerRecipe/models/message.js","../namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","../templates/form.hbs":"/Users/Easterday/Projects/beerRecipe/templates/form.hbs","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/main_nav.js":[function(require,module,exports){
+},{"../namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","../templates/form.hbs":"/Users/Easterday/Projects/beerRecipe/templates/form.hbs","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/main_nav.js":[function(require,module,exports){
 var _ = require('underscore'),
     app = require('../namespace'),
     Backbone = require('backbone'),
@@ -14554,41 +14531,34 @@ module.exports = Backbone.View.extend({
   initialize: function(options){
     _.bindAll(this, 'renderMessages', 'renderMessage');
 
-    this.messages = new MessagesCollection();
+    if (!options.room) return;
+
+    this.model = options.room;
+
+    this.messages = new MessagesCollection([], {
+      room: this.model.id
+    });
+
     this.listenTo(this.messages, {
       // TODO: This isn't the wy to go. We should only append new messages, 
       // rather than re-rendering each time we save just one message
       'sync': this.renderMessages,
-      // 'sync': this.onSync,
     });
   },
 
-  // TODO: Hmmm, I was hoping this would help fire the scroll
-  // whenever a login / logout event occurs
-  // onSync: function(){
-  //   _(this.renderMessages).defer();
-  // },
-
   renderMessages: function(){
-    console.log('renderMessages');
-
     this.$messages.html('');
 
     // TODO: This is a total hack and needs to be killed
     this.cleanUp();
     this.messages.each(this.renderMessage);
 
-
     // TODO: HERE IT IS FOLKS: 
     console.log('subViews: ', this.subViews && this.subViews.length);
 
-    if (app.ref.getAuth()){
-      this.renderForm();
-    }
 
     // TODO: For now, this will work, but it will
     // need to be fixed once the memory leak is fixed
-    // debugger;
     var scrollHeight = this.$messages.prop('scrollHeight');
     this.$messages.scrollTop(scrollHeight);
 
@@ -14620,7 +14590,7 @@ module.exports = Backbone.View.extend({
   },
 
   render: function() {
-    this.$el.html(template());
+    this.$el.html(template(this.model.toJSON()));
 
     this.$messages = this.$('.messages');
     this.$messageInput = this.$('.message-input');
@@ -14629,6 +14599,10 @@ module.exports = Backbone.View.extend({
     // this in tandom with listenTo: sync
     if (this.messages && this.messages.length){
       this.renderMessages();
+    }
+    
+    if (app.ref.getAuth()){
+      this.renderForm();
     }
 
     return this;

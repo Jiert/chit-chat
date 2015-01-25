@@ -16,41 +16,34 @@ module.exports = Backbone.View.extend({
   initialize: function(options){
     _.bindAll(this, 'renderMessages', 'renderMessage');
 
-    this.messages = new MessagesCollection();
+    if (!options.room) return;
+
+    this.model = options.room;
+
+    this.messages = new MessagesCollection([], {
+      room: this.model.id
+    });
+
     this.listenTo(this.messages, {
       // TODO: This isn't the wy to go. We should only append new messages, 
       // rather than re-rendering each time we save just one message
       'sync': this.renderMessages,
-      // 'sync': this.onSync,
     });
   },
 
-  // TODO: Hmmm, I was hoping this would help fire the scroll
-  // whenever a login / logout event occurs
-  // onSync: function(){
-  //   _(this.renderMessages).defer();
-  // },
-
   renderMessages: function(){
-    console.log('renderMessages');
-
     this.$messages.html('');
 
     // TODO: This is a total hack and needs to be killed
     this.cleanUp();
     this.messages.each(this.renderMessage);
 
-
     // TODO: HERE IT IS FOLKS: 
     console.log('subViews: ', this.subViews && this.subViews.length);
 
-    if (app.ref.getAuth()){
-      this.renderForm();
-    }
 
     // TODO: For now, this will work, but it will
     // need to be fixed once the memory leak is fixed
-    // debugger;
     var scrollHeight = this.$messages.prop('scrollHeight');
     this.$messages.scrollTop(scrollHeight);
 
@@ -82,7 +75,7 @@ module.exports = Backbone.View.extend({
   },
 
   render: function() {
-    this.$el.html(template());
+    this.$el.html(template(this.model.toJSON()));
 
     this.$messages = this.$('.messages');
     this.$messageInput = this.$('.message-input');
@@ -91,6 +84,10 @@ module.exports = Backbone.View.extend({
     // this in tandom with listenTo: sync
     if (this.messages && this.messages.length){
       this.renderMessages();
+    }
+    
+    if (app.ref.getAuth()){
+      this.renderForm();
     }
 
     return this;

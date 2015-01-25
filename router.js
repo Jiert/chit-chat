@@ -5,7 +5,6 @@ var _ = require('underscore'),
 module.exports = Backbone.Router.extend({
   routes: {
     '': 'defaultRoute',
-    // 'beers' : 'beerRoute'
   },
 
   initialize: function() {},
@@ -16,11 +15,5 @@ module.exports = Backbone.Router.extend({
     });
     this.appView.render();
   },
-
-  // beerRoute: function(){
-  //   this.activeView = new TestView({
-  //     el: '#content'
-  //   });
-  // }
 
 });

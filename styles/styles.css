@@ -24,6 +24,6 @@ body #main-sidebar-nav .nav-sidebar > .active > a:focus {
   background-color: #428bca;
 }
 body #main-content .messageS {
-  max-height: 400px;
+  height: 200px;
   overflow: scroll;
 }

@@ -1,7 +1,6 @@
 var _ = require('underscore'),
     app = require('../namespace'),
     Backbone = require('backbone'),
-    MessageModel = require('../models/message'),
     template = require('../templates/form.hbs');    
 
 module.exports = Backbone.View.extend({
@@ -11,10 +10,7 @@ module.exports = Backbone.View.extend({
   },
 
   initialize: function(options){
-    this.model = new MessageModel();
     this.messages = options.messages;
-
-    this.messages = app.ref.child('messages');
   },
 
   onMessageSubmit: function(event){
@@ -24,7 +20,6 @@ module.exports = Backbone.View.extend({
     // as a logout event occurs this view will killed
 
     // TODO: make sure this view is really killed on logout events
-
     var message = this.$message.val();
 
     if (message){
@@ -39,11 +34,8 @@ module.exports = Backbone.View.extend({
   },
 
   render: function(){
-    console.log('form view render');
     this.$el.html(template());
-
     this.$message = this.$('#message');
-
     return this;
   }
 
