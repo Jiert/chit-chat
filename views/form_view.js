@@ -23,7 +23,7 @@ module.exports = Backbone.View.extend({
     var message = this.$message.val();
 
     if (message){
-      this.messages.push({
+      this.messages.create({
         author: app.user.authData.userName,
         message: this.$('[name="message"]').val()
       });

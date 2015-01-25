@@ -24,7 +24,17 @@ module.exports = Backbone.View.extend({
   },
 
   renderRooms: function(){
+    // Stop Listening to sync events, and only 
+    // listen to adds and removals from the point on
+    this.stopListening(app.rooms, 'sync');
+    this.listenTo(app.rooms, {
+      'add' : this.onAddRoom,
+      'remove' : this.onRemoveRoom
+    });
+
     this.$mainContent.html('');
+
+    console.log('content: renderRooms');
 
     // We don't want new rooms being added automatically
     // Only render a room if a user has clicked on it,
@@ -35,6 +45,14 @@ module.exports = Backbone.View.extend({
 
     // For Now:
     app.rooms.each( this.renderRoom );
+  },
+
+  onAddRoom: function(){
+    console.log('content: onAddRoom');
+  },
+
+  onRemoveRoom: function(){
+    console.log('content: onRemoveRoom');
   },
 
   renderRoom: function(room){

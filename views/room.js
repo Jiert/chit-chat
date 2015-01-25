@@ -21,25 +21,32 @@ module.exports = Backbone.View.extend({
     this.model = options.room;
 
     this.messages = new MessagesCollection([], {
-      room: this.model.id
+      room: this.model.id,
     });
 
     this.listenTo(this.messages, {
       // TODO: This isn't the wy to go. We should only append new messages, 
       // rather than re-rendering each time we save just one message
       'sync': this.renderMessages,
+      'add' : this.onAdd
     });
   },
 
   renderMessages: function(){
+    // debugger;
+
+    this.stopListening(this.messages, 'sync');
+
+    console.log('room: renderMessages');
+
     this.$messages.html('');
 
     // TODO: This is a total hack and needs to be killed
-    this.cleanUp();
+    // this.cleanUp();
     this.messages.each(this.renderMessage);
 
     // TODO: HERE IT IS FOLKS: 
-    console.log('subViews: ', this.subViews && this.subViews.length);
+    // console.log('subViews: ', this.subViews && this.subViews.length);
 
 
     // TODO: For now, this will work, but it will
@@ -51,6 +58,14 @@ module.exports = Backbone.View.extend({
     // So, we're cleaning up now, which is fine, 
     // But we need to not call renderMessagess everytime
     // we post a new message.
+  },
+
+  onAdd: function(message){
+    this.renderMessage(message);
+  },
+
+  onSync: function(){
+    debugger;
   },
 
   // TODO: Get rid of this shit
@@ -75,6 +90,8 @@ module.exports = Backbone.View.extend({
   },
 
   render: function() {
+    console.log('room: render')
+
     this.$el.html(template(this.model.toJSON()));
 
     this.$messages = this.$('.messages');
@@ -82,10 +99,16 @@ module.exports = Backbone.View.extend({
 
     // TODO: There's got to be a better way to do 
     // this in tandom with listenTo: sync
-    if (this.messages && this.messages.length){
-      this.renderMessages();
-    }
-    
+    // if (this.messages && this.messages.length){
+    //   this.renderMessages();
+    // }
+  
+    // Why doesn't sync fire here?    
+    // this.listenTo(this.messages, {
+    //   'sync': this.renderMessages,
+    //   'add' : this.onAdd
+    // });
+
     if (app.ref.getAuth()){
       this.renderForm();
     }
