@@ -17,8 +17,8 @@ module.exports = Backbone.View.extend({
   initialize: function(options){
     _.bindAll( this, 'renderRoom', 'onConfirmRoom');
 
-    this.listenTo( app.rooms, {
-      'sync' : this.onRooms
+    this.listenTo(app.rooms, {
+      'add' : this.renderRoom
     });
   },
 
@@ -30,7 +30,7 @@ module.exports = Backbone.View.extend({
     });
   },
 
-  onRooms: function(){
+  renderRooms: function(){
     // TODO: I don't like this nonsense of re-rendering
     // This entire list ever time there's a new name.
     // It would be ideal to only insert 'new' models
@@ -63,6 +63,8 @@ module.exports = Backbone.View.extend({
     }));
 
     this.$rooms = this.$('.rooms');
+
+    this.renderRooms();
 
     return this;
   }

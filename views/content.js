@@ -12,9 +12,11 @@ module.exports = Backbone.View.extend({
   initialize: function(options){
     _.bindAll(this, 'renderSidebar', 'renderRoom');
 
-    // TODO: Maybe a better way to listen to rooms
     this.listenTo(app.rooms, {
-      'sync' : this.renderRooms
+      // Probably only way to render new rooms if ther user
+      // Clicks on it
+      'add' : this.renderRoom,
+      'remove' : this.onRemoveRoom
     });
   },
 
@@ -24,14 +26,6 @@ module.exports = Backbone.View.extend({
   },
 
   renderRooms: function(){
-    // Stop Listening to sync events, and only 
-    // listen to adds and removals from the point on
-    this.stopListening(app.rooms, 'sync');
-    this.listenTo(app.rooms, {
-      'add' : this.onAddRoom,
-      'remove' : this.onRemoveRoom
-    });
-
     this.$mainContent.html('');
 
     console.log('content: renderRooms');
@@ -47,9 +41,6 @@ module.exports = Backbone.View.extend({
     app.rooms.each( this.renderRoom );
   },
 
-  onAddRoom: function(){
-    console.log('content: onAddRoom');
-  },
 
   onRemoveRoom: function(){
     console.log('content: onRemoveRoom');
@@ -70,6 +61,7 @@ module.exports = Backbone.View.extend({
     this.$mainSidebarNav = this.$('#main-sidebar-nav');
 
     this.renderSidebar();
+    this.renderRooms();
 
     return this;
   }

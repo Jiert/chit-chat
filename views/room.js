@@ -20,59 +20,35 @@ module.exports = Backbone.View.extend({
 
     this.model = options.room;
 
+    // Jesus, we have the room, so we have the messages, should we pass the messages into the collection?
+    // Or does Firebase do that by itself already?
     this.messages = new MessagesCollection([], {
       room: this.model.id,
     });
 
     this.listenTo(this.messages, {
-      // TODO: This isn't the wy to go. We should only append new messages, 
-      // rather than re-rendering each time we save just one message
-      'sync': this.renderMessages,
       'add' : this.onAdd
     });
   },
 
   renderMessages: function(){
-    // debugger;
-
-    this.stopListening(this.messages, 'sync');
-
     console.log('room: renderMessages');
 
     this.$messages.html('');
 
-    // TODO: This is a total hack and needs to be killed
-    // this.cleanUp();
     this.messages.each(this.renderMessage);
-
-    // TODO: HERE IT IS FOLKS: 
-    // console.log('subViews: ', this.subViews && this.subViews.length);
-
 
     // TODO: For now, this will work, but it will
     // need to be fixed once the memory leak is fixed
     var scrollHeight = this.$messages.prop('scrollHeight');
     this.$messages.scrollTop(scrollHeight);
-
-    // TODO: Sort out this massive memory leak!
-    // So, we're cleaning up now, which is fine, 
-    // But we need to not call renderMessagess everytime
-    // we post a new message.
   },
 
   onAdd: function(message){
     this.renderMessage(message);
-  },
 
-  onSync: function(){
-    debugger;
-  },
-
-  // TODO: Get rid of this shit
-  cleanUp: function(){
-    _(this.subViews).each(function(subView){
-      subView.destroy();
-    });
+    var scrollHeight = this.$messages.prop('scrollHeight');
+    this.$messages.scrollTop(scrollHeight);
   },
 
   renderMessage: function(model){
@@ -97,17 +73,8 @@ module.exports = Backbone.View.extend({
     this.$messages = this.$('.messages');
     this.$messageInput = this.$('.message-input');
 
-    // TODO: There's got to be a better way to do 
-    // this in tandom with listenTo: sync
-    // if (this.messages && this.messages.length){
-    //   this.renderMessages();
-    // }
-  
-    // Why doesn't sync fire here?    
-    // this.listenTo(this.messages, {
-    //   'sync': this.renderMessages,
-    //   'add' : this.onAdd
-    // });
+    // Why does it seem like this.messages is here insta... is this here becasue we already have rooms?
+    this.renderMessages();
 
     if (app.ref.getAuth()){
       this.renderForm();

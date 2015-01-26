@@ -14,18 +14,24 @@ module.exports = Backbone.View.extend({
   events: {},
 
   initialize: function(options){
-    _.bindAll(this, 'authDataCallback', 'onUser');
+    _.bindAll(this, 'authDataCallback', 'onUser', 'getRooms');
+  },
+
+  getRooms: function(){
+    // I'm putting this here so it can be listened to by any view in the app
+    app.rooms = new RoomsCollection();
+
+    this.listenTo(app.rooms, 'sync', this.authenticateUser);
   },
 
   authenticateUser: function(){
+    // Cahnges to messages are calling sync on rooms
+    this.stopListening(app.rooms, 'sync');
+
     // Register the callback to be fired every time auth state changes
     // TODO: we should be making all these references with models / collectons
-
     app.ref = new Firebase("https://blinding-torch-9943.firebaseio.com");
     app.ref.onAuth(this.authDataCallback);
-
-    // I'm putting this here so it can be listened to by any view in the app
-    app.rooms = new RoomsCollection();
   },
 
   authDataCallback: function(authData) {
@@ -38,6 +44,10 @@ module.exports = Backbone.View.extend({
     else {
       delete app.user.authData;
       console.log("User is logged out");
+
+      // TODO: have parts of the application listen to he user
+      // and render themselves, rather than re-rendering the entire
+      // application on login / logout
       this.renderApp();
     }
   },
@@ -74,7 +84,7 @@ module.exports = Backbone.View.extend({
     this.$mainNav = this.$('#main-nav');
     this.$content = this.$('#content');
 
-    this.authenticateUser();
+    this.getRooms();
 
     return this;
   }
