@@ -12,15 +12,19 @@ var _ = require('underscore'),
 module.exports = Backbone.View.extend({
 
   className: 'col-md-6',
+  events: {
+    'click .close' : 'destroy'
+  },
 
   initialize: function(options){
-    _.bindAll(this, 'renderMessages', 'renderMessage');
+    _.bindAll(this, 'renderMessages', 'renderMessage', 'scrollToBottom');
 
     if (!options.room) return;
 
     this.model = options.room;
 
-    // Jesus, we have the room, so we have the messages, should we pass the messages into the collection?
+    // Jesus, we have the room, so we have the messages, 
+    // should we pass the messages into the collection?
     // Or does Firebase do that by itself already?
     this.messages = new MessagesCollection([], {
       room: this.model.id,
@@ -32,23 +36,13 @@ module.exports = Backbone.View.extend({
   },
 
   renderMessages: function(){
-    console.log('room: renderMessages');
-
     this.$messages.html('');
-
     this.messages.each(this.renderMessage);
-
-    // TODO: For now, this will work, but it will
-    // need to be fixed once the memory leak is fixed
-    var scrollHeight = this.$messages.prop('scrollHeight');
-    this.$messages.scrollTop(scrollHeight);
   },
 
   onAdd: function(message){
     this.renderMessage(message);
-
-    var scrollHeight = this.$messages.prop('scrollHeight');
-    this.$messages.scrollTop(scrollHeight);
+    this.scrollToBottom();
   },
 
   renderMessage: function(model){
@@ -65,16 +59,22 @@ module.exports = Backbone.View.extend({
     this.$messageInput.html(formView.render().el);
   },
 
-  render: function() {
-    console.log('room: render')
+  scrollToBottom: function(){
+    var scrollHeight = this.$messages.prop('scrollHeight');
+    this.$messages.scrollTop(scrollHeight);
+  },
 
+  render: function() {
     this.$el.html(template(this.model.toJSON()));
 
     this.$messages = this.$('.messages');
     this.$messageInput = this.$('.message-input');
 
-    // Why does it seem like this.messages is here insta... is this here becasue we already have rooms?
+    // Why does it seem like this.messages is here instanly 
+    // is this here becasue we already have rooms?
     this.renderMessages();
+
+    _(this.scrollToBottom).defer();
 
     if (app.ref.getAuth()){
       this.renderForm();

@@ -10,7 +10,6 @@ module.exports = Backbone.View.extend({
   },
 
   render: function(){
-    // console.log('rendering message')
     // TODO: Why on earth isn't app defined here?
     var userName = this.user && this.user.userName,
         authorClass = this.model.get('author') === userName ? 'primary' : 'success';

@@ -14017,7 +14017,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<form>\n  <div class=\"form-group\">\n     <div class=\"input-group\">\n       <input id=\"message\" name=\"message\" type=\"text\" class=\"form-control\" placeholder=\"Speak up\">\n       <span class=\"input-group-btn\">\n         <button id=\"submit-message\" class=\"btn btn-default\" type=\"button\">Chat</button>\n       </span>\n     </div>\n   </div>\n</form>";
+  return "<form>\n  <div class=\"form-group\">\n     <div class=\"input-group\">\n       <input name=\"message\" type=\"text\" class=\"message form-control\" placeholder=\"Speak up\">\n       <span class=\"input-group-btn\">\n         <button class=\"submit-message btn btn-default\" type=\"button\">Chat</button>\n       </span>\n     </div>\n   </div>\n</form>";
   },"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/login.hbs":[function(require,module,exports){
@@ -14089,7 +14089,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
-  return "<div class=\"panel panel-default\">\n  <div class=\"panel-heading\">\n    <h3 class=\"panel-title\">"
+  return "<div class=\"panel panel-default\">\n  <div class=\"panel-heading\">\n    <button type=\"button\" class=\"close\">&times;</button>\n    <h3 class=\"panel-title\">"
     + escapeExpression(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"name","hash":{},"data":data}) : helper)))
     + "</h3>\n  </div>\n  <div class=\"messages panel-body\">\n    Loading Messages...\n  </div>\n  <div class=\"message-input panel-footer\"></div>\n</div>";
 },"useData":true});
@@ -14111,7 +14111,9 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
-  return "<li><a href=\"#\">"
+  return "<li><a href=\""
+    + escapeExpression(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"id","hash":{},"data":data}) : helper)))
+    + "\">"
     + escapeExpression(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"name","hash":{},"data":data}) : helper)))
     + " <span class=\"pull-right badge\">"
     + escapeExpression(((helper = (helper = helpers.active || (depth0 != null ? depth0.active : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"active","hash":{},"data":data}) : helper)))
@@ -14227,16 +14229,17 @@ module.exports = Backbone.View.extend({
     _.bindAll(this, 'renderSidebar', 'renderRoom');
 
     this.listenTo(app.rooms, {
-      // Probably only way to render new rooms if ther user
-      // Clicks on it
-      'add' : this.renderRoom,
       'remove' : this.onRemoveRoom
     });
   },
 
   renderSidebar: function(){
-    var sidebarView = this.createSubView( SidebarView, {});
-    this.$mainSidebarNav.html(sidebarView.render().el);
+    this.sidebarView = this.createSubView( SidebarView, {});
+    this.$mainSidebarNav.html(this.sidebarView.render().el);
+
+    this.listenTo(this.sidebarView, {
+      'room:clicked' : this.renderRoom
+    });
   },
 
   renderRooms: function(){
@@ -14252,7 +14255,7 @@ module.exports = Backbone.View.extend({
     // Has clicked on.
 
     // For Now:
-    app.rooms.each( this.renderRoom );
+    // app.rooms.each( this.renderRoom );
   },
 
 
@@ -14261,6 +14264,7 @@ module.exports = Backbone.View.extend({
   },
 
   renderRoom: function(room){
+    // It should be here where we store a user's rooms
     var roomView = this.createSubView( RoomView, {
       room: room
     });
@@ -14290,7 +14294,7 @@ var _ = require('underscore'),
 module.exports = Backbone.View.extend({
 
   events: {
-    'click #submit-message' : 'onMessageSubmit'
+    'click .submit-message' : 'onMessageSubmit',
   },
 
   initialize: function(options){
@@ -14309,7 +14313,7 @@ module.exports = Backbone.View.extend({
     if (message){
       this.messages.create({
         author: app.user.authData.userName,
-        message: this.$('[name="message"]').val()
+        message: this.$message.val()
       });
     }
     else {
@@ -14319,7 +14323,7 @@ module.exports = Backbone.View.extend({
 
   render: function(){
     this.$el.html(template());
-    this.$message = this.$('#message');
+    this.$message = this.$('.message');
     return this;
   }
 
@@ -14457,7 +14461,6 @@ module.exports = Backbone.View.extend({
   },
 
   render: function(){
-    // console.log('rendering message')
     // TODO: Why on earth isn't app defined here?
     var userName = this.user && this.user.userName,
         authorClass = this.model.get('author') === userName ? 'primary' : 'success';
@@ -14547,15 +14550,19 @@ var _ = require('underscore'),
 module.exports = Backbone.View.extend({
 
   className: 'col-md-6',
+  events: {
+    'click .close' : 'destroy'
+  },
 
   initialize: function(options){
-    _.bindAll(this, 'renderMessages', 'renderMessage');
+    _.bindAll(this, 'renderMessages', 'renderMessage', 'scrollToBottom');
 
     if (!options.room) return;
 
     this.model = options.room;
 
-    // Jesus, we have the room, so we have the messages, should we pass the messages into the collection?
+    // Jesus, we have the room, so we have the messages, 
+    // should we pass the messages into the collection?
     // Or does Firebase do that by itself already?
     this.messages = new MessagesCollection([], {
       room: this.model.id,
@@ -14567,23 +14574,13 @@ module.exports = Backbone.View.extend({
   },
 
   renderMessages: function(){
-    console.log('room: renderMessages');
-
     this.$messages.html('');
-
     this.messages.each(this.renderMessage);
-
-    // TODO: For now, this will work, but it will
-    // need to be fixed once the memory leak is fixed
-    var scrollHeight = this.$messages.prop('scrollHeight');
-    this.$messages.scrollTop(scrollHeight);
   },
 
   onAdd: function(message){
     this.renderMessage(message);
-
-    var scrollHeight = this.$messages.prop('scrollHeight');
-    this.$messages.scrollTop(scrollHeight);
+    this.scrollToBottom();
   },
 
   renderMessage: function(model){
@@ -14600,16 +14597,22 @@ module.exports = Backbone.View.extend({
     this.$messageInput.html(formView.render().el);
   },
 
-  render: function() {
-    console.log('room: render')
+  scrollToBottom: function(){
+    var scrollHeight = this.$messages.prop('scrollHeight');
+    this.$messages.scrollTop(scrollHeight);
+  },
 
+  render: function() {
     this.$el.html(template(this.model.toJSON()));
 
     this.$messages = this.$('.messages');
     this.$messageInput = this.$('.message-input');
 
-    // Why does it seem like this.messages is here insta... is this here becasue we already have rooms?
+    // Why does it seem like this.messages is here instanly 
+    // is this here becasue we already have rooms?
     this.renderMessages();
+
+    _(this.scrollToBottom).defer();
 
     if (app.ref.getAuth()){
       this.renderForm();
@@ -14633,6 +14636,7 @@ var _ = require('underscore'),
 module.exports = Backbone.View.extend({
 
   events: {
+    'click .rooms a'     : 'onRoomClick',
     'click #create-room' : 'onCreateRoomClick'
   },
 
@@ -14644,6 +14648,15 @@ module.exports = Backbone.View.extend({
     });
   },
 
+  onRoomClick: function(event){
+    event.preventDefault();
+    // TODO: Dont' use the DOM for room information!!!
+    var roomId = $(event.currentTarget).attr('href'),
+        roomModel = app.rooms.get(roomId);
+
+    this.trigger('room:clicked', roomModel);
+  },
+
   onCreateRoomClick: function(){
     this.modalView = this.createSubView( ModalView, {
       onConfirm   : this.onConfirmRoom,
@@ -14653,16 +14666,15 @@ module.exports = Backbone.View.extend({
   },
 
   renderRooms: function(){
-    // TODO: I don't like this nonsense of re-rendering
-    // This entire list ever time there's a new name.
-    // It would be ideal to only insert 'new' models
     this.$rooms.html('');
-
     app.rooms.each(this.renderRoom);
   },
 
   renderRoom: function(room){
+    // Should these be rooms so we're not
+    // dependant on the DOM for romo info?
     this.$rooms.append(roomLabel({
+      id: room.get('id'),
       name: room.get('name'),
       active: room.get('active') || 0
     }));

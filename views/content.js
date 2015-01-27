@@ -13,16 +13,17 @@ module.exports = Backbone.View.extend({
     _.bindAll(this, 'renderSidebar', 'renderRoom');
 
     this.listenTo(app.rooms, {
-      // Probably only way to render new rooms if ther user
-      // Clicks on it
-      'add' : this.renderRoom,
       'remove' : this.onRemoveRoom
     });
   },
 
   renderSidebar: function(){
-    var sidebarView = this.createSubView( SidebarView, {});
-    this.$mainSidebarNav.html(sidebarView.render().el);
+    this.sidebarView = this.createSubView( SidebarView, {});
+    this.$mainSidebarNav.html(this.sidebarView.render().el);
+
+    this.listenTo(this.sidebarView, {
+      'room:clicked' : this.renderRoom
+    });
   },
 
   renderRooms: function(){
@@ -38,7 +39,7 @@ module.exports = Backbone.View.extend({
     // Has clicked on.
 
     // For Now:
-    app.rooms.each( this.renderRoom );
+    // app.rooms.each( this.renderRoom );
   },
 
 
@@ -47,6 +48,7 @@ module.exports = Backbone.View.extend({
   },
 
   renderRoom: function(room){
+    // It should be here where we store a user's rooms
     var roomView = this.createSubView( RoomView, {
       room: room
     });

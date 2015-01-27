@@ -11,6 +11,7 @@ var _ = require('underscore'),
 module.exports = Backbone.View.extend({
 
   events: {
+    'click .rooms a'     : 'onRoomClick',
     'click #create-room' : 'onCreateRoomClick'
   },
 
@@ -22,6 +23,15 @@ module.exports = Backbone.View.extend({
     });
   },
 
+  onRoomClick: function(event){
+    event.preventDefault();
+    // TODO: Dont' use the DOM for room information!!!
+    var roomId = $(event.currentTarget).attr('href'),
+        roomModel = app.rooms.get(roomId);
+
+    this.trigger('room:clicked', roomModel);
+  },
+
   onCreateRoomClick: function(){
     this.modalView = this.createSubView( ModalView, {
       onConfirm   : this.onConfirmRoom,
@@ -31,16 +41,15 @@ module.exports = Backbone.View.extend({
   },
 
   renderRooms: function(){
-    // TODO: I don't like this nonsense of re-rendering
-    // This entire list ever time there's a new name.
-    // It would be ideal to only insert 'new' models
     this.$rooms.html('');
-
     app.rooms.each(this.renderRoom);
   },
 
   renderRoom: function(room){
+    // Should these be rooms so we're not
+    // dependant on the DOM for romo info?
     this.$rooms.append(roomLabel({
+      id: room.get('id'),
       name: room.get('name'),
       active: room.get('active') || 0
     }));

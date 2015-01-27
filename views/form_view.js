@@ -6,7 +6,7 @@ var _ = require('underscore'),
 module.exports = Backbone.View.extend({
 
   events: {
-    'click #submit-message' : 'onMessageSubmit'
+    'click .submit-message' : 'onMessageSubmit',
   },
 
   initialize: function(options){
@@ -25,7 +25,7 @@ module.exports = Backbone.View.extend({
     if (message){
       this.messages.create({
         author: app.user.authData.userName,
-        message: this.$('[name="message"]').val()
+        message: this.$message.val()
       });
     }
     else {
@@ -35,7 +35,7 @@ module.exports = Backbone.View.extend({
 
   render: function(){
     this.$el.html(template());
-    this.$message = this.$('#message');
+    this.$message = this.$('.message');
     return this;
   }
 
