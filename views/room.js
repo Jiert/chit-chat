@@ -35,6 +35,16 @@ module.exports = Backbone.View.extend({
     });
   },
 
+  teardown: function(){
+    if (app.user){
+
+      // TODO: Get rid of this string bullshit
+      var oldRooms = app.user.get('rooms').split(','),
+          newRooms = _(oldRooms).without(this.model.id).toString();
+      app.user.set('rooms', newRooms);
+    }
+  },
+
   renderMessages: function(){
     this.$messages.html('');
     this.messages.each(this.renderMessage);

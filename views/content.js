@@ -10,7 +10,7 @@ var _ = require('underscore'),
 module.exports = Backbone.View.extend({
 
   initialize: function(options){
-    _.bindAll(this, 'renderSidebar', 'renderRoom', 'onRoomClick', 'getRooms', 'buildRoom');
+    _.bindAll(this, 'renderSidebar', 'renderRoom', 'onRoomClick', 'buildRoom');
 
     this.listenTo(app.rooms, {
       'remove' : this.onRemoveRoom
@@ -31,19 +31,15 @@ module.exports = Backbone.View.extend({
   },
 
   renderRooms: function(){
-    this.$mainContent.html('');
-
     if (app.user && app.user.has('rooms')){
-      this.getRooms();
+      this.userRoomsCollection = new Backbone.Collection();
+
+      app.rooms.each(this.buildRoom);
+
+      this.$mainContent.html('');
+
+      this.userRoomsCollection.each(this.renderRoom);
     }
-  },
-
-  getRooms: function(){
-    this.userRoomsCollection = new Backbone.Collection();
-
-    app.rooms.each(this.buildRoom);
-
-    this.userRoomsCollection.each(this.renderRoom);
   },
 
   buildRoom: function(room){

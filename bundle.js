@@ -14010,7 +14010,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<div class=\"row\">\n  <div id=\"main-sidebar-nav\" class=\"col-md-3 sidebar\"></div>\n  <div class=\"  col-md-9 col-md-offset-3 main\">\n    <div id=\"main-content\" class=\"row\">\n      <div class=\"col-md-12\">\n      </div>\n    </div>\n  </div>\n</div>";
+  return "<div class=\"row\">\n  <div id=\"main-sidebar-nav\" class=\"col-md-3 sidebar\"></div>\n  <div class=\"  col-md-9 col-md-offset-3 main\">\n    <div id=\"main-content\" class=\"row\">\n      <div class=\"col-md-12\">\n        <h1>Welcome to Chit Chat. <small>(working name)</small></h1>\n        <p class=\"lead\">Click on a topic over there on the left to open a chat room.</p>\n        <p class=\"lead\">If you're logged in, you'll be automatically subscribed.</p>\n        <p class=\"lead\">To unsuscribe, simply close the room.</p>\n      </div>\n    </div>\n  </div>\n</div>";
 },"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/create_room.hbs":[function(require,module,exports){
@@ -14024,7 +14024,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<form>\n  <div class=\"form-group\">\n     <div class=\"input-group\">\n       <input name=\"message\" type=\"text\" class=\"message form-control\" placeholder=\"Speak up\">\n       <span class=\"input-group-btn\">\n         <button class=\"submit-message btn btn-default\" type=\"button\">Chat</button>\n       </span>\n     </div>\n   </div>\n</form>";
+  return "<form>\n  <div class=\"form-group\">\n     <div class=\"input-group\">\n       <input name=\"message\" type=\"text\" class=\"message form-control\" placeholder=\"Is this thing on?\">\n       <span class=\"input-group-btn\">\n         <button class=\"submit-message btn btn-default\" type=\"button\">Chat</button>\n       </span>\n     </div>\n   </div>\n</form>";
   },"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/login.hbs":[function(require,module,exports){
@@ -14253,7 +14253,7 @@ var _ = require('underscore'),
 module.exports = Backbone.View.extend({
 
   initialize: function(options){
-    _.bindAll(this, 'renderSidebar', 'renderRoom', 'onRoomClick', 'getRooms', 'buildRoom');
+    _.bindAll(this, 'renderSidebar', 'renderRoom', 'onRoomClick', 'buildRoom');
 
     this.listenTo(app.rooms, {
       'remove' : this.onRemoveRoom
@@ -14274,19 +14274,15 @@ module.exports = Backbone.View.extend({
   },
 
   renderRooms: function(){
-    this.$mainContent.html('');
-
     if (app.user && app.user.has('rooms')){
-      this.getRooms();
+      this.userRoomsCollection = new Backbone.Collection();
+
+      app.rooms.each(this.buildRoom);
+
+      this.$mainContent.html('');
+
+      this.userRoomsCollection.each(this.renderRoom);
     }
-  },
-
-  getRooms: function(){
-    this.userRoomsCollection = new Backbone.Collection();
-
-    app.rooms.each(this.buildRoom);
-
-    this.userRoomsCollection.each(this.renderRoom);
   },
 
   buildRoom: function(room){
@@ -14623,6 +14619,16 @@ module.exports = Backbone.View.extend({
     this.listenTo(this.messages, {
       'add' : this.onAdd
     });
+  },
+
+  teardown: function(){
+    if (app.user){
+
+      // TODO: Get rid of this string bullshit
+      var oldRooms = app.user.get('rooms').split(','),
+          newRooms = _(oldRooms).without(this.model.id).toString();
+      app.user.set('rooms', newRooms);
+    }
   },
 
   renderMessages: function(){
