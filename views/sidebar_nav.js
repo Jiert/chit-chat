@@ -59,7 +59,7 @@ module.exports = Backbone.View.extend({
   // confirmed callback from the modal view
   onConfirmRoom: function(){
     app.rooms.push({
-      creator: app.user.authData.userName,
+      creator: app.user.get('userName'),
       name: this.modalView.$('input').val()
     });
 
@@ -68,7 +68,7 @@ module.exports = Backbone.View.extend({
 
   render: function() {
     this.$el.html(template({
-      user: app.ref.getAuth()
+      user: app.user
     }));
 
     this.$rooms = this.$('.rooms');

@@ -49,6 +49,9 @@ module.exports = Backbone.View.extend({
 
   renderRoom: function(room){
     // It should be here where we store a user's rooms
+    // debugger;
+
+
     var roomView = this.createSubView( RoomView, {
       room: room
     });
@@ -63,7 +66,7 @@ module.exports = Backbone.View.extend({
     this.$mainSidebarNav = this.$('#main-sidebar-nav');
 
     this.renderSidebar();
-    this.renderRooms();
+    // this.renderRooms();
 
     return this;
   }

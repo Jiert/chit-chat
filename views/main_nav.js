@@ -100,7 +100,7 @@ module.exports = Backbone.View.extend({
 
     this.$el.html(template({
       authData: auth,
-      userName: app.user.authData ? app.user.authData.userName : undefined 
+      userName: app.user ? app.user.get('userName') : undefined 
     }));
 
     this.$('#user-register > a').popover({

@@ -1124,6 +1124,13 @@ module.exports  = Backbone.Model.extend({
     };
   },
 });
+},{"backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/models/user.js":[function(require,module,exports){
+var _ = require('underscore'),
+    Backbone = require('backbone');
+
+module.exports  = Backbone.Firebase.Model.extend({
+  urlRoot: 'https://blinding-torch-9943.firebaseio.com/users/'
+});
 },{"backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/namespace.js":[function(require,module,exports){
 var _ = require('underscore'),
     Backbone = require('backbone'),
@@ -14003,7 +14010,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<div class=\"row\">\n  <div id=\"main-sidebar-nav\" class=\"col-md-3 sidebar\"></div>\n  <div class=\"  col-md-9 col-md-offset-3 main\">\n    <div id=\"main-content\" class=\"row\">\n      <div class=\"col-md-12\">Loading Rooms...</div>\n    </div>\n  </div>\n</div>";
+  return "<div class=\"row\">\n  <div id=\"main-sidebar-nav\" class=\"col-md-3 sidebar\"></div>\n  <div class=\"  col-md-9 col-md-offset-3 main\">\n    <div id=\"main-content\" class=\"row\">\n      <div class=\"col-md-12\">\n      </div>\n    </div>\n  </div>\n</div>";
 },"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/create_room.hbs":[function(require,module,exports){
@@ -14126,6 +14133,7 @@ var _ = require('underscore'),
     Backbone = require('backbone'),
 
     RoomsCollection = require('../collections/rooms'),
+    UserModel = require('../models/user'),
 
     template = require('../templates/application.hbs'),
 
@@ -14148,7 +14156,8 @@ module.exports = Backbone.View.extend({
   },
 
   authenticateUser: function(){
-    // Cahnges to messages are calling sync on rooms
+    // Cahnges to messages are calling sync on rooms,
+    // so lets stop listen to 'sync' on rooms
     this.stopListening(app.rooms, 'sync');
 
     // Register the callback to be fired every time auth state changes
@@ -14159,13 +14168,14 @@ module.exports = Backbone.View.extend({
 
   authDataCallback: function(authData) {
     if (authData) {
-      // TODO: find a better way to find users undrer app.ref
-      // This needs to be a model
-      var user = new Firebase('https://blinding-torch-9943.firebaseio.com/users/' + authData.uid);
-      user.once('value', this.onUser);
+      app.user = new UserModel({
+        id: authData.uid
+      });
+
+      this.listenTo(app.user, 'sync', this.onUser);
     } 
     else {
-      delete app.user.authData;
+      delete app.user;
       console.log("User is logged out");
 
       // TODO: have parts of the application listen to he user
@@ -14175,9 +14185,10 @@ module.exports = Backbone.View.extend({
     }
   },
 
-  onUser: function(snap){
-    app.user.authData = snap.val();
-    console.log('User logged in: ', app.user.authData);
+  onUser: function(user){
+    this.stopListening(app.user, 'sync');
+
+    console.log('User logged in: ', app.user.toJSON());
 
     // I question if this is the best thing to do
     this.renderApp();
@@ -14190,13 +14201,11 @@ module.exports = Backbone.View.extend({
 
   renderNav: function(){
     var navView = this.createSubView(NavView, {});
-
     this.$mainNav.html(navView.render().el);
   },
 
   renderContent: function(){
     var contentView = this.createSubView(ContentView, {});
-
     this.$content.html(contentView.render().el);
   },
 
@@ -14213,7 +14222,7 @@ module.exports = Backbone.View.extend({
   }
 
 });
-},{"../collections/rooms":"/Users/Easterday/Projects/beerRecipe/collections/rooms.js","../namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","../templates/application.hbs":"/Users/Easterday/Projects/beerRecipe/templates/application.hbs","../views/content":"/Users/Easterday/Projects/beerRecipe/views/content.js","../views/main_nav":"/Users/Easterday/Projects/beerRecipe/views/main_nav.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/content.js":[function(require,module,exports){
+},{"../collections/rooms":"/Users/Easterday/Projects/beerRecipe/collections/rooms.js","../models/user":"/Users/Easterday/Projects/beerRecipe/models/user.js","../namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","../templates/application.hbs":"/Users/Easterday/Projects/beerRecipe/templates/application.hbs","../views/content":"/Users/Easterday/Projects/beerRecipe/views/content.js","../views/main_nav":"/Users/Easterday/Projects/beerRecipe/views/main_nav.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/content.js":[function(require,module,exports){
 var _ = require('underscore'),
     app = require('../namespace'),
     Backbone = require('backbone'),
@@ -14265,6 +14274,9 @@ module.exports = Backbone.View.extend({
 
   renderRoom: function(room){
     // It should be here where we store a user's rooms
+    // debugger;
+
+
     var roomView = this.createSubView( RoomView, {
       room: room
     });
@@ -14279,7 +14291,7 @@ module.exports = Backbone.View.extend({
     this.$mainSidebarNav = this.$('#main-sidebar-nav');
 
     this.renderSidebar();
-    this.renderRooms();
+    // this.renderRooms();
 
     return this;
   }
@@ -14312,7 +14324,7 @@ module.exports = Backbone.View.extend({
 
     if (message){
       this.messages.create({
-        author: app.user.authData.userName,
+        author: app.user.get('userName'),
         message: this.$message.val()
       });
     }
@@ -14431,7 +14443,7 @@ module.exports = Backbone.View.extend({
 
     this.$el.html(template({
       authData: auth,
-      userName: app.user.authData ? app.user.authData.userName : undefined 
+      userName: app.user ? app.user.get('userName') : undefined 
     }));
 
     this.$('#user-register > a').popover({
@@ -14457,12 +14469,12 @@ var _ = require('underscore'),
 module.exports = Backbone.View.extend({
 
   initialize: function(options){
-    this.user = options.user;
+    // this.user = options.user;
   },
 
   render: function(){
     // TODO: Why on earth isn't app defined here?
-    var userName = this.user && this.user.userName,
+    var userName = app.user && app.user.get('userName'),
         authorClass = this.model.get('author') === userName ? 'primary' : 'success';
 
     this.$el.html(template({
@@ -14585,8 +14597,8 @@ module.exports = Backbone.View.extend({
 
   renderMessage: function(model){
     var messageView = this.createSubView( MessageView, {
-      model: model,
-      user: app.user.authData
+      model: model
+      // user: app.user
     });
 
     this.$messages.append(messageView.render().el);
@@ -14684,7 +14696,7 @@ module.exports = Backbone.View.extend({
   // confirmed callback from the modal view
   onConfirmRoom: function(){
     app.rooms.push({
-      creator: app.user.authData.userName,
+      creator: app.user.get('userName'),
       name: this.modalView.$('input').val()
     });
 
@@ -14693,7 +14705,7 @@ module.exports = Backbone.View.extend({
 
   render: function() {
     this.$el.html(template({
-      user: app.ref.getAuth()
+      user: app.user
     }));
 
     this.$rooms = this.$('.rooms');

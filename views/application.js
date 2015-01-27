@@ -3,6 +3,7 @@ var _ = require('underscore'),
     Backbone = require('backbone'),
 
     RoomsCollection = require('../collections/rooms'),
+    UserModel = require('../models/user'),
 
     template = require('../templates/application.hbs'),
 
@@ -25,7 +26,8 @@ module.exports = Backbone.View.extend({
   },
 
   authenticateUser: function(){
-    // Cahnges to messages are calling sync on rooms
+    // Cahnges to messages are calling sync on rooms,
+    // so lets stop listen to 'sync' on rooms
     this.stopListening(app.rooms, 'sync');
 
     // Register the callback to be fired every time auth state changes
@@ -36,13 +38,14 @@ module.exports = Backbone.View.extend({
 
   authDataCallback: function(authData) {
     if (authData) {
-      // TODO: find a better way to find users undrer app.ref
-      // This needs to be a model
-      var user = new Firebase('https://blinding-torch-9943.firebaseio.com/users/' + authData.uid);
-      user.once('value', this.onUser);
+      app.user = new UserModel({
+        id: authData.uid
+      });
+
+      this.listenTo(app.user, 'sync', this.onUser);
     } 
     else {
-      delete app.user.authData;
+      delete app.user;
       console.log("User is logged out");
 
       // TODO: have parts of the application listen to he user
@@ -52,9 +55,10 @@ module.exports = Backbone.View.extend({
     }
   },
 
-  onUser: function(snap){
-    app.user.authData = snap.val();
-    console.log('User logged in: ', app.user.authData);
+  onUser: function(user){
+    this.stopListening(app.user, 'sync');
+
+    console.log('User logged in: ', app.user.toJSON());
 
     // I question if this is the best thing to do
     this.renderApp();
@@ -67,13 +71,11 @@ module.exports = Backbone.View.extend({
 
   renderNav: function(){
     var navView = this.createSubView(NavView, {});
-
     this.$mainNav.html(navView.render().el);
   },
 
   renderContent: function(){
     var contentView = this.createSubView(ContentView, {});
-
     this.$content.html(contentView.render().el);
   },
 
