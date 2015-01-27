@@ -6,9 +6,12 @@ var _ = require('underscore'),
 
 module.exports = Backbone.View.extend({
 
-  confirmText: 'Confirm',
-  className: 'modal fade',
-  modalBody: 'Hello World!',
+  title       : 'Modal', 
+  confirmText : 'Confirm',
+  className   : 'modal fade',
+  modalBody   : 'Hello World!',
+  showCancel  : true, 
+
   events: {
     'click .confirm' : 'onConfirm'
   },
@@ -49,9 +52,10 @@ module.exports = Backbone.View.extend({
 
   render: function() {
     this.$el.html(template({
-      title: 'title',
+      title       : this.title,
       confirmText : this.confirmText,
-      modalBody: _.isFunction(this.modalBody) ? this.modalBody() : this.modalBody
+      showCancel  : this.showCancel,
+      modalBody   : _.isFunction(this.modalBody) ? this.modalBody() : this.modalBody
     }));
 
     $('body').append(this.$el.modal());

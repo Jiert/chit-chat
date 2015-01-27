@@ -1,8 +1,12 @@
 var _ = require('underscore'),
     app = require('../namespace'),
     Backbone = require('backbone'),
+
+    ModalView = require('../views/modal'),
+
     template = require('../templates/main_nav.hbs'),
-    loginTemplate = require('../templates/login.hbs');
+    loginTemplate = require('../templates/login.hbs'),
+    registerTemplate = require('../templates/register.hbs');
 
 module.exports = Backbone.View.extend({
 
@@ -14,7 +18,7 @@ module.exports = Backbone.View.extend({
   },
 
   initialize: function(options){
-    _.bindAll(this, 'login', 'onLogin', 'onSaveUser', 'onAccountCreated');
+    _.bindAll(this, 'login', 'onLogin', 'onSaveUser', 'onAccountCreated', 'onLoginSubmit');
   },
 
   onLogoutClick: function(){
@@ -22,15 +26,20 @@ module.exports = Backbone.View.extend({
   },
 
   onLoginClick: function(){
-    this.$('.modal').modal();
+    this.modalView = this.createSubView( ModalView, {
+      title       : 'Login',
+      onConfirm   : this.onLoginSubmit,
+      modalBody   : loginTemplate,
+      confirmText : 'Login',
+      showCancel  : false 
+    });
   },
 
   onLoginSubmit: function(){
-    event.preventDefault();
+    this.modalView.$('.confirm').text('Working...').attr('disabled', 'disabled');
 
-    // TODO: Make sure there are no collisions with the registration form
-    var email = this.$('input[name="email_address"]').val(),
-        password = this.$('input[name="password"]').val();
+    var email = this.modalView.$('input[name="email_address"]').val(),
+        password = this.modalView.$('input[name="password"]').val();
 
     this.login(email, password);
   },
@@ -71,6 +80,8 @@ module.exports = Backbone.View.extend({
   },
   
   onLogin: function(error, authData){
+    this.modalView && this.modalView.hide();
+
     if (error) {
       console.log("Login Failed!", error);
     } 
@@ -80,7 +91,6 @@ module.exports = Backbone.View.extend({
 
         app.ref.child('users').child(authData.uid).set(authData, this.onSaveUser);
       }
-
       console.log("Authenticated successfully with payload:", authData);
     }
   },
@@ -107,12 +117,9 @@ module.exports = Backbone.View.extend({
     this.$('#user-register > a').popover({
       placement: 'bottom',
       html: true,
-      content: loginTemplate({ login: false}),
+      content: registerTemplate(),
       trigger: 'click'
     });
-
-    // TODO: Do we need this?
-    // this.$loginModal = this.$('.modal').modal({ show: false });
 
     return this;
   }

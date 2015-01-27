@@ -8,7 +8,9 @@
      {{{modalBody}}}
     </div>
     <div class="modal-footer">
+      {{#if showCancel}}
       <button type="button" class="btn" data-dismiss="modal" aria-label="Close">Cancel</button>
+      {{/if}}
       <button type="button" class="btn btn-primary confirm">{{confirmText}}</button>
     </div>
   </div>

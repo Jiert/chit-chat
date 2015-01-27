@@ -14030,21 +14030,9 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/login.hbs":[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
-module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
-  return "  <div class=\"form-group\">\n    <label for=\"user_name\">User Name</label>\n    <input name=\"user_name\" type=\"text\" class=\"form-control\" placeholder=\"User name\">\n  </div>\n";
-  },"3":function(depth0,helpers,partials,data) {
-  return "    <button id=\"login\" class=\"btn btn-primary\">Login</button>\n";
-  },"5":function(depth0,helpers,partials,data) {
-  return "    <button id=\"create-account\" class=\"btn btn-primary\">Create Account</button>\n";
-  },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  var stack1, buffer = "<form>\n";
-  stack1 = helpers.unless.call(depth0, (depth0 != null ? depth0.login : depth0), {"name":"unless","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  buffer += "  <div class=\"form-group\">\n    <label for=\"email_address\">Email address</label>\n    <input name=\"email_address\" type=\"email\" class=\"form-control\" placeholder=\"Enter address\">\n  </div>\n  <div class=\"form-group\">\n    <label for=\"password\">Password</label>\n    <input name=\"password\" type=\"password\" class=\"form-control\" placeholder=\"Password\">\n  </div>\n";
-  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.login : depth0), {"name":"if","hash":{},"fn":this.program(3, data),"inverse":this.program(5, data),"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  return buffer + "</form>";
-},"useData":true});
+module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  return "<form>\n  <div class=\"form-group\">\n    <label for=\"email_address\">Email address</label>\n    <input name=\"email_address\" type=\"email\" class=\"form-control\" placeholder=\"Enter address\">\n  </div>\n  <div class=\"form-group\">\n    <label for=\"password\">Password</label>\n    <input name=\"password\" type=\"password\" class=\"form-control\" placeholder=\"Password\">\n  </div>\n</form>";
+  },"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/main_nav.hbs":[function(require,module,exports){
 // hbsfy compiled Handlebars template
@@ -14060,7 +14048,7 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
   var stack1, buffer = "<div class=\"container-fluid\">\n  <div class=\"navbar-header\">\n    <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navbar\" aria-expanded=\"false\" aria-controls=\"navbar\">\n      <span class=\"sr-only\">Toggle navigation</span>\n      <span class=\"icon-bar\"></span>\n      <span class=\"icon-bar\"></span>\n      <span class=\"icon-bar\"></span>\n    </button>\n    <a class=\"navbar-brand\" href=\"#\">Chit Chat</a>\n  </div>\n  <div id=\"navbar\" class=\"navbar-collapse collapse\">\n    <ul id=\"user-login-nav\" class=\"nav navbar-nav navbar-right\">\n";
   stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.userName : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.program(3, data),"data":data});
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "    </ul>\n  </div>\n</div>\n\n<div class=\"modal fade\">\n  <div class=\"modal-dialog\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header\">\n        <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>\n        <h4 class=\"modal-title\">Login</h4>\n      </div>\n      <div class=\"modal-body\">\n        <form>\n          <div class=\"form-group\">\n            <label for=\"email_address\">Email address</label>\n            <input name=\"email_address\" type=\"email\" class=\"form-control\" placeholder=\"Enter address\">\n          </div>\n          <div class=\"form-group\">\n            <label for=\"password\">Password</label>\n            <input name=\"password\" type=\"password\" class=\"form-control\" placeholder=\"Password\">\n          </div>\n        </form>\n      </div>\n      <div class=\"modal-footer\">\n        <button id=\"login\" type=\"button\" class=\"btn btn-primary\">Login</button>\n      </div>\n    </div>\n  </div>\n</div>";
+  return buffer + "    </ul>\n  </div>\n</div>";
 },"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/message.hbs":[function(require,module,exports){
@@ -14080,16 +14068,28 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/modal.hbs":[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
-module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
+  return "      <button type=\"button\" class=\"btn\" data-dismiss=\"modal\" aria-label=\"Close\">Cancel</button>\n";
+  },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   var stack1, helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, buffer = "<div class=\"modal-dialog\">\n  <div class=\"modal-content\">\n    <div class=\"modal-header\">\n      <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>\n      <h4 class=\"modal-title\">"
     + escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"title","hash":{},"data":data}) : helper)))
     + "</h4>\n    </div>\n    <div class=\"modal-body\">\n     ";
   stack1 = ((helper = (helper = helpers.modalBody || (depth0 != null ? depth0.modalBody : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"modalBody","hash":{},"data":data}) : helper));
   if (stack1 != null) { buffer += stack1; }
-  return buffer + "\n    </div>\n    <div class=\"modal-footer\">\n      <button type=\"button\" class=\"btn\" data-dismiss=\"modal\" aria-label=\"Close\">Cancel</button>\n      <button type=\"button\" class=\"btn btn-primary confirm\">"
+  buffer += "\n    </div>\n    <div class=\"modal-footer\">\n";
+  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.showCancel : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + "      <button type=\"button\" class=\"btn btn-primary confirm\">"
     + escapeExpression(((helper = (helper = helpers.confirmText || (depth0 != null ? depth0.confirmText : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"confirmText","hash":{},"data":data}) : helper)))
     + "</button>\n    </div>\n  </div>\n</div>\n";
 },"useData":true});
+
+},{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/register.hbs":[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var HandlebarsCompiler = require('hbsfy/runtime');
+module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  return "<form>\n  <div class=\"form-group\">\n    <label for=\"user_name\">User Name</label>\n    <input name=\"user_name\" type=\"text\" class=\"form-control\" placeholder=\"User name\">\n  </div>\n  <div class=\"form-group\">\n    <label for=\"email_address\">Email address</label>\n    <input name=\"email_address\" type=\"email\" class=\"form-control\" placeholder=\"Enter address\">\n  </div>\n  <div class=\"form-group\">\n    <label for=\"password\">Password</label>\n    <input name=\"password\" type=\"password\" class=\"form-control\" placeholder=\"Password\">\n  </div>\n    <button id=\"create-account\" class=\"btn btn-primary\">Create Account</button>\n</form>";
+  },"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/room.hbs":[function(require,module,exports){
 // hbsfy compiled Handlebars template
@@ -14379,8 +14379,12 @@ module.exports = Backbone.View.extend({
 var _ = require('underscore'),
     app = require('../namespace'),
     Backbone = require('backbone'),
+
+    ModalView = require('../views/modal'),
+
     template = require('../templates/main_nav.hbs'),
-    loginTemplate = require('../templates/login.hbs');
+    loginTemplate = require('../templates/login.hbs'),
+    registerTemplate = require('../templates/register.hbs');
 
 module.exports = Backbone.View.extend({
 
@@ -14392,7 +14396,7 @@ module.exports = Backbone.View.extend({
   },
 
   initialize: function(options){
-    _.bindAll(this, 'login', 'onLogin', 'onSaveUser', 'onAccountCreated');
+    _.bindAll(this, 'login', 'onLogin', 'onSaveUser', 'onAccountCreated', 'onLoginSubmit');
   },
 
   onLogoutClick: function(){
@@ -14400,15 +14404,20 @@ module.exports = Backbone.View.extend({
   },
 
   onLoginClick: function(){
-    this.$('.modal').modal();
+    this.modalView = this.createSubView( ModalView, {
+      title       : 'Login',
+      onConfirm   : this.onLoginSubmit,
+      modalBody   : loginTemplate,
+      confirmText : 'Login',
+      showCancel  : false 
+    });
   },
 
   onLoginSubmit: function(){
-    event.preventDefault();
+    this.modalView.$('.confirm').text('Working...').attr('disabled', 'disabled');
 
-    // TODO: Make sure there are no collisions with the registration form
-    var email = this.$('input[name="email_address"]').val(),
-        password = this.$('input[name="password"]').val();
+    var email = this.modalView.$('input[name="email_address"]').val(),
+        password = this.modalView.$('input[name="password"]').val();
 
     this.login(email, password);
   },
@@ -14449,6 +14458,8 @@ module.exports = Backbone.View.extend({
   },
   
   onLogin: function(error, authData){
+    this.modalView && this.modalView.hide();
+
     if (error) {
       console.log("Login Failed!", error);
     } 
@@ -14458,7 +14469,6 @@ module.exports = Backbone.View.extend({
 
         app.ref.child('users').child(authData.uid).set(authData, this.onSaveUser);
       }
-
       console.log("Authenticated successfully with payload:", authData);
     }
   },
@@ -14485,18 +14495,15 @@ module.exports = Backbone.View.extend({
     this.$('#user-register > a').popover({
       placement: 'bottom',
       html: true,
-      content: loginTemplate({ login: false}),
+      content: registerTemplate(),
       trigger: 'click'
     });
-
-    // TODO: Do we need this?
-    // this.$loginModal = this.$('.modal').modal({ show: false });
 
     return this;
   }
 
 });
-},{"../namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","../templates/login.hbs":"/Users/Easterday/Projects/beerRecipe/templates/login.hbs","../templates/main_nav.hbs":"/Users/Easterday/Projects/beerRecipe/templates/main_nav.hbs","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/message.js":[function(require,module,exports){
+},{"../namespace":"/Users/Easterday/Projects/beerRecipe/namespace.js","../templates/login.hbs":"/Users/Easterday/Projects/beerRecipe/templates/login.hbs","../templates/main_nav.hbs":"/Users/Easterday/Projects/beerRecipe/templates/main_nav.hbs","../templates/register.hbs":"/Users/Easterday/Projects/beerRecipe/templates/register.hbs","../views/modal":"/Users/Easterday/Projects/beerRecipe/views/modal.js","backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/views/message.js":[function(require,module,exports){
 var _ = require('underscore'),
     // app = require('../namespace'),
     Backbone = require('backbone'),
@@ -14529,9 +14536,12 @@ var _ = require('underscore'),
 
 module.exports = Backbone.View.extend({
 
-  confirmText: 'Confirm',
-  className: 'modal fade',
-  modalBody: 'Hello World!',
+  title       : 'Modal', 
+  confirmText : 'Confirm',
+  className   : 'modal fade',
+  modalBody   : 'Hello World!',
+  showCancel  : true, 
+
   events: {
     'click .confirm' : 'onConfirm'
   },
@@ -14572,9 +14582,10 @@ module.exports = Backbone.View.extend({
 
   render: function() {
     this.$el.html(template({
-      title: 'title',
+      title       : this.title,
       confirmText : this.confirmText,
-      modalBody: _.isFunction(this.modalBody) ? this.modalBody() : this.modalBody
+      showCancel  : this.showCancel,
+      modalBody   : _.isFunction(this.modalBody) ? this.modalBody() : this.modalBody
     }));
 
     $('body').append(this.$el.modal());
