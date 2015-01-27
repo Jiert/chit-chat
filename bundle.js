@@ -1129,11 +1129,7 @@ var _ = require('underscore'),
     Backbone = require('backbone');
 
 module.exports  = Backbone.Firebase.Model.extend({
-  urlRoot: 'https://blinding-torch-9943.firebaseio.com/users/', 
-
-  defaults: {
-    rooms: []
-  }
+  urlRoot: 'https://blinding-torch-9943.firebaseio.com/users/'
 });
 },{"backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/namespace.js":[function(require,module,exports){
 var _ = require('underscore'),
@@ -14150,6 +14146,10 @@ module.exports = Backbone.View.extend({
 
   initialize: function(options){
     _.bindAll(this, 'authDataCallback', 'onUser', 'getRooms');
+
+    this.listenTo(app.events, {
+      'user:login' : this.onUser
+    });
   },
 
   getRooms: function(){
@@ -14171,15 +14171,27 @@ module.exports = Backbone.View.extend({
   },
 
   authDataCallback: function(authData) {
+    delete app.user;
+
     if (authData) {
       app.user = new UserModel({
         id: authData.uid
       });
 
-      this.listenTo(app.user, 'sync', this.onUser);
-    } 
+      // It appears that I usually already have the user, and 
+      // sync is long gone. Not sure how to ensure I have a user
+      // better than this nonsense:
+      if (app.user.has('userName')){
+        this.onUser();
+      }
+      else {
+        this.listenTo(app.user, {
+          'sync' : this.onUser,
+        });
+      }
+
+    }
     else {
-      delete app.user;
       console.log("User is logged out");
 
       // TODO: have parts of the application listen to he user
@@ -14189,7 +14201,7 @@ module.exports = Backbone.View.extend({
     }
   },
 
-  onUser: function(user){
+  onUser: function(){
     this.stopListening(app.user, 'sync');
 
     console.log('User logged in: ', app.user.toJSON());
@@ -14209,6 +14221,8 @@ module.exports = Backbone.View.extend({
   },
 
   renderContent: function(){
+    console.log('renderContent');
+
     var contentView = this.createSubView(ContentView, {});
     this.$content.html(contentView.render().el);
   },
@@ -14448,6 +14462,7 @@ module.exports = Backbone.View.extend({
 
         app.ref.child('users').child(authData.uid).set(authData, this.onSaveUser);
       }
+
       console.log("Authenticated successfully with payload:", authData);
     }
   },

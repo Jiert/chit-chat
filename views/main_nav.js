@@ -80,6 +80,7 @@ module.exports = Backbone.View.extend({
 
         app.ref.child('users').child(authData.uid).set(authData, this.onSaveUser);
       }
+
       console.log("Authenticated successfully with payload:", authData);
     }
   },

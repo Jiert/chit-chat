@@ -16,6 +16,10 @@ module.exports = Backbone.View.extend({
 
   initialize: function(options){
     _.bindAll(this, 'authDataCallback', 'onUser', 'getRooms');
+
+    this.listenTo(app.events, {
+      'user:login' : this.onUser
+    });
   },
 
   getRooms: function(){
@@ -37,15 +41,27 @@ module.exports = Backbone.View.extend({
   },
 
   authDataCallback: function(authData) {
+    delete app.user;
+
     if (authData) {
       app.user = new UserModel({
         id: authData.uid
       });
 
-      this.listenTo(app.user, 'sync', this.onUser);
-    } 
+      // It appears that I usually already have the user, and 
+      // sync is long gone. Not sure how to ensure I have a user
+      // better than this nonsense:
+      if (app.user.has('userName')){
+        this.onUser();
+      }
+      else {
+        this.listenTo(app.user, {
+          'sync' : this.onUser,
+        });
+      }
+
+    }
     else {
-      delete app.user;
       console.log("User is logged out");
 
       // TODO: have parts of the application listen to he user
@@ -55,7 +71,7 @@ module.exports = Backbone.View.extend({
     }
   },
 
-  onUser: function(user){
+  onUser: function(){
     this.stopListening(app.user, 'sync');
 
     console.log('User logged in: ', app.user.toJSON());
@@ -75,6 +91,8 @@ module.exports = Backbone.View.extend({
   },
 
   renderContent: function(){
+    console.log('renderContent');
+
     var contentView = this.createSubView(ContentView, {});
     this.$content.html(contentView.render().el);
   },
