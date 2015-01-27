@@ -48,7 +48,6 @@ module.exports = Backbone.View.extend({
   renderMessage: function(model){
     var messageView = this.createSubView( MessageView, {
       model: model
-      // user: app.user
     });
 
     this.$messages.append(messageView.render().el);

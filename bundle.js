@@ -1129,7 +1129,11 @@ var _ = require('underscore'),
     Backbone = require('backbone');
 
 module.exports  = Backbone.Firebase.Model.extend({
-  urlRoot: 'https://blinding-torch-9943.firebaseio.com/users/'
+  urlRoot: 'https://blinding-torch-9943.firebaseio.com/users/', 
+
+  defaults: {
+    rooms: []
+  }
 });
 },{"backbone":"/Users/Easterday/Projects/beerRecipe/node_modules/backbone/backbone.js","underscore":"/Users/Easterday/Projects/beerRecipe/node_modules/underscore/underscore.js"}],"/Users/Easterday/Projects/beerRecipe/namespace.js":[function(require,module,exports){
 var _ = require('underscore'),
@@ -14235,11 +14239,15 @@ var _ = require('underscore'),
 module.exports = Backbone.View.extend({
 
   initialize: function(options){
-    _.bindAll(this, 'renderSidebar', 'renderRoom');
+    _.bindAll(this, 'renderSidebar', 'renderRoom', 'onRoomClick', 'getRooms', 'buildRoom');
 
     this.listenTo(app.rooms, {
       'remove' : this.onRemoveRoom
     });
+
+    if (app.user){
+      this.userRooms = app.user.has('rooms') ? app.user.get('rooms').split(',') : [];
+    }
   },
 
   renderSidebar: function(){
@@ -14247,36 +14255,53 @@ module.exports = Backbone.View.extend({
     this.$mainSidebarNav.html(this.sidebarView.render().el);
 
     this.listenTo(this.sidebarView, {
-      'room:clicked' : this.renderRoom
+      'room:clicked' : this.onRoomClick
     });
   },
 
   renderRooms: function(){
     this.$mainContent.html('');
 
-    console.log('content: renderRooms');
-
-    // We don't want new rooms being added automatically
-    // Only render a room if a user has clicked on it,
-    // But maybe render a room if the user just created it
-
-    // Maybe use local storage to keep track of rooms that the user
-    // Has clicked on.
-
-    // For Now:
-    // app.rooms.each( this.renderRoom );
+    if (app.user && app.user.has('rooms')){
+      this.getRooms();
+    }
   },
 
+  getRooms: function(){
+    this.userRoomsCollection = new Backbone.Collection();
+
+    app.rooms.each(this.buildRoom);
+
+    this.userRoomsCollection.each(this.renderRoom);
+  },
+
+  buildRoom: function(room){
+    if (this.userRooms.indexOf(room.id) !== -1){
+      this.userRoomsCollection.add(room);
+    }
+  },
 
   onRemoveRoom: function(){
     console.log('content: onRemoveRoom');
   },
 
+  onRoomClick: function(room){
+    if (app.user){
+      this.userRooms.push(room.get('id'));
+
+      // Why on earth doesn't this work?
+      // app.user.set({'rooms': userRooms });
+
+      // Jesus Christ
+      // TODO: Find a better way for this,
+      // Flatten Data
+      app.user.set({'rooms': this.userRooms.toString() });
+    }
+
+    this.renderRoom(room);
+  },
+
   renderRoom: function(room){
-    // It should be here where we store a user's rooms
-    // debugger;
-
-
     var roomView = this.createSubView( RoomView, {
       room: room
     });
@@ -14291,7 +14316,7 @@ module.exports = Backbone.View.extend({
     this.$mainSidebarNav = this.$('#main-sidebar-nav');
 
     this.renderSidebar();
-    // this.renderRooms();
+    this.renderRooms();
 
     return this;
   }
@@ -14598,7 +14623,6 @@ module.exports = Backbone.View.extend({
   renderMessage: function(model){
     var messageView = this.createSubView( MessageView, {
       model: model
-      // user: app.user
     });
 
     this.$messages.append(messageView.render().el);
