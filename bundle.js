@@ -14088,7 +14088,7 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<form>\n  <div class=\"form-group\">\n    <label for=\"user_name\">User Name</label>\n    <input name=\"user_name\" type=\"text\" class=\"form-control\" placeholder=\"User name\">\n  </div>\n  <div class=\"form-group\">\n    <label for=\"email_address\">Email address</label>\n    <input name=\"email_address\" type=\"email\" class=\"form-control\" placeholder=\"Enter address\">\n  </div>\n  <div class=\"form-group\">\n    <label for=\"password\">Password</label>\n    <input name=\"password\" type=\"password\" class=\"form-control\" placeholder=\"Password\">\n  </div>\n    <button id=\"create-account\" class=\"btn btn-primary\">Create Account</button>\n</form>";
+  return "<form>\n  <div class=\"form-group\">\n    <label for=\"user_name\">User Name</label>\n    <input name=\"user_name\" type=\"text\" class=\"form-control\" placeholder=\"User name\">\n  </div>\n  <div class=\"form-group\">\n    <label for=\"email_address\">Email address</label>\n    <input name=\"email_address\" type=\"email\" class=\"form-control\" placeholder=\"Enter address\">\n  </div>\n  <div class=\"form-group\">\n    <label for=\"password\">Password</label>\n    <input name=\"password\" type=\"password\" class=\"form-control\" placeholder=\"Password\">\n  </div>\n</form>";
   },"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/room.hbs":[function(require,module,exports){
@@ -14156,12 +14156,17 @@ module.exports = Backbone.View.extend({
     // I'm putting this here so it can be listened to by any view in the app
     app.rooms = new RoomsCollection();
 
+    // Why are we listening to rooms in order to authendicate a user??
     this.listenTo(app.rooms, 'sync', this.authenticateUser);
   },
 
   authenticateUser: function(){
+    console.log('authendicateUser');
+
     // Cahnges to messages are calling sync on rooms,
     // so lets stop listen to 'sync' on rooms
+
+    // Wait, why are we doing this here in authenticateUser ???
     this.stopListening(app.rooms, 'sync');
 
     // Register the callback to be fired every time auth state changes
@@ -14171,6 +14176,7 @@ module.exports = Backbone.View.extend({
   },
 
   authDataCallback: function(authData) {
+    console.log('authDataCallback');
     delete app.user;
 
     if (authData) {
@@ -14211,6 +14217,9 @@ module.exports = Backbone.View.extend({
   },
 
   renderApp: function(){
+    // debugger;
+    console.log('renderApp');
+
     this.renderNav();
     this.renderContent();
   },
@@ -14389,14 +14398,15 @@ var _ = require('underscore'),
 module.exports = Backbone.View.extend({
 
   events: {
-    'click #logout'         : 'onLogoutClick',
-    'click #login'          : 'onLoginSubmit',
-    'click #user-login > a' : 'onLoginClick',
-    'click #create-account' : 'onCreateAccountClick',
+    'click #logout'            : 'onLogoutClick',
+    'click #login'             : 'onLoginSubmit',
+    'click #user-login > a'    : 'onLoginClick',
+    'click #user-register > a' : 'onRegisterClick',
+    // 'click #create-account'    : 'onCreateAccountClick',
   },
 
   initialize: function(options){
-    _.bindAll(this, 'login', 'onLogin', 'onSaveUser', 'onAccountCreated', 'onLoginSubmit');
+    _.bindAll(this, 'login', 'onLogin', 'onSaveUser', 'onAccountCreated', 'onLoginSubmit', 'onCreateAccountSubmit');
   },
 
   onLogoutClick: function(){
@@ -14413,6 +14423,16 @@ module.exports = Backbone.View.extend({
     });
   },
 
+  onRegisterClick: function(){
+    this.registerModal = this.createSubView( ModalView, {
+      title       : 'Register',
+      onConfirm   : this.onCreateAccountSubmit,
+      modalBody   : registerTemplate,
+      confirmText : 'Create Account',
+      showCancel  : false 
+    });
+  },
+
   onLoginSubmit: function(){
     this.modalView.$('.confirm').text('Working...').attr('disabled', 'disabled');
 
@@ -14422,12 +14442,12 @@ module.exports = Backbone.View.extend({
     this.login(email, password);
   },
 
-  onCreateAccountClick: function(event){
-    event.preventDefault();
+  onCreateAccountSubmit: function(event){
+    this.registerModal.$('.confirm').text('Working...').attr('disabled', 'disabled');
 
-    this.email    = this.$('input[name="email_address"]').val();
-    this.userName = this.$('input[name="user_name"]').val();
-    this.password = this.$('input[name="password"]').val();
+    this.email    = this.registerModal.$('input[name="email_address"]').val();
+    this.userName = this.registerModal.$('input[name="user_name"]').val();
+    this.password = this.registerModal.$('input[name="password"]').val();
 
     // TODO: 
     // * validate against existing user names
@@ -14444,6 +14464,7 @@ module.exports = Backbone.View.extend({
       console.log("User created successfully");
       this.isNewUser = true;
       this.login(this.email, this.password);
+      this.registerModal.hide();
     } 
     else {
       console.log("Error creating user:", error);
@@ -14492,12 +14513,12 @@ module.exports = Backbone.View.extend({
       userName: app.user ? app.user.get('userName') : undefined 
     }));
 
-    this.$('#user-register > a').popover({
-      placement: 'bottom',
-      html: true,
-      content: registerTemplate(),
-      trigger: 'click'
-    });
+    // this.$('#user-register > a').popover({
+    //   placement: 'bottom',
+    //   html: true,
+    //   content: registerTemplate(),
+    //   trigger: 'click'
+    // });
 
     return this;
   }

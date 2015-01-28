@@ -26,12 +26,17 @@ module.exports = Backbone.View.extend({
     // I'm putting this here so it can be listened to by any view in the app
     app.rooms = new RoomsCollection();
 
+    // Why are we listening to rooms in order to authendicate a user??
     this.listenTo(app.rooms, 'sync', this.authenticateUser);
   },
 
   authenticateUser: function(){
+    console.log('authendicateUser');
+
     // Cahnges to messages are calling sync on rooms,
     // so lets stop listen to 'sync' on rooms
+
+    // Wait, why are we doing this here in authenticateUser ???
     this.stopListening(app.rooms, 'sync');
 
     // Register the callback to be fired every time auth state changes
@@ -41,6 +46,7 @@ module.exports = Backbone.View.extend({
   },
 
   authDataCallback: function(authData) {
+    console.log('authDataCallback');
     delete app.user;
 
     if (authData) {
@@ -81,6 +87,9 @@ module.exports = Backbone.View.extend({
   },
 
   renderApp: function(){
+    // debugger;
+    console.log('renderApp');
+
     this.renderNav();
     this.renderContent();
   },

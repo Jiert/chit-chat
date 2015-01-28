@@ -11,14 +11,15 @@ var _ = require('underscore'),
 module.exports = Backbone.View.extend({
 
   events: {
-    'click #logout'         : 'onLogoutClick',
-    'click #login'          : 'onLoginSubmit',
-    'click #user-login > a' : 'onLoginClick',
-    'click #create-account' : 'onCreateAccountClick',
+    'click #logout'            : 'onLogoutClick',
+    'click #login'             : 'onLoginSubmit',
+    'click #user-login > a'    : 'onLoginClick',
+    'click #user-register > a' : 'onRegisterClick',
+    // 'click #create-account'    : 'onCreateAccountClick',
   },
 
   initialize: function(options){
-    _.bindAll(this, 'login', 'onLogin', 'onSaveUser', 'onAccountCreated', 'onLoginSubmit');
+    _.bindAll(this, 'login', 'onLogin', 'onSaveUser', 'onAccountCreated', 'onLoginSubmit', 'onCreateAccountSubmit');
   },
 
   onLogoutClick: function(){
@@ -35,6 +36,16 @@ module.exports = Backbone.View.extend({
     });
   },
 
+  onRegisterClick: function(){
+    this.registerModal = this.createSubView( ModalView, {
+      title       : 'Register',
+      onConfirm   : this.onCreateAccountSubmit,
+      modalBody   : registerTemplate,
+      confirmText : 'Create Account',
+      showCancel  : false 
+    });
+  },
+
   onLoginSubmit: function(){
     this.modalView.$('.confirm').text('Working...').attr('disabled', 'disabled');
 
@@ -44,12 +55,12 @@ module.exports = Backbone.View.extend({
     this.login(email, password);
   },
 
-  onCreateAccountClick: function(event){
-    event.preventDefault();
+  onCreateAccountSubmit: function(event){
+    this.registerModal.$('.confirm').text('Working...').attr('disabled', 'disabled');
 
-    this.email    = this.$('input[name="email_address"]').val();
-    this.userName = this.$('input[name="user_name"]').val();
-    this.password = this.$('input[name="password"]').val();
+    this.email    = this.registerModal.$('input[name="email_address"]').val();
+    this.userName = this.registerModal.$('input[name="user_name"]').val();
+    this.password = this.registerModal.$('input[name="password"]').val();
 
     // TODO: 
     // * validate against existing user names
@@ -66,6 +77,7 @@ module.exports = Backbone.View.extend({
       console.log("User created successfully");
       this.isNewUser = true;
       this.login(this.email, this.password);
+      this.registerModal.hide();
     } 
     else {
       console.log("Error creating user:", error);
@@ -114,12 +126,12 @@ module.exports = Backbone.View.extend({
       userName: app.user ? app.user.get('userName') : undefined 
     }));
 
-    this.$('#user-register > a').popover({
-      placement: 'bottom',
-      html: true,
-      content: registerTemplate(),
-      trigger: 'click'
-    });
+    // this.$('#user-register > a').popover({
+    //   placement: 'bottom',
+    //   html: true,
+    //   content: registerTemplate(),
+    //   trigger: 'click'
+    // });
 
     return this;
   }
