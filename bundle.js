@@ -14146,10 +14146,6 @@ module.exports = Backbone.View.extend({
 
   initialize: function(options){
     _.bindAll(this, 'authDataCallback', 'onUser', 'getRooms');
-
-    this.listenTo(app.events, {
-      'user:login' : this.onUser
-    });
   },
 
   getRooms: function(){
@@ -14210,16 +14206,13 @@ module.exports = Backbone.View.extend({
   onUser: function(){
     this.stopListening(app.user, 'sync');
 
-    console.log('User logged in: ', app.user.toJSON());
+    console.log('application: onUser: ', app.user.toJSON());
 
     // I question if this is the best thing to do
     this.renderApp();
   },
 
   renderApp: function(){
-    // debugger;
-    console.log('renderApp');
-
     this.renderNav();
     this.renderContent();
   },
