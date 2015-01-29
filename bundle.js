@@ -14010,8 +14010,8 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<div class=\"row\">\n  <div id=\"main-sidebar-nav\" class=\"col-md-3 sidebar\"></div>\n  <div class=\"  col-md-9 col-md-offset-3 main\">\n    <div id=\"main-content\" class=\"row\">\n      <div class=\"col-md-12\">\n        <h1>Welcome to Chit Chat. <small>(working name)</small></h1>\n        <p class=\"lead\">Click on a topic over there on the left to open a chat room.</p>\n        <p class=\"lead\">If you're logged in, you'll be automatically subscribed.</p>\n        <p class=\"lead\">To unsuscribe, simply close the room.</p>\n      </div>\n    </div>\n  </div>\n</div>";
-},"useData":true});
+  return "<div class=\"row\">\n  <div id=\"main-sidebar-nav\" class=\"col-sm-3 col-md-2 sidebar\"></div>\n  <div class=\"col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main\">\n    <div id=\"main-content\" class=\"row\">\n      <div class=\"col-md-12\">\n        <h1>Welcome to Chit Chat. <small>(working name)</small></h1>\n        <p class=\"lead\">Click on a topic over there on the left to open a chat room.</p>\n        <p class=\"lead\">If you're logged in, you'll be automatically subscribed.</p>\n        <p class=\"lead\">To unsuscribe, simply close the room.</p>\n      </div>\n    </div>\n  </div>\n</div>";
+  },"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/create_room.hbs":[function(require,module,exports){
 // hbsfy compiled Handlebars template
@@ -14024,7 +14024,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<form>\n  <div class=\"form-group\">\n     <div class=\"input-group\">\n       <input name=\"message\" type=\"text\" class=\"message form-control\" placeholder=\"Is this thing on?\">\n       <span class=\"input-group-btn\">\n         <button class=\"submit-message btn btn-default\" type=\"button\">Chat</button>\n       </span>\n     </div>\n   </div>\n</form>";
+  return "<form>\n  <input name=\"message\" type=\"text\" class=\"message form-control\" placeholder=\"Say something\">\n</form>";
   },"useData":true});
 
 },{"hbsfy/runtime":"/Users/Easterday/Projects/beerRecipe/node_modules/hbsfy/runtime.js"}],"/Users/Easterday/Projects/beerRecipe/templates/login.hbs":[function(require,module,exports){
@@ -14182,7 +14182,7 @@ module.exports = Backbone.View.extend({
 
       // It appears that I usually already have the user, and 
       // sync is long gone. Not sure how to ensure I have a user
-      // better than this nonsense:
+      // better than this nonsence:
       if (app.user.has('userName')){
         this.onUser();
       }
@@ -14344,15 +14344,21 @@ module.exports = Backbone.View.extend({
 
   events: {
     'click .submit-message' : 'onMessageSubmit',
+    'keydown' : 'onKeyDown'
   },
 
   initialize: function(options){
     this.messages = options.messages;
   },
 
-  onMessageSubmit: function(event){
-    event.preventDefault();
+  onKeyDown: function(event){
+    if (event.keyCode === 13){
+      event.preventDefault();
+      this.onMessageSubmit();
+    }
+  },
 
+  onMessageSubmit: function(){
     // We're assuming app.user.yadayada will be here because as soon
     // as a logout event occurs this view will killed
 
@@ -14360,10 +14366,12 @@ module.exports = Backbone.View.extend({
     var message = this.$message.val();
 
     if (message){
+      this.$message.parent().toggleClass('has-warning', false);
       this.messages.create({
         author: app.user.get('userName'),
         message: this.$message.val()
       });
+      this.$message.val('');
     }
     else {
       this.$message.parent().toggleClass('has-warning', true);

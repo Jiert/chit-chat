@@ -7,15 +7,21 @@ module.exports = Backbone.View.extend({
 
   events: {
     'click .submit-message' : 'onMessageSubmit',
+    'keydown' : 'onKeyDown'
   },
 
   initialize: function(options){
     this.messages = options.messages;
   },
 
-  onMessageSubmit: function(event){
-    event.preventDefault();
+  onKeyDown: function(event){
+    if (event.keyCode === 13){
+      event.preventDefault();
+      this.onMessageSubmit();
+    }
+  },
 
+  onMessageSubmit: function(){
     // We're assuming app.user.yadayada will be here because as soon
     // as a logout event occurs this view will killed
 
@@ -23,10 +29,12 @@ module.exports = Backbone.View.extend({
     var message = this.$message.val();
 
     if (message){
+      this.$message.parent().toggleClass('has-warning', false);
       this.messages.create({
         author: app.user.get('userName'),
         message: this.$message.val()
       });
+      this.$message.val('');
     }
     else {
       this.$message.parent().toggleClass('has-warning', true);

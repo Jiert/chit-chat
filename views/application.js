@@ -52,7 +52,7 @@ module.exports = Backbone.View.extend({
 
       // It appears that I usually already have the user, and 
       // sync is long gone. Not sure how to ensure I have a user
-      // better than this nonsense:
+      // better than this nonsence:
       if (app.user.has('userName')){
         this.onUser();
       }
