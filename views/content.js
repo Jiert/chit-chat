@@ -10,7 +10,7 @@ var _ = require('underscore'),
 module.exports = Backbone.View.extend({
 
   initialize: function(options){
-    _.bindAll(this, 'renderSidebar', 'renderRoom', 'onRoomClick', 'buildRoom');
+    _.bindAll(this, 'renderRooms', 'renderSidebar', 'renderRoom', 'onRoomClick', 'buildRoom');
 
     this.listenTo(app.rooms, {
       'remove' : this.onRemoveRoom
@@ -34,6 +34,10 @@ module.exports = Backbone.View.extend({
     if (app.user && app.user.has('rooms')){
       this.userRoomsCollection = new Backbone.Collection();
 
+      this.listenTo(this.userRoomsCollection, {
+        'room:unsubscribe' : this.onViewDestroy
+      });
+
       app.rooms.each(this.buildRoom);
 
       this.$mainContent.html('');
@@ -52,8 +56,15 @@ module.exports = Backbone.View.extend({
     console.log('content: onRemoveRoom');
   },
 
+  onViewDestroy: function(room){
+    this.userRoomsCollection.remove(room);
+  },
+
   onRoomClick: function(room){
+    if (this.userRoomsCollection.contains(room)) return;
+
     if (app.user){
+      this.userRoomsCollection.add(room);
       this.userRooms.push(room.get('id'));
 
       // Why on earth doesn't this work?
