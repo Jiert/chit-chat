@@ -61,7 +61,7 @@ module.exports = Backbone.View.extend({
   },
 
   onRoomClick: function(room){
-    if (this.userRoomsCollection.contains(room)) return;
+    if (this.userRoomsCollection && this.userRoomsCollection.contains(room)) return;
 
     if (app.user){
       this.userRoomsCollection.add(room);
