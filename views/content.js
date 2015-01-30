@@ -12,6 +12,12 @@ module.exports = Backbone.View.extend({
   initialize: function(options){
     _.bindAll(this, 'renderRooms', 'renderSidebar', 'renderRoom', 'onRoomClick', 'buildRoom');
 
+    this.userRoomsCollection = new Backbone.Collection();
+    
+    this.listenTo(this.userRoomsCollection, {
+      'room:unsubscribe' : this.onViewDestroy
+    });
+
     this.listenTo(app.rooms, {
       'remove' : this.onRemoveRoom
     });
@@ -30,14 +36,10 @@ module.exports = Backbone.View.extend({
     });
   },
 
-  renderRooms: function(){
+  renderRooms: function(){    
     if (app.user && app.user.has('rooms')){
-      this.userRoomsCollection = new Backbone.Collection();
 
-      this.listenTo(this.userRoomsCollection, {
-        'room:unsubscribe' : this.onViewDestroy
-      });
-
+      // TODO: This shit won't scale  
       app.rooms.each(this.buildRoom);
 
       this.$mainContent.html('');
@@ -63,10 +65,10 @@ module.exports = Backbone.View.extend({
   onRoomClick: function(room){
     if (this.userRoomsCollection && this.userRoomsCollection.contains(room)) return;
 
-    if (app.user){
-      this.userRoomsCollection.add(room);
-      this.userRooms.push(room.get('id'));
+    this.userRoomsCollection.add(room);
+    this.userRooms && this.userRooms.push(room.get('id'));
 
+    if (app.user){
       // Why on earth doesn't this work?
       // app.user.set({'rooms': userRooms });
 

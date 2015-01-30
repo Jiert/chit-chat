@@ -37,14 +37,13 @@ module.exports = Backbone.View.extend({
 
   teardown: function(){
     if (app.user){
-
-      this.model.trigger('room:unsubscribe', this.model);
-
       // TODO: Get rid of this string bullshit
       var oldRooms = app.user.get('rooms').split(','),
           newRooms = _(oldRooms).without(this.model.id).toString();
       app.user.set('rooms', newRooms);
     }
+    
+    this.model.trigger('room:unsubscribe', this.model);
   },
 
   renderMessages: function(){
