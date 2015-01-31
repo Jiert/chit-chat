@@ -25,7 +25,8 @@ module.exports = Backbone.View.extend({
 
   onRoomClick: function(event){
     event.preventDefault();
-    // TODO: Dont' use the DOM for room information!!!
+    $(event.currentTarget).parent().addClass('active');
+
     var roomId = $(event.currentTarget).attr('href'),
         roomModel = app.rooms.get(roomId);
 
@@ -46,6 +47,8 @@ module.exports = Backbone.View.extend({
   },
 
   renderRoom: function(room){
+    // TODO: Need to be send if user subscribed
+
     // Should these be rooms so we're not
     // dependant on the DOM for romo info?
     this.$rooms.append(roomLabel({

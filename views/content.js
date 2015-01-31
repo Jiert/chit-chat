@@ -60,6 +60,9 @@ module.exports = Backbone.View.extend({
 
   onViewDestroy: function(room){
     this.userRoomsCollection.remove(room);
+
+    // TODO: Need to send this action to sidebar,
+    // so it can update it's navigation status
   },
 
   onRoomClick: function(room){
