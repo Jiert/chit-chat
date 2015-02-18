@@ -3,6 +3,10 @@
   "version": "0.0.1",
   "description": "A recipe builder for brewing beer",
   "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Jiert/Brew-Journal.git"
+  },
   "scripts": {
     "watch-js": "watchify init.js -o bundle.js -dv"
   },

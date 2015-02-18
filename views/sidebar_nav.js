@@ -3,10 +3,12 @@ var _ = require('underscore'),
     app = require('../namespace'),
 
     ModalView = require('../views/modal'),
+    RoomNavView = require('../views/room_nav'),
 
     template = require('../templates/sidebar_nav.hbs'),
-    roomLabel = require('../templates/sidebar_nav_room.hbs'),
+    // roomLabel = require('../templates/sidebar_nav_room.hbs'),
     createRoom = require('../templates/create_room.hbs');
+
 
 module.exports = Backbone.View.extend({
 
@@ -25,7 +27,10 @@ module.exports = Backbone.View.extend({
 
   onRoomClick: function(event){
     event.preventDefault();
-    $(event.currentTarget).parent().addClass('active');
+
+    // TODO: This is nonsense, we should be using models
+    // and collecitons
+    // $(event.currentTarget).parent().addClass('active');
 
     var roomId = $(event.currentTarget).attr('href'),
         roomModel = app.rooms.get(roomId);
@@ -49,13 +54,21 @@ module.exports = Backbone.View.extend({
   renderRoom: function(room){
     // TODO: Need to be send if user subscribed
 
+    // TODO: These need to be views
+
+    var roomNavView = this.createSubView( RoomNavView, {
+      modal: room
+    })
+
+    this.$rooms.append( roomNavView.render().el );
+
     // Should these be rooms so we're not
     // dependant on the DOM for romo info?
-    this.$rooms.append(roomLabel({
-      id: room.get('id'),
-      name: room.get('name'),
-      active: room.get('active') || 0
-    }));
+    // this.$rooms.append(roomLabel({
+    //   id: room.get('id'),
+    //   name: room.get('name'),
+    //   active: room.get('active') || 0
+    // }));
   },
 
   // TODO: Sort out the best way to get a 
