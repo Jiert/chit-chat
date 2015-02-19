@@ -1121,7 +1121,7 @@ module.exports  = Backbone.Model.extend({
   defaults: function() {
     return {
       title: "New Room",
-      active: false
+      open: false
     };
   },
 
@@ -14121,13 +14121,13 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
-  return "<li><a href=\""
+  return "<a class=\"open-"
+    + escapeExpression(((helper = (helper = helpers.open || (depth0 != null ? depth0.open : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"open","hash":{},"data":data}) : helper)))
+    + "\" href=\""
     + escapeExpression(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"id","hash":{},"data":data}) : helper)))
     + "\">"
     + escapeExpression(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"name","hash":{},"data":data}) : helper)))
-    + " <span class=\"pull-right badge\">"
-    + escapeExpression(((helper = (helper = helpers.active || (depth0 != null ? depth0.active : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"active","hash":{},"data":data}) : helper)))
-    + "</span></a></li>";
+    + " <span class=\"pull-right badge\">0</span></a>";
 },"useData":true});
 
 },{"hbsfy/runtime":"/Users/jared/Projects/Brew-Journal/node_modules/hbsfy/runtime.js"}],"/Users/jared/Projects/Brew-Journal/views/application.js":[function(require,module,exports){
@@ -14659,6 +14659,7 @@ module.exports = Backbone.View.extend({
 
     if (!options.room) return;
 
+    // Shouldn't need this if passed as model
     this.model = options.room;
 
     // Jesus, we have the room, so we have the messages, 
@@ -14674,6 +14675,7 @@ module.exports = Backbone.View.extend({
   },
 
   teardown: function(){
+    // TODO: Get rid of all this shit, this shold be elsewhere
     if (app.user){
       // TODO: Get rid of this string bullshit
       var oldRooms = app.user.get('rooms').split(','),
@@ -14681,6 +14683,7 @@ module.exports = Backbone.View.extend({
       app.user.set('rooms', newRooms);
     }
     
+    this.model.set({ open: false });
     this.model.trigger('room:unsubscribe', this.model);
   },
 
@@ -14740,21 +14743,23 @@ var _ = require('underscore'),
 
 module.exports = Backbone.View.extend({
 
-  events: {},
+  tagName: 'li',
+  events: { 'click': 'onClick' },
 
   initialize: function(options){
-    debugger;
+    this.listenTo( this.model, 'change', this.render );
+  },
+
+  onClick: function(event){
+    event.preventDefault();
+    this.model.set({ open: !this.model.get('open') });
   },
 
   render: function(){
-    this.$el.html(template({
-      id: this.model.get('id'),
-      name: this.model.get('name'),
-      active: this.model.get('active') || 0
-    }));
+    console.log('rendering room nav')
+    this.$el.html(template(this.model.toJSON()));
     return this;
   }
-
 });
 },{"../namespace":"/Users/jared/Projects/Brew-Journal/namespace.js","../templates/sidebar_nav_room.hbs":"/Users/jared/Projects/Brew-Journal/templates/sidebar_nav_room.hbs","backbone":"/Users/jared/Projects/Brew-Journal/node_modules/backbone/backbone.js","underscore":"/Users/jared/Projects/Brew-Journal/node_modules/underscore/underscore.js"}],"/Users/jared/Projects/Brew-Journal/views/sidebar_nav.js":[function(require,module,exports){
 var _ = require('underscore'),
@@ -14765,36 +14770,25 @@ var _ = require('underscore'),
     RoomNavView = require('../views/room_nav'),
 
     template = require('../templates/sidebar_nav.hbs'),
-    // roomLabel = require('../templates/sidebar_nav_room.hbs'),
     createRoom = require('../templates/create_room.hbs');
-
 
 module.exports = Backbone.View.extend({
 
   events: {
-    'click .rooms a'     : 'onRoomClick',
     'click #create-room' : 'onCreateRoomClick'
   },
 
   initialize: function(options){
-    _.bindAll( this, 'renderRoom', 'onConfirmRoom');
+    _.bindAll( this, 'renderRoom', 'onConfirmRoom', 'onRoomChange');
 
     this.listenTo(app.rooms, {
-      'add' : this.renderRoom
+      'add'    : this.renderRoom,
+      'change' : this.onRoomChange
     });
   },
 
-  onRoomClick: function(event){
-    event.preventDefault();
-
-    // TODO: This is nonsense, we should be using models
-    // and collecitons
-    // $(event.currentTarget).parent().addClass('active');
-
-    var roomId = $(event.currentTarget).attr('href'),
-        roomModel = app.rooms.get(roomId);
-
-    this.trigger('room:clicked', roomModel);
+  onRoomChange: function(room){
+    this.trigger('room:clicked', room);
   },
 
   onCreateRoomClick: function(){
@@ -14812,22 +14806,11 @@ module.exports = Backbone.View.extend({
 
   renderRoom: function(room){
     // TODO: Need to be send if user subscribed
-
-    // TODO: These need to be views
-
     var roomNavView = this.createSubView( RoomNavView, {
-      modal: room
+      model: room
     })
 
     this.$rooms.append( roomNavView.render().el );
-
-    // Should these be rooms so we're not
-    // dependant on the DOM for romo info?
-    // this.$rooms.append(roomLabel({
-    //   id: room.get('id'),
-    //   name: room.get('name'),
-    //   active: room.get('active') || 0
-    // }));
   },
 
   // TODO: Sort out the best way to get a 

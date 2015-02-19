@@ -5,19 +5,21 @@ var _ = require('underscore'),
 
 module.exports = Backbone.View.extend({
 
-  events: {},
+  tagName: 'li',
+  events: { 'click': 'onClick' },
 
   initialize: function(options){
-    debugger;
+    this.listenTo( this.model, 'change', this.render );
+  },
+
+  onClick: function(event){
+    event.preventDefault();
+    this.model.set({ open: !this.model.get('open') });
   },
 
   render: function(){
-    this.$el.html(template({
-      id: this.model.get('id'),
-      name: this.model.get('name'),
-      active: this.model.get('active') || 0
-    }));
+    console.log('rendering room nav')
+    this.$el.html(template(this.model.toJSON()));
     return this;
   }
-
 });

@@ -21,6 +21,7 @@ module.exports = Backbone.View.extend({
 
     if (!options.room) return;
 
+    // Shouldn't need this if passed as model
     this.model = options.room;
 
     // Jesus, we have the room, so we have the messages, 
@@ -36,6 +37,7 @@ module.exports = Backbone.View.extend({
   },
 
   teardown: function(){
+    // TODO: Get rid of all this shit, this shold be elsewhere
     if (app.user){
       // TODO: Get rid of this string bullshit
       var oldRooms = app.user.get('rooms').split(','),
@@ -43,6 +45,7 @@ module.exports = Backbone.View.extend({
       app.user.set('rooms', newRooms);
     }
     
+    this.model.set({ open: false });
     this.model.trigger('room:unsubscribe', this.model);
   },
 

@@ -6,36 +6,25 @@ var _ = require('underscore'),
     RoomNavView = require('../views/room_nav'),
 
     template = require('../templates/sidebar_nav.hbs'),
-    // roomLabel = require('../templates/sidebar_nav_room.hbs'),
     createRoom = require('../templates/create_room.hbs');
-
 
 module.exports = Backbone.View.extend({
 
   events: {
-    'click .rooms a'     : 'onRoomClick',
     'click #create-room' : 'onCreateRoomClick'
   },
 
   initialize: function(options){
-    _.bindAll( this, 'renderRoom', 'onConfirmRoom');
+    _.bindAll( this, 'renderRoom', 'onConfirmRoom', 'onRoomChange');
 
     this.listenTo(app.rooms, {
-      'add' : this.renderRoom
+      'add'    : this.renderRoom,
+      'change' : this.onRoomChange
     });
   },
 
-  onRoomClick: function(event){
-    event.preventDefault();
-
-    // TODO: This is nonsense, we should be using models
-    // and collecitons
-    // $(event.currentTarget).parent().addClass('active');
-
-    var roomId = $(event.currentTarget).attr('href'),
-        roomModel = app.rooms.get(roomId);
-
-    this.trigger('room:clicked', roomModel);
+  onRoomChange: function(room){
+    this.trigger('room:clicked', room);
   },
 
   onCreateRoomClick: function(){
@@ -53,22 +42,11 @@ module.exports = Backbone.View.extend({
 
   renderRoom: function(room){
     // TODO: Need to be send if user subscribed
-
-    // TODO: These need to be views
-
     var roomNavView = this.createSubView( RoomNavView, {
-      modal: room
+      model: room
     })
 
     this.$rooms.append( roomNavView.render().el );
-
-    // Should these be rooms so we're not
-    // dependant on the DOM for romo info?
-    // this.$rooms.append(roomLabel({
-    //   id: room.get('id'),
-    //   name: room.get('name'),
-    //   active: room.get('active') || 0
-    // }));
   },
 
   // TODO: Sort out the best way to get a 
