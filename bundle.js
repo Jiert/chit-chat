@@ -14271,7 +14271,7 @@ module.exports = Backbone.View.extend({
     });
 
     if (app.user){
-      this.userRooms = app.user.has('rooms') ? app.user.get('rooms').split(',') : [];
+      this.userRoomsArray = app.user.has('rooms') ? app.user.get('rooms').split(',') : [];
     }
   },
 
@@ -14285,21 +14285,16 @@ module.exports = Backbone.View.extend({
   },
 
   renderRooms: function(){    
-    if (app.user && app.user.has('rooms')){
-
-      // TODO: This shit won't scale  
-      app.rooms.each(this.buildRoom);
+    if (this.userRoomsArray.length) {
+      _(this.userRoomsArray).each(this.buildRoom);
 
       this.$mainContent.html('');
-
       this.userRoomsCollection.each(this.renderRoom);
     }
   },
 
-  buildRoom: function(room){
-    if (this.userRooms.indexOf(room.id) !== -1){
-      this.userRoomsCollection.add(room);
-    }
+  buildRoom: function(id){
+    this.userRoomsCollection.add(app.rooms.where({id: id}))
   },
 
   onRemoveRoom: function(){
@@ -14308,25 +14303,15 @@ module.exports = Backbone.View.extend({
 
   onViewDestroy: function(room){
     this.userRoomsCollection.remove(room);
-
-    // TODO: Need to send this action to sidebar,
-    // so it can update it's navigation status
   },
 
   onRoomClick: function(room){
     if (this.userRoomsCollection && this.userRoomsCollection.contains(room)) return;
 
     this.userRoomsCollection.add(room);
-    this.userRooms && this.userRooms.push(room.get('id'));
 
     if (app.user){
-      // Why on earth doesn't this work?
-      // app.user.set({'rooms': userRooms });
-
-      // Jesus Christ
-      // TODO: Find a better way for this,
-      // Flatten Data
-      app.user.set({'rooms': this.userRooms.toString() });
+      app.user.set({ rooms: this.userRoomsCollection.pluck('id').toString() });
     }
 
     this.renderRoom(room);
@@ -14683,6 +14668,7 @@ module.exports = Backbone.View.extend({
       app.user.set('rooms', newRooms);
     }
     
+    // TODO: This should only be set on the userRoom collection
     this.model.set({ open: false });
     this.model.trigger('room:unsubscribe', this.model);
   },

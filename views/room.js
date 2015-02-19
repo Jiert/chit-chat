@@ -45,6 +45,7 @@ module.exports = Backbone.View.extend({
       app.user.set('rooms', newRooms);
     }
     
+    // TODO: This should only be set on the userRoom collection
     this.model.set({ open: false });
     this.model.trigger('room:unsubscribe', this.model);
   },
