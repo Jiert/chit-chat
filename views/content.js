@@ -1,11 +1,9 @@
 var _ = require('underscore'),
     app = require('../namespace'),
     Backbone = require('backbone'),
-
-    SidebarView = require('../views/sidebar_nav'),
     RoomView = require('../views/room'),
-
-    template = require('../templates/content.hbs');
+    template = require('../templates/content.hbs'),
+    SidebarView = require('../views/sidebar_nav');
 
 module.exports = Backbone.View.extend({
 
@@ -37,7 +35,7 @@ module.exports = Backbone.View.extend({
   },
 
   renderRooms: function(){    
-    if (this.userRoomsArray.length) {
+    if (app.user && this.userRoomsArray.length) {
       _(this.userRoomsArray).each(this.buildRoom);
 
       this.$mainContent.html('');

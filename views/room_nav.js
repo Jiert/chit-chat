@@ -14,7 +14,8 @@ module.exports = Backbone.View.extend({
 
   onClick: function(event){
     event.preventDefault();
-    this.model.set({ open: !this.model.get('open') });
+    if (this.model.get('open')) return;
+    this.model.set({ open: true });
   },
 
   render: function(){
