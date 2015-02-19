@@ -36,6 +36,11 @@ module.exports = Backbone.View.extend({
     });
   },
 
+  // ALERT ALERT ALERT ALERT: !!!!! FIX THIS 
+  // We should not be setting open / close values
+  // on the room models themselves. We should only
+  // be changing modesl saved to the user's models array
+
   teardown: function(){
     // TODO: Get rid of all this shit, this shold be elsewhere
     if (app.user){
