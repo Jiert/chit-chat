@@ -34,6 +34,10 @@ module.exports = Backbone.View.extend({
     this.listenTo(this.messages, {
       'add' : this.onAdd
     });
+
+    this.listenTo(this.model, {
+      'remove' : this.destroy
+    })
   },
 
   // ALERT ALERT ALERT ALERT: !!!!! FIX THIS 

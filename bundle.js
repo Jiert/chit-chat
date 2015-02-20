@@ -14256,16 +14256,17 @@ var _ = require('underscore'),
 module.exports = Backbone.View.extend({
 
   initialize: function(options){
-    _.bindAll(this, 'renderRooms', 'renderSidebar', 'renderRoom', 'onRoomClick', 'buildRoom');
+    _.bindAll(this, 'renderRooms', 'renderSidebar', 'renderRoom', 'buildRoom');
 
     this.userRoomsCollection = new Backbone.Collection();
     
     this.listenTo(this.userRoomsCollection, {
-      'room:unsubscribe' : this.onViewDestroy
+      'add'    : this.renderRoom,
+      'remove' : this.removeRoom
     });
 
     this.listenTo(app.rooms, {
-      'remove' : this.onRemoveRoom
+      'change' : this.onChange
     });
 
     if (app.user){
@@ -14276,10 +14277,6 @@ module.exports = Backbone.View.extend({
   renderSidebar: function(){
     this.sidebarView = this.createSubView( SidebarView, {});
     this.$mainSidebarNav.html(this.sidebarView.render().el);
-
-    this.listenTo(this.sidebarView, {
-      'room:clicked' : this.onRoomClick
-    });
   },
 
   renderRooms: function(){    
@@ -14295,24 +14292,20 @@ module.exports = Backbone.View.extend({
     this.userRoomsCollection.add(app.rooms.where({id: id}))
   },
 
-  onRemoveRoom: function(){
-    console.log('content: onRemoveRoom');
+  removeRoom: function(room){
+    // TODO: Does removing a model from the collection get garbage collected?
   },
 
-  onViewDestroy: function(room){
-    this.userRoomsCollection.remove(room);
-  },
-
-  onRoomClick: function(room){
-    if (this.userRoomsCollection && this.userRoomsCollection.contains(room)) return;
-
-    this.userRoomsCollection.add(room);
-
+  onChange: function(room){
+    if (room.get('open')){
+      this.userRoomsCollection && this.userRoomsCollection.add(room);
+    }
+    else {
+      this.userRoomsCollection && this.userRoomsCollection.remove(room);
+    }
     if (app.user){
       app.user.set({ rooms: this.userRoomsCollection.pluck('id').toString() });
     }
-
-    this.renderRoom(room);
   },
 
   renderRoom: function(room){
@@ -14655,6 +14648,10 @@ module.exports = Backbone.View.extend({
     this.listenTo(this.messages, {
       'add' : this.onAdd
     });
+
+    this.listenTo(this.model, {
+      'remove' : this.destroy
+    })
   },
 
   // ALERT ALERT ALERT ALERT: !!!!! FIX THIS 
@@ -14741,8 +14738,8 @@ module.exports = Backbone.View.extend({
 
   onClick: function(event){
     event.preventDefault();
-    if (this.model.get('open')) return;
-    this.model.set({ open: true });
+    console.log('on room click');
+    this.model.set({ open: !this.model.get('open') });
   },
 
   render: function(){
@@ -14769,16 +14766,11 @@ module.exports = Backbone.View.extend({
   },
 
   initialize: function(options){
-    _.bindAll( this, 'renderRoom', 'onConfirmRoom', 'onRoomChange');
+    _.bindAll( this, 'renderRoom', 'onConfirmRoom');
 
     this.listenTo(app.rooms, {
-      'add'    : this.renderRoom,
-      'change' : this.onRoomChange
+      'add'    : this.renderRoom
     });
-  },
-
-  onRoomChange: function(room){
-    this.trigger('room:clicked', room);
   },
 
   onCreateRoomClick: function(){

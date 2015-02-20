@@ -14,8 +14,8 @@ module.exports = Backbone.View.extend({
 
   onClick: function(event){
     event.preventDefault();
-    if (this.model.get('open')) return;
-    this.model.set({ open: true });
+    console.log('on room click');
+    this.model.set({ open: !this.model.get('open') });
   },
 
   render: function(){

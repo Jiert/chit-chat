@@ -15,16 +15,11 @@ module.exports = Backbone.View.extend({
   },
 
   initialize: function(options){
-    _.bindAll( this, 'renderRoom', 'onConfirmRoom', 'onRoomChange');
+    _.bindAll( this, 'renderRoom', 'onConfirmRoom');
 
     this.listenTo(app.rooms, {
-      'add'    : this.renderRoom,
-      'change' : this.onRoomChange
+      'add'    : this.renderRoom
     });
-  },
-
-  onRoomChange: function(room){
-    this.trigger('room:clicked', room);
   },
 
   onCreateRoomClick: function(){
