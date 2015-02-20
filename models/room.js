@@ -5,9 +5,6 @@ module.exports  = Backbone.Model.extend({
   defaults: function() {
     return {
       title: "New Room",
-      open: false
     };
   },
-
-
 });

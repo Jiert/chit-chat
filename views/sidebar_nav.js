@@ -1,10 +1,8 @@
 var _ = require('underscore'),
     Backbone = require('backbone'),
     app = require('../namespace'),
-
     ModalView = require('../views/modal'),
     RoomNavView = require('../views/room_nav'),
-
     template = require('../templates/sidebar_nav.hbs'),
     createRoom = require('../templates/create_room.hbs');
 
@@ -18,7 +16,7 @@ module.exports = Backbone.View.extend({
     _.bindAll( this, 'renderRoom', 'onConfirmRoom');
 
     this.listenTo(app.rooms, {
-      'add'    : this.renderRoom
+      'add' : this.renderRoom
     });
   },
 

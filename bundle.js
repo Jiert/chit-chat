@@ -1121,11 +1121,8 @@ module.exports  = Backbone.Model.extend({
   defaults: function() {
     return {
       title: "New Room",
-      open: false
     };
   },
-
-
 });
 },{"backbone":"/Users/jared/Projects/Brew-Journal/node_modules/backbone/backbone.js","underscore":"/Users/jared/Projects/Brew-Journal/node_modules/underscore/underscore.js"}],"/Users/jared/Projects/Brew-Journal/models/user.js":[function(require,module,exports){
 var _ = require('underscore'),
@@ -14012,9 +14009,14 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 },{"hbsfy/runtime":"/Users/jared/Projects/Brew-Journal/node_modules/hbsfy/runtime.js"}],"/Users/jared/Projects/Brew-Journal/templates/content.hbs":[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
-module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<div class=\"row\">\n  <div id=\"main-sidebar-nav\" class=\"col-sm-3 col-md-2 sidebar\"></div>\n  <div class=\"col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main\">\n    <div id=\"main-content\" class=\"row\">\n      <div class=\"col-md-12\">\n        <h1>Welcome to Chit Chats. <small>(working name)</small></h1>\n        <p class=\"lead\">Click on a topic over there on the left to open a chat room.</p>\n        <p class=\"lead\">If you're logged in, you'll be automatically subscribed.</p>\n        <p class=\"lead\">To unsuscribe, simply close the room.</p>\n      </div>\n    </div>\n  </div>\n</div>";
-  },"useData":true});
+module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
+  return "      <div class=\"col-md-12\">\n        <h1>Welcome to Chit Chats. <small>(working name)</small></h1>\n        <p class=\"lead\">Click on a topic over there on the left to open a chat room.</p>\n        <p class=\"lead\">If you're logged in, you'll be automatically subscribed.</p>\n        <p class=\"lead\">To unsuscribe, simply close the room.</p>\n      </div>\n";
+  },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var stack1, buffer = "<div class=\"row\">\n  <div id=\"main-sidebar-nav\" class=\"col-sm-3 col-md-2 sidebar\"></div>\n  <div class=\"col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main\">\n    <div id=\"main-content\" class=\"row\">\n";
+  stack1 = helpers.unless.call(depth0, (depth0 != null ? depth0.openRooms : depth0), {"name":"unless","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + "    </div>\n  </div>\n</div>";
+},"useData":true});
 
 },{"hbsfy/runtime":"/Users/jared/Projects/Brew-Journal/node_modules/hbsfy/runtime.js"}],"/Users/jared/Projects/Brew-Journal/templates/create_room.hbs":[function(require,module,exports){
 // hbsfy compiled Handlebars template
@@ -14120,13 +14122,13 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
+  var stack1, helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, lambda=this.lambda;
   return "<a class=\"open-"
     + escapeExpression(((helper = (helper = helpers.open || (depth0 != null ? depth0.open : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"open","hash":{},"data":data}) : helper)))
     + "\" href=\""
-    + escapeExpression(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"id","hash":{},"data":data}) : helper)))
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.id : stack1), depth0))
     + "\">"
-    + escapeExpression(((helper = (helper = helpers.name || (depth0 != null ? depth0.name : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"name","hash":{},"data":data}) : helper)))
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.name : stack1), depth0))
     + " <span class=\"pull-right badge\">0</span></a>";
 },"useData":true});
 
@@ -14258,20 +14260,17 @@ module.exports = Backbone.View.extend({
   initialize: function(options){
     _.bindAll(this, 'renderRooms', 'renderSidebar', 'renderRoom', 'buildRoom');
 
-    this.userRoomsCollection = new Backbone.Collection();
-    
-    this.listenTo(this.userRoomsCollection, {
-      'add'    : this.renderRoom,
-      'remove' : this.removeRoom
-    });
-
-    this.listenTo(app.rooms, {
-      'change' : this.onChange
-    });
+    app.openRooms = new Backbone.Collection();
 
     if (app.user){
+      // TODO: sometimes app.user.rooms is an emtpy string and passes truth test
       this.userRoomsArray = app.user.has('rooms') ? app.user.get('rooms').split(',') : [];
+      this.userRoomsArray.length && _(this.userRoomsArray).each(this.buildRoom);
     }
+    
+    this.listenTo(app.openRooms, {
+      'add': this.renderRoom
+    });
   },
 
   renderSidebar: function(){
@@ -14279,36 +14278,19 @@ module.exports = Backbone.View.extend({
     this.$mainSidebarNav.html(this.sidebarView.render().el);
   },
 
-  renderRooms: function(){    
-    if (app.user && this.userRoomsArray.length) {
-      _(this.userRoomsArray).each(this.buildRoom);
-
-      this.$mainContent.html('');
-      this.userRoomsCollection.each(this.renderRoom);
-    }
+  renderRooms: function(){
+    app.openRooms.length && app.openRooms.each(this.renderRoom);
   },
 
   buildRoom: function(id){
-    this.userRoomsCollection.add(app.rooms.where({id: id}))
-  },
-
-  removeRoom: function(room){
-    // TODO: Does removing a model from the collection get garbage collected?
-  },
-
-  onChange: function(room){
-    if (room.get('open')){
-      this.userRoomsCollection && this.userRoomsCollection.add(room);
-    }
-    else {
-      this.userRoomsCollection && this.userRoomsCollection.remove(room);
-    }
-    if (app.user){
-      app.user.set({ rooms: this.userRoomsCollection.pluck('id').toString() });
-    }
+    app.openRooms.add(app.rooms.where({ id: id }));
   },
 
   renderRoom: function(room){
+    if (app.user){
+      app.user.set({ rooms: app.openRooms.pluck('id').toString() });
+    }
+
     var roomView = this.createSubView( RoomView, {
       room: room
     });
@@ -14317,7 +14299,9 @@ module.exports = Backbone.View.extend({
   },
 
   render: function() {
-    this.$el.html(template());
+    this.$el.html(template({
+      roomsOpen: app.openRooms.length
+    }));
 
     this.$mainContent = this.$('#main-content');
     this.$mainSidebarNav = this.$('#main-sidebar-nav');
@@ -14615,12 +14599,9 @@ module.exports = Backbone.View.extend({
 var _ = require('underscore'),
     Backbone = require('backbone'),
     app = require('../namespace'),
-
     MessagesCollection = require('../collections/messages'),
-    
     MessageView = require('../views/message'),
     FormView = require('../views/form_view'),
-    
     template = require('../templates/room.hbs');
 
 module.exports = Backbone.View.extend({
@@ -14654,23 +14635,12 @@ module.exports = Backbone.View.extend({
     })
   },
 
-  // ALERT ALERT ALERT ALERT: !!!!! FIX THIS 
-  // We should not be setting open / close values
-  // on the room models themselves. We should only
-  // be changing modesl saved to the user's models array
-
   teardown: function(){
-    // TODO: Get rid of all this shit, this shold be elsewhere
+    app.openRooms.remove(this.model);
+
     if (app.user){
-      // TODO: Get rid of this string bullshit
-      var oldRooms = app.user.get('rooms').split(','),
-          newRooms = _(oldRooms).without(this.model.id).toString();
-      app.user.set('rooms', newRooms);
+      app.user.set({ rooms: app.openRooms.pluck('id').toString() });
     }
-    
-    // TODO: This should only be set on the userRoom collection
-    this.model.set({ open: false });
-    this.model.trigger('room:unsubscribe', this.model);
   },
 
   renderMessages: function(){
@@ -14733,18 +14703,34 @@ module.exports = Backbone.View.extend({
   events: { 'click': 'onClick' },
 
   initialize: function(options){
-    this.listenTo( this.model, 'change', this.render );
+    this.listenTo(app.openRooms, {
+      'add': this.render,
+      'remove': this.render
+    });
   },
 
   onClick: function(event){
     event.preventDefault();
-    console.log('on room click');
-    this.model.set({ open: !this.model.get('open') });
+
+    var contains = app.openRooms.contains(this.model);
+
+    if (contains){
+      app.openRooms.remove(this.model);
+    }
+    else {
+      app.openRooms.add(this.model)
+    }
   },
 
-  render: function(){
-    console.log('rendering room nav')
-    this.$el.html(template(this.model.toJSON()));
+  render: function(model){
+    // Don't carry on with render if the changed model wasn't this.model
+    if (model && !_(model).isEqual(this.model)) return
+      
+    console.log('room nav rnder')
+    this.$el.html(template({
+      open  : app.openRooms.contains(this.model), 
+      model : this.model.toJSON()
+    }));
     return this;
   }
 });
@@ -14752,10 +14738,8 @@ module.exports = Backbone.View.extend({
 var _ = require('underscore'),
     Backbone = require('backbone'),
     app = require('../namespace'),
-
     ModalView = require('../views/modal'),
     RoomNavView = require('../views/room_nav'),
-
     template = require('../templates/sidebar_nav.hbs'),
     createRoom = require('../templates/create_room.hbs');
 
@@ -14769,7 +14753,7 @@ module.exports = Backbone.View.extend({
     _.bindAll( this, 'renderRoom', 'onConfirmRoom');
 
     this.listenTo(app.rooms, {
-      'add'    : this.renderRoom
+      'add' : this.renderRoom
     });
   },
 

@@ -9,18 +9,34 @@ module.exports = Backbone.View.extend({
   events: { 'click': 'onClick' },
 
   initialize: function(options){
-    this.listenTo( this.model, 'change', this.render );
+    this.listenTo(app.openRooms, {
+      'add': this.render,
+      'remove': this.render
+    });
   },
 
   onClick: function(event){
     event.preventDefault();
-    console.log('on room click');
-    this.model.set({ open: !this.model.get('open') });
+
+    var contains = app.openRooms.contains(this.model);
+
+    if (contains){
+      app.openRooms.remove(this.model);
+    }
+    else {
+      app.openRooms.add(this.model)
+    }
   },
 
-  render: function(){
-    console.log('rendering room nav')
-    this.$el.html(template(this.model.toJSON()));
+  render: function(model){
+    // Don't carry on with render if the changed model wasn't this.model
+    if (model && !_(model).isEqual(this.model)) return
+      
+    console.log('room nav rnder')
+    this.$el.html(template({
+      open  : app.openRooms.contains(this.model), 
+      model : this.model.toJSON()
+    }));
     return this;
   }
 });

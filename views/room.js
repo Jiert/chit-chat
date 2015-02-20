@@ -1,12 +1,9 @@
 var _ = require('underscore'),
     Backbone = require('backbone'),
     app = require('../namespace'),
-
     MessagesCollection = require('../collections/messages'),
-    
     MessageView = require('../views/message'),
     FormView = require('../views/form_view'),
-    
     template = require('../templates/room.hbs');
 
 module.exports = Backbone.View.extend({
@@ -40,23 +37,12 @@ module.exports = Backbone.View.extend({
     })
   },
 
-  // ALERT ALERT ALERT ALERT: !!!!! FIX THIS 
-  // We should not be setting open / close values
-  // on the room models themselves. We should only
-  // be changing modesl saved to the user's models array
-
   teardown: function(){
-    // TODO: Get rid of all this shit, this shold be elsewhere
+    app.openRooms.remove(this.model);
+
     if (app.user){
-      // TODO: Get rid of this string bullshit
-      var oldRooms = app.user.get('rooms').split(','),
-          newRooms = _(oldRooms).without(this.model.id).toString();
-      app.user.set('rooms', newRooms);
+      app.user.set({ rooms: app.openRooms.pluck('id').toString() });
     }
-    
-    // TODO: This should only be set on the userRoom collection
-    this.model.set({ open: false });
-    this.model.trigger('room:unsubscribe', this.model);
   },
 
   renderMessages: function(){

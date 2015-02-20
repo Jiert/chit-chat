@@ -10,20 +10,17 @@ module.exports = Backbone.View.extend({
   initialize: function(options){
     _.bindAll(this, 'renderRooms', 'renderSidebar', 'renderRoom', 'buildRoom');
 
-    this.userRoomsCollection = new Backbone.Collection();
-    
-    this.listenTo(this.userRoomsCollection, {
-      'add'    : this.renderRoom,
-      'remove' : this.removeRoom
-    });
-
-    this.listenTo(app.rooms, {
-      'change' : this.onChange
-    });
+    app.openRooms = new Backbone.Collection();
 
     if (app.user){
+      // TODO: sometimes app.user.rooms is an emtpy string and passes truth test
       this.userRoomsArray = app.user.has('rooms') ? app.user.get('rooms').split(',') : [];
+      this.userRoomsArray.length && _(this.userRoomsArray).each(this.buildRoom);
     }
+    
+    this.listenTo(app.openRooms, {
+      'add': this.renderRoom
+    });
   },
 
   renderSidebar: function(){
@@ -31,36 +28,19 @@ module.exports = Backbone.View.extend({
     this.$mainSidebarNav.html(this.sidebarView.render().el);
   },
 
-  renderRooms: function(){    
-    if (app.user && this.userRoomsArray.length) {
-      _(this.userRoomsArray).each(this.buildRoom);
-
-      this.$mainContent.html('');
-      this.userRoomsCollection.each(this.renderRoom);
-    }
+  renderRooms: function(){
+    app.openRooms.length && app.openRooms.each(this.renderRoom);
   },
 
   buildRoom: function(id){
-    this.userRoomsCollection.add(app.rooms.where({id: id}))
-  },
-
-  removeRoom: function(room){
-    // TODO: Does removing a model from the collection get garbage collected?
-  },
-
-  onChange: function(room){
-    if (room.get('open')){
-      this.userRoomsCollection && this.userRoomsCollection.add(room);
-    }
-    else {
-      this.userRoomsCollection && this.userRoomsCollection.remove(room);
-    }
-    if (app.user){
-      app.user.set({ rooms: this.userRoomsCollection.pluck('id').toString() });
-    }
+    app.openRooms.add(app.rooms.where({ id: id }));
   },
 
   renderRoom: function(room){
+    if (app.user){
+      app.user.set({ rooms: app.openRooms.pluck('id').toString() });
+    }
+
     var roomView = this.createSubView( RoomView, {
       room: room
     });
@@ -69,7 +49,9 @@ module.exports = Backbone.View.extend({
   },
 
   render: function() {
-    this.$el.html(template());
+    this.$el.html(template({
+      roomsOpen: app.openRooms.length
+    }));
 
     this.$mainContent = this.$('#main-content');
     this.$mainSidebarNav = this.$('#main-sidebar-nav');
