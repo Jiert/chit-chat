@@ -22,7 +22,7 @@ body #main-sidebar-nav .nav-sidebar .open-true {
   border-radius: 5px;
   color: #fff;
 }
-body #main-content .messageS {
+body #rooms-container .messages {
   height: 200px;
   overflow: scroll;
 }

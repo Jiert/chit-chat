@@ -14009,14 +14009,16 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 },{"hbsfy/runtime":"/Users/jared/Projects/Brew-Journal/node_modules/hbsfy/runtime.js"}],"/Users/jared/Projects/Brew-Journal/templates/content.hbs":[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
-module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
-  return "      <div class=\"col-md-12\">\n        <h1>Welcome to Chit Chats. <small>(working name)</small></h1>\n        <p class=\"lead\">Click on a topic over there on the left to open a chat room.</p>\n        <p class=\"lead\">If you're logged in, you'll be automatically subscribed.</p>\n        <p class=\"lead\">To unsuscribe, simply close the room.</p>\n      </div>\n";
-  },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  var stack1, buffer = "<div class=\"row\">\n  <div id=\"main-sidebar-nav\" class=\"col-sm-3 col-md-2 sidebar\"></div>\n  <div class=\"col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main\">\n    <div id=\"main-content\" class=\"row\">\n";
-  stack1 = helpers.unless.call(depth0, (depth0 != null ? depth0.openRooms : depth0), {"name":"unless","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data});
-  if (stack1 != null) { buffer += stack1; }
-  return buffer + "    </div>\n  </div>\n</div>";
-},"useData":true});
+module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  return "<div class=\"row\">\n  <div id=\"main-sidebar-nav\" class=\"col-sm-3 col-md-2 sidebar\"></div>\n  <div class=\"col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main\">\n    <div id=\"main-content\" class=\"row\"></div>\n    <div id=\"rooms-container\" class=\"row\"></div>\n  </div>\n</div>";
+  },"useData":true});
+
+},{"hbsfy/runtime":"/Users/jared/Projects/Brew-Journal/node_modules/hbsfy/runtime.js"}],"/Users/jared/Projects/Brew-Journal/templates/content_message.hbs":[function(require,module,exports){
+// hbsfy compiled Handlebars template
+var HandlebarsCompiler = require('hbsfy/runtime');
+module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  return "<div class=\"col-md-12\">\n	<h1>Welcome to Chit Chat. <small>(working name)</small></h1>\n	<p class=\"lead\">Click on a topic over there on the left to open a chat room.</p>\n	<p class=\"lead\">If you're logged in, you'll be automatically subscribed.</p>\n	<p class=\"lead\">To unsuscribe, simply close the room.</p>\n</div>\n";
+  },"useData":true});
 
 },{"hbsfy/runtime":"/Users/jared/Projects/Brew-Journal/node_modules/hbsfy/runtime.js"}],"/Users/jared/Projects/Brew-Journal/templates/create_room.hbs":[function(require,module,exports){
 // hbsfy compiled Handlebars template
@@ -14253,6 +14255,7 @@ var _ = require('underscore'),
     Backbone = require('backbone'),
     RoomView = require('../views/room'),
     template = require('../templates/content.hbs'),
+    message  = require('../templates/content_message.hbs'), 
     SidebarView = require('../views/sidebar_nav');
 
 module.exports = Backbone.View.extend({
@@ -14269,8 +14272,15 @@ module.exports = Backbone.View.extend({
     }
     
     this.listenTo(app.openRooms, {
-      'add': this.renderRoom
+      'add': this.renderRoom,
+      'remove': this.checkRooms
     });
+  },
+
+  checkRooms: function(){
+    if (app.openRooms.length < 1){
+      this.$mainContent.html(message());
+    }
   },
 
   renderSidebar: function(){
@@ -14279,7 +14289,13 @@ module.exports = Backbone.View.extend({
   },
 
   renderRooms: function(){
-    app.openRooms.length && app.openRooms.each(this.renderRoom);
+    if (app.openRooms.length){
+      this.$mainContent.html('');
+      app.openRooms.each(this.renderRoom);
+    }
+    else {
+      this.$mainContent.html(message());
+    }
   },
 
   buildRoom: function(id){
@@ -14287,6 +14303,7 @@ module.exports = Backbone.View.extend({
   },
 
   renderRoom: function(room){
+    this.$mainContent.html('')
     if (app.user){
       app.user.set({ rooms: app.openRooms.pluck('id').toString() });
     }
@@ -14295,16 +14312,19 @@ module.exports = Backbone.View.extend({
       room: room
     });
 
-    this.$mainContent.append(roomView.render().el);
+    this.$roomsContainer.append(roomView.render().el);
   },
 
-  render: function() {
+  render: function(){
+    console.log('content render')
+
     this.$el.html(template({
-      roomsOpen: app.openRooms.length
+      openRooms: app.openRooms.length
     }));
 
     this.$mainContent = this.$('#main-content');
     this.$mainSidebarNav = this.$('#main-sidebar-nav');
+    this.$roomsContainer = this.$('#rooms-container');
 
     this.renderSidebar();
     this.renderRooms();
@@ -14313,7 +14333,7 @@ module.exports = Backbone.View.extend({
   }
 
 });
-},{"../namespace":"/Users/jared/Projects/Brew-Journal/namespace.js","../templates/content.hbs":"/Users/jared/Projects/Brew-Journal/templates/content.hbs","../views/room":"/Users/jared/Projects/Brew-Journal/views/room.js","../views/sidebar_nav":"/Users/jared/Projects/Brew-Journal/views/sidebar_nav.js","backbone":"/Users/jared/Projects/Brew-Journal/node_modules/backbone/backbone.js","underscore":"/Users/jared/Projects/Brew-Journal/node_modules/underscore/underscore.js"}],"/Users/jared/Projects/Brew-Journal/views/form_view.js":[function(require,module,exports){
+},{"../namespace":"/Users/jared/Projects/Brew-Journal/namespace.js","../templates/content.hbs":"/Users/jared/Projects/Brew-Journal/templates/content.hbs","../templates/content_message.hbs":"/Users/jared/Projects/Brew-Journal/templates/content_message.hbs","../views/room":"/Users/jared/Projects/Brew-Journal/views/room.js","../views/sidebar_nav":"/Users/jared/Projects/Brew-Journal/views/sidebar_nav.js","backbone":"/Users/jared/Projects/Brew-Journal/node_modules/backbone/backbone.js","underscore":"/Users/jared/Projects/Brew-Journal/node_modules/underscore/underscore.js"}],"/Users/jared/Projects/Brew-Journal/views/form_view.js":[function(require,module,exports){
 var _ = require('underscore'),
     app = require('../namespace'),
     Backbone = require('backbone'),

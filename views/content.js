@@ -3,6 +3,7 @@ var _ = require('underscore'),
     Backbone = require('backbone'),
     RoomView = require('../views/room'),
     template = require('../templates/content.hbs'),
+    message  = require('../templates/content_message.hbs'), 
     SidebarView = require('../views/sidebar_nav');
 
 module.exports = Backbone.View.extend({
@@ -19,8 +20,15 @@ module.exports = Backbone.View.extend({
     }
     
     this.listenTo(app.openRooms, {
-      'add': this.renderRoom
+      'add': this.renderRoom,
+      'remove': this.checkRooms
     });
+  },
+
+  checkRooms: function(){
+    if (app.openRooms.length < 1){
+      this.$mainContent.html(message());
+    }
   },
 
   renderSidebar: function(){
@@ -29,7 +37,13 @@ module.exports = Backbone.View.extend({
   },
 
   renderRooms: function(){
-    app.openRooms.length && app.openRooms.each(this.renderRoom);
+    if (app.openRooms.length){
+      this.$mainContent.html('');
+      app.openRooms.each(this.renderRoom);
+    }
+    else {
+      this.$mainContent.html(message());
+    }
   },
 
   buildRoom: function(id){
@@ -37,6 +51,7 @@ module.exports = Backbone.View.extend({
   },
 
   renderRoom: function(room){
+    this.$mainContent.html('')
     if (app.user){
       app.user.set({ rooms: app.openRooms.pluck('id').toString() });
     }
@@ -45,16 +60,19 @@ module.exports = Backbone.View.extend({
       room: room
     });
 
-    this.$mainContent.append(roomView.render().el);
+    this.$roomsContainer.append(roomView.render().el);
   },
 
-  render: function() {
+  render: function(){
+    console.log('content render')
+
     this.$el.html(template({
-      roomsOpen: app.openRooms.length
+      openRooms: app.openRooms.length
     }));
 
     this.$mainContent = this.$('#main-content');
     this.$mainSidebarNav = this.$('#main-sidebar-nav');
+    this.$roomsContainer = this.$('#rooms-container');
 
     this.renderSidebar();
     this.renderRooms();
