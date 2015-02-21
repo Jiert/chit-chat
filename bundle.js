@@ -14123,15 +14123,15 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
 },{"hbsfy/runtime":"/Users/jared/Projects/Brew-Journal/node_modules/hbsfy/runtime.js"}],"/Users/jared/Projects/Brew-Journal/templates/sidebar_nav_room.hbs":[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
-module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  var stack1, helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, lambda=this.lambda;
-  return "<a class=\"open-"
-    + escapeExpression(((helper = (helper = helpers.open || (depth0 != null ? depth0.open : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"open","hash":{},"data":data}) : helper)))
-    + "\" href=\""
-    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.id : stack1), depth0))
-    + "\">"
+module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
+  return "active btn-info";
+  },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression, buffer = "<button class=\"";
+  stack1 = helpers['if'].call(depth0, (depth0 != null ? depth0.active : depth0), {"name":"if","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + " btn btn-block\">\n  "
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.model : depth0)) != null ? stack1.name : stack1), depth0))
-    + " <span class=\"pull-right badge\">0</span></a>";
+    + " <span class=\"pull-right badge\">0</span>\n</button>";
 },"useData":true});
 
 },{"hbsfy/runtime":"/Users/jared/Projects/Brew-Journal/node_modules/hbsfy/runtime.js"}],"/Users/jared/Projects/Brew-Journal/views/application.js":[function(require,module,exports){
@@ -14745,12 +14745,13 @@ module.exports = Backbone.View.extend({
   render: function(model){
     // Don't carry on with render if the changed model wasn't this.model
     if (model && !_(model).isEqual(this.model)) return
-      
+
     console.log('room nav rnder')
     this.$el.html(template({
-      open  : app.openRooms.contains(this.model), 
+      active: app.openRooms.contains(this.model),
       model : this.model.toJSON()
     }));
+
     return this;
   }
 });

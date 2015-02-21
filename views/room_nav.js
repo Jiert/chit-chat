@@ -31,12 +31,13 @@ module.exports = Backbone.View.extend({
   render: function(model){
     // Don't carry on with render if the changed model wasn't this.model
     if (model && !_(model).isEqual(this.model)) return
-      
+
     console.log('room nav rnder')
     this.$el.html(template({
-      open  : app.openRooms.contains(this.model), 
+      active: app.openRooms.contains(this.model),
       model : this.model.toJSON()
     }));
+
     return this;
   }
 });

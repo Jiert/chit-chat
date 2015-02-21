@@ -17,10 +17,10 @@ body #main-sidebar-nav {
   background-color: #f5f5f5;
   border-right: 1px solid #eee;
 }
-body #main-sidebar-nav .nav-sidebar .open-true {
-  background-color: #7391AB;
-  border-radius: 5px;
-  color: #fff;
+body #main-sidebar-nav .nav-sidebar li button {
+  margin: 5px 0;
+  text-align: left;
+  background-color: none;
 }
 body #rooms-container .messages {
   height: 200px;
