@@ -14587,9 +14587,14 @@ module.exports = Backbone.View.extend({
   onLoaded  : function(){},
   onConfirm : function(){},
   onShow    : function(){},
-  onShown   : function(){},
+
+  onShown   : function(){
+    this.$el.find('input').first().focus();
+  },
+
   onHide    : function(){},
   onHidden  : function(){
+    // Be sure to include this in any overrides
     this.destroy();
   },
 
@@ -14610,7 +14615,6 @@ module.exports = Backbone.View.extend({
     }));
 
     $('body').append(this.$el.modal());
-    
     return this;
   }
 

@@ -4,6 +4,9 @@ body {
 body input {
   min-width: 175px;
 }
+body button:focus {
+  outline: 0 !important;
+}
 body #main-sidebar-nav {
   position: fixed;
   top: 51px;
