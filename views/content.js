@@ -61,6 +61,8 @@ module.exports = Backbone.View.extend({
     });
 
     this.$roomsContainer.append(roomView.render().el);
+
+    _(roomView.focus).defer();
   },
 
   render: function(){

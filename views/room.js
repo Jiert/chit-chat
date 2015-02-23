@@ -14,7 +14,7 @@ module.exports = Backbone.View.extend({
   },
 
   initialize: function(options){
-    _.bindAll(this, 'renderMessages', 'renderMessage', 'scrollToBottom');
+    _.bindAll(this, 'renderMessages', 'renderMessage', 'scrollToBottom', 'focus', 'deferred');
 
     if (!options.room) return;
 
@@ -68,6 +68,19 @@ module.exports = Backbone.View.extend({
     this.$messageInput.html(formView.render().el);
   },
 
+ focus: function(){
+    var $input = this.$messageInput.find('input');
+    var func = function(){
+      $input.focus();
+    }
+    // I mean... it works...
+    this.deferred(func);
+  },
+
+  deferred: function(func){
+    _(func).defer();
+  },
+
   scrollToBottom: function(){
     var scrollHeight = this.$messages.prop('scrollHeight');
     this.$messages.scrollTop(scrollHeight);
@@ -79,7 +92,7 @@ module.exports = Backbone.View.extend({
     this.$messages = this.$('.messages');
     this.$messageInput = this.$('.message-input');
 
-    // Why does it seem like this.messages is here instanly 
+    // Why does it seem like this.messages is here instantly 
     // is this here becasue we already have rooms?
     this.renderMessages();
 
