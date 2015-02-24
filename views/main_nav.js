@@ -1,9 +1,7 @@
 var _ = require('underscore'),
     app = require('../namespace'),
     Backbone = require('backbone'),
-
     ModalView = require('../views/modal'),
-
     template = require('../templates/main_nav.hbs'),
     loginTemplate = require('../templates/login.hbs'),
     registerTemplate = require('../templates/register.hbs');
@@ -15,7 +13,6 @@ module.exports = Backbone.View.extend({
     'click #login'             : 'onLoginSubmit',
     'click #user-login > a'    : 'onLoginClick',
     'click #user-register > a' : 'onRegisterClick',
-    // 'click #create-account'    : 'onCreateAccountClick',
   },
 
   initialize: function(options){
@@ -27,12 +24,24 @@ module.exports = Backbone.View.extend({
   },
 
   onLoginClick: function(){
+    var validation = {
+      email_address: { 
+        required: true,
+        type: 'email'
+      },
+      password: {
+        required: true,
+        type: 'password'
+      }
+    };
+
     this.modalView = this.createSubView( ModalView, {
       title       : 'Login',
       onConfirm   : this.onLoginSubmit,
       modalBody   : loginTemplate,
       confirmText : 'Login',
-      showCancel  : false 
+      showCancel  : false, 
+      validation  : validation
     });
   },
 
@@ -42,15 +51,24 @@ module.exports = Backbone.View.extend({
       onConfirm   : this.onCreateAccountSubmit,
       modalBody   : registerTemplate,
       confirmText : 'Create Account',
-      showCancel  : false 
+      showCancel  : false
     });
   },
 
   onLoginSubmit: function(){
+    // Should this all be taken care of in the modal class?
+
     this.modalView.$('.confirm').text('Working...').attr('disabled', 'disabled');
 
     var email = this.modalView.$('input[name="email_address"]').val(),
         password = this.modalView.$('input[name="password"]').val();
+
+    // TODO: Finalize validation here
+    app.utils.validate(this.modalView, {
+      email_address: email,
+      password: password
+    });
+
 
     this.login(email, password);
   },
@@ -65,6 +83,7 @@ module.exports = Backbone.View.extend({
     // TODO: 
     // * validate against existing user names
     // * trim user name
+    // * validate against blank values, and types (email address)
 
     app.ref.createUser({
       email    : this.email,
@@ -125,13 +144,6 @@ module.exports = Backbone.View.extend({
       authData: auth,
       userName: app.user ? app.user.get('userName') : undefined 
     }));
-
-    // this.$('#user-register > a').popover({
-    //   placement: 'bottom',
-    //   html: true,
-    //   content: registerTemplate(),
-    //   trigger: 'click'
-    // });
 
     return this;
   }

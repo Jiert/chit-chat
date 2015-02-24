@@ -26,10 +26,6 @@ module.exports = Backbone.View.extend({
   },
 
   onMessageSubmit: function(){
-    // We're assuming app.user.yadayada will be here because as soon
-    // as a logout event occurs this view will killed
-
-    // TODO: make sure this view is really killed on logout events
     var message = this.$message.val();
 
     if (message){

@@ -13,7 +13,8 @@ module.exports = Backbone.View.extend({
   showCancel  : true, 
 
   events: {
-    'click .confirm' : 'onConfirm'
+    'click .confirm' : 'onConfirm',
+    'keydown' : 'onKeyDown'
   },
 
   initialize: function(options){
@@ -30,6 +31,13 @@ module.exports = Backbone.View.extend({
     });
 
     this.render();
+  },
+
+  onKeyDown: function(event){
+    if (event.keyCode === 13){
+      event.preventDefault();
+      this.onConfirm();
+    }
   },
 
   // Please override 
