@@ -64,7 +64,10 @@ module.exports = Backbone.View.extend({
   }, 
 
   renderForm: function(){
-    var formView = this.createSubView(FormView, { messages: this.messages });
+    var formView = this.createSubView(FormView, { 
+      messages: this.messages,
+      model: this.model
+    });
     this.$messageInput.html(formView.render().el);
   },
 
