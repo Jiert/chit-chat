@@ -9,6 +9,10 @@ module.exports = Backbone.View.extend({
     // this.user = options.user;
   },
 
+  teardown: function(){
+    console.log('message teardown')
+  },
+
   render: function(){
     // TODO: Why on earth isn't app defined here?
     var userName = app.user && app.user.get('userName'),

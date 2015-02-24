@@ -21,6 +21,10 @@ module.exports = Backbone.View.extend({
     }
   },
 
+  teardown: function(){
+    console.log('form view teardown')
+  },
+
   onMessageSubmit: function(){
     // We're assuming app.user.yadayada will be here because as soon
     // as a logout event occurs this view will killed

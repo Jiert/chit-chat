@@ -14011,7 +14011,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<div class=\"col-md-12\">\n	<h1>Welcome to Chit Chat. <small>(working name)</small></h1>\n	<p class=\"lead\">Click on a topic over there on the left to open a chat room.</p>\n	<p class=\"lead\">If you're logged in, you'll be automatically subscribed.</p>\n	<p class=\"lead\">To unsuscribe, simply close the room.</p>\n</div>\n";
+  return "<div class=\"col-md-12\">\n	<h1>Welcome to Chit Chat</h1>\n	<p class=\"lead\">Click on a topic over there on the left to open a chat room.</p>\n	<p class=\"lead\">Register as a user to create your own rooms.</p>\n	<p class=\"lead\">If you're logged in, you'll be automatically subscribed to any rooms you open.</p>\n	<p class=\"lead\">To unsuscribe, simply close the room.</p>\n</div>\n";
   },"useData":true});
 
 },{"hbsfy/runtime":"/Users/jared/Projects/Brew-Journal/node_modules/hbsfy/runtime.js"}],"/Users/jared/Projects/Brew-Journal/templates/create_room.hbs":[function(require,module,exports){
@@ -14214,8 +14214,16 @@ module.exports = Backbone.View.extend({
   },
 
   renderApp: function(){
+    this.clean();
+
     this.renderNav();
     this.renderContent();
+  },
+
+  clean: function(){
+    _(this.subViews).each(function(view){
+      view.destroy();
+    })
   },
 
   renderNav: function(){
@@ -14351,6 +14359,10 @@ module.exports = Backbone.View.extend({
       event.preventDefault();
       this.onMessageSubmit();
     }
+  },
+
+  teardown: function(){
+    console.log('form view teardown')
   },
 
   onMessageSubmit: function(){
@@ -14532,6 +14544,10 @@ module.exports = Backbone.View.extend({
     // this.user = options.user;
   },
 
+  teardown: function(){
+    console.log('message teardown')
+  },
+
   render: function(){
     // TODO: Why on earth isn't app defined here?
     var userName = app.user && app.user.get('userName'),
@@ -14656,6 +14672,7 @@ module.exports = Backbone.View.extend({
   },
 
   teardown: function(){
+    console.log('room teardown')
     app.openRooms.remove(this.model);
 
     if (app.user){

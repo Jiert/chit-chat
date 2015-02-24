@@ -83,8 +83,16 @@ module.exports = Backbone.View.extend({
   },
 
   renderApp: function(){
+    this.clean();
+
     this.renderNav();
     this.renderContent();
+  },
+
+  clean: function(){
+    _(this.subViews).each(function(view){
+      view.destroy();
+    })
   },
 
   renderNav: function(){

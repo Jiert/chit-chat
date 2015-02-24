@@ -38,6 +38,7 @@ module.exports = Backbone.View.extend({
   },
 
   teardown: function(){
+    console.log('room teardown')
     app.openRooms.remove(this.model);
 
     if (app.user){
