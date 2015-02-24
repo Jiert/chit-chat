@@ -6,52 +6,11 @@ var _ = require('underscore'),
 module.exports = Backbone.Firebase.Collection.extend({
 
   initialize: function(models, options){
-    // this.url = 'https://blinding-torch-9943.firebaseio.com/rooms/'+ options.room +'/messages';
     this.url = 'https://blinding-torch-9943.firebaseio.com/messages/' + options.room;
-    debugger;
   },
 
-  // url: 'https://blinding-torch-9943.firebaseio.com/messages',
   model: Message,
 });
-
-
-// {
-//     // rooms contains only meta info about each room
-//     // stored under the room's unique ID
-//     "rooms": {
-//       "one": {
-//         "name": "room alpha",
-//         "type": "private"
-//       },
-//       "two": { ... },
-//       "three": { ... }
-//     },
-
-//     // room members are easily accessible (or restricted)
-//     // we also store these by room ID
-//     "members": {
-//       // we'll talk about indices like this below
-//       "one": {
-//         "mchen": true,
-//         "hmadi": true
-//       },
-//       "two": { ... },
-//       "three": { ... }
-//     },
-
-//     // messages are separate from data we may want to iterate quickly
-//     // but still easily paginated and queried, and organized by room ID
-//     "messages": {
-//       "one": {
-//         "m1": { "sender": "mchen", "message": "foo" },
-//         "m2": { ... },
-//         "m3": { ... }
-//       },
-//       "two": { ... },
-//       "three": { ... }
-//     }
-//   }
 },{"../models/message":"/Users/jared/Projects/Brew-Journal/models/message.js","backbone":"/Users/jared/Projects/Brew-Journal/node_modules/backbone/backbone.js","underscore":"/Users/jared/Projects/Brew-Journal/node_modules/underscore/underscore.js"}],"/Users/jared/Projects/Brew-Journal/collections/rooms.js":[function(require,module,exports){
 var _ = require('underscore'),
     Backbone = require('backbone'),
@@ -1147,13 +1106,7 @@ function ob(a,b){w(!b||!0===a||!1===a,"Can't turn on custom loggers persistently
 var _ = require('underscore'),
     Backbone = require('backbone');
 
-module.exports  = Backbone.Model.extend({
-  defaults: function() {
-    return {
-      title: "New Message",
-    };
-  },
-});
+module.exports  = Backbone.Model.extend();
 },{"backbone":"/Users/jared/Projects/Brew-Journal/node_modules/backbone/backbone.js","underscore":"/Users/jared/Projects/Brew-Journal/node_modules/underscore/underscore.js"}],"/Users/jared/Projects/Brew-Journal/models/room.js":[function(require,module,exports){
 var _ = require('underscore'),
     Backbone = require('backbone');
@@ -14410,7 +14363,6 @@ module.exports = Backbone.View.extend({
     if (message){
       this.$message.parent().toggleClass('has-warning', false);
       this.messages.create({
-        id: this.model.id,
         author: app.user.get('userName'),
         message: this.$message.val()
       });
@@ -14691,7 +14643,7 @@ module.exports = Backbone.View.extend({
     // should we pass the messages into the collection?
     // Or does Firebase do that by itself already?
     this.messages = new MessagesCollection([], {
-      room: this.model.id,
+      room: 'room' + this.model.id,
     });
 
     this.listenTo(this.messages, {

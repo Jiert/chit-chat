@@ -31,7 +31,6 @@ module.exports = Backbone.View.extend({
     if (message){
       this.$message.parent().toggleClass('has-warning', false);
       this.messages.create({
-        id: this.model.id,
         author: app.user.get('userName'),
         message: this.$message.val()
       });
