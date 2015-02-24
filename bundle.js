@@ -6,7 +6,7 @@ var _ = require('underscore'),
 module.exports = Backbone.Firebase.Collection.extend({
 
   initialize: function(models, options){
-    this.url = 'https://blinding-torch-9943.firebaseio.com/rooms/'+ options.room +'/messages';
+    this.url = 'https://blinding-torch-9943.firebaseio.com/messages/' + options.room;
   },
 
   model: Message,
@@ -1106,13 +1106,7 @@ function ob(a,b){w(!b||!0===a||!1===a,"Can't turn on custom loggers persistently
 var _ = require('underscore'),
     Backbone = require('backbone');
 
-module.exports  = Backbone.Model.extend({
-  defaults: function() {
-    return {
-      title: "New Message",
-    };
-  },
-});
+module.exports  = Backbone.Model.extend();
 },{"backbone":"/Users/jared/Projects/Brew-Journal/node_modules/backbone/backbone.js","underscore":"/Users/jared/Projects/Brew-Journal/node_modules/underscore/underscore.js"}],"/Users/jared/Projects/Brew-Journal/models/room.js":[function(require,module,exports){
 var _ = require('underscore'),
     Backbone = require('backbone');
@@ -14649,7 +14643,7 @@ module.exports = Backbone.View.extend({
     // should we pass the messages into the collection?
     // Or does Firebase do that by itself already?
     this.messages = new MessagesCollection([], {
-      room: this.model.id,
+      room: 'room' + this.model.id,
     });
 
     this.listenTo(this.messages, {
@@ -14688,7 +14682,10 @@ module.exports = Backbone.View.extend({
   }, 
 
   renderForm: function(){
-    var formView = this.createSubView(FormView, { messages: this.messages });
+    var formView = this.createSubView(FormView, { 
+      messages: this.messages,
+      model: this.model
+    });
     this.$messageInput.html(formView.render().el);
   },
 

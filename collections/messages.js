@@ -5,7 +5,7 @@ var _ = require('underscore'),
 module.exports = Backbone.Firebase.Collection.extend({
 
   initialize: function(models, options){
-    this.url = 'https://blinding-torch-9943.firebaseio.com/rooms/'+ options.room +'/messages';
+    this.url = 'https://blinding-torch-9943.firebaseio.com/messages/' + options.room;
   },
 
   model: Message,

@@ -25,7 +25,7 @@ module.exports = Backbone.View.extend({
     // should we pass the messages into the collection?
     // Or does Firebase do that by itself already?
     this.messages = new MessagesCollection([], {
-      room: this.model.id,
+      room: 'room' + this.model.id,
     });
 
     this.listenTo(this.messages, {
@@ -64,7 +64,10 @@ module.exports = Backbone.View.extend({
   }, 
 
   renderForm: function(){
-    var formView = this.createSubView(FormView, { messages: this.messages });
+    var formView = this.createSubView(FormView, { 
+      messages: this.messages,
+      model: this.model
+    });
     this.$messageInput.html(formView.render().el);
   },
 
