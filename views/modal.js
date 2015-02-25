@@ -10,7 +10,7 @@ module.exports = Backbone.View.extend({
   confirmText : 'Confirm',
   className   : 'modal fade',
   modalBody   : 'Hello World!',
-  showCancel  : true, 
+  showCancel  : true,
 
   events: {
     'click .confirm' : 'onConfirm',

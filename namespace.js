@@ -9,7 +9,14 @@ _.once(function(){
     events: _({}).extend(Backbone.Events),
     utils: {
     	validate: function(obj, data){
-    		debugger;
+    		_(data).each(function(value, key, list){
+    			if(this[key].required && !_(value).isEmpty()){
+    				debugger;
+    			}
+    			else {
+    				return false;
+    			}
+    		}, obj)
     	}
     }
   };

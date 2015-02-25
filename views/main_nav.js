@@ -8,6 +8,24 @@ var _ = require('underscore'),
 
 module.exports = Backbone.View.extend({
 
+  loginValidation: {
+    email_address: { 
+      required: true,
+      type: 'email'
+    },
+    password: {
+      required: true,
+      type: 'password'
+    }
+  },
+
+  registerValidation: {
+    user_name: {
+      required: true,
+      type: 'string'
+    }
+  },
+
   events: {
     'click #logout'            : 'onLogoutClick',
     'click #login'             : 'onLoginSubmit',
@@ -17,6 +35,8 @@ module.exports = Backbone.View.extend({
 
   initialize: function(options){
     _.bindAll(this, 'login', 'onLogin', 'onSaveUser', 'onAccountCreated', 'onLoginSubmit', 'onCreateAccountSubmit');
+
+    _(this.registerValidation).extend(this.loginValidation);
   },
 
   onLogoutClick: function(){
@@ -24,24 +44,12 @@ module.exports = Backbone.View.extend({
   },
 
   onLoginClick: function(){
-    var validation = {
-      email_address: { 
-        required: true,
-        type: 'email'
-      },
-      password: {
-        required: true,
-        type: 'password'
-      }
-    };
-
     this.modalView = this.createSubView( ModalView, {
       title       : 'Login',
       onConfirm   : this.onLoginSubmit,
       modalBody   : loginTemplate,
       confirmText : 'Login',
       showCancel  : false, 
-      validation  : validation
     });
   },
 
@@ -64,13 +72,18 @@ module.exports = Backbone.View.extend({
         password = this.modalView.$('input[name="password"]').val();
 
     // TODO: Finalize validation here
-    app.utils.validate(this.modalView, {
+    var isValid = app.utils.validate(this.loginValidation, {
       email_address: email,
       password: password
     });
 
+    if (isValid){
+      this.login(email, password);
+    }
+    else {
+      alert('INVALID MOTHER FUCKER')
+    }
 
-    this.login(email, password);
   },
 
   onCreateAccountSubmit: function(event){
