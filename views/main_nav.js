@@ -77,12 +77,12 @@ module.exports = Backbone.View.extend({
       password: password
     });
 
-    if (isValid){
+    // if (isValid){
       this.login(email, password);
-    }
-    else {
-      alert('INVALID MOTHER FUCKER')
-    }
+    // }
+    // else {
+    //   alert('INVALID MOTHER FUCKER')
+    // }
 
   },
 
