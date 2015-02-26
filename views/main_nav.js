@@ -1,9 +1,10 @@
 var _ = require('underscore'),
     app = require('../namespace'),
     Backbone = require('backbone'),
-    ModalView = require('../views/modal'),
     template = require('../templates/main_nav.hbs'),
+    ModalView = require('../views/modal'),
     loginTemplate = require('../templates/login.hbs'),
+    ValidationModel = require('../models/validation'),
     registerTemplate = require('../templates/register.hbs');
 
 module.exports = Backbone.View.extend({
@@ -49,7 +50,7 @@ module.exports = Backbone.View.extend({
       onConfirm   : this.onLoginSubmit,
       modalBody   : loginTemplate,
       confirmText : 'Login',
-      showCancel  : false, 
+      showCancel  : false
     });
   },
 
@@ -65,25 +66,20 @@ module.exports = Backbone.View.extend({
 
   onLoginSubmit: function(){
     // Should this all be taken care of in the modal class?
+    var loginModel = new ValidationModel({
+      emailVal: this.modalView.$('input[name="email_address"]').val(),
+      passwordVal: this.modalView.$('input[name="password"]').val(),
+    })
 
-    this.modalView.$('.confirm').text('Working...').attr('disabled', 'disabled');
+    loginModel.validate();
 
-    var email = this.modalView.$('input[name="email_address"]').val(),
-        password = this.modalView.$('input[name="password"]').val();
-
-    // TODO: Finalize validation here
-    var isValid = app.utils.validate(this.loginValidation, {
-      email_address: email,
-      password: password
-    });
-
-    // if (isValid){
-      this.login(email, password);
-    // }
-    // else {
-    //   alert('INVALID MOTHER FUCKER')
-    // }
-
+    if (loginModel.isValid){
+      this.modalView.$('.confirm').text('Working...').attr('disabled', 'disabled');
+      this.login(loginModel.get('emailVal'), loginModel.get('passwordVal'));
+    }
+    else {
+      alert('INVALID MOTHER FUCKER')
+    }
   },
 
   onCreateAccountSubmit: function(event){

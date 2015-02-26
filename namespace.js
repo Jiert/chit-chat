@@ -10,8 +10,8 @@ _.once(function(){
     utils: {
 
       validationTypes: {
-        email_address: this.validateEmail,
-        password: this.validatePassword
+        email_address: 'validateEmail',
+        password: 'validatePassword'
       },
 
       validatePassword: function(password){
@@ -25,16 +25,17 @@ _.once(function(){
 
       validateObj: function(value, key, list){
         if(this.obj[key].required && !_(value).isEmpty()){
-          // debugger;
+          debugger;
 
-          // I don't know why this doesn't work
-          // this.validationTypes[key](value)
+          var func = this.validationTypes[key]
+          this[func](value)
         }
       },
 
       validate: function(obj, data){
         this.data = data;
         this.obj = obj;
+        // this.
 
         _(data).each(this.validateObj, this);
       }

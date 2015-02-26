@@ -1125,6 +1125,37 @@ var _ = require('underscore'),
 module.exports  = Backbone.Firebase.Model.extend({
   urlRoot: 'https://blinding-torch-9943.firebaseio.com/users/'
 });
+},{"backbone":"/Users/jared/Projects/Brew-Journal/node_modules/backbone/backbone.js","underscore":"/Users/jared/Projects/Brew-Journal/node_modules/underscore/underscore.js"}],"/Users/jared/Projects/Brew-Journal/models/validation.js":[function(require,module,exports){
+var _ = require('underscore'),
+    Backbone = require('backbone');
+
+module.exports  = Backbone.Model.extend({
+
+  isValid: true,
+
+  initialize: function(options){
+    _(this).bindAll('passwordVal', 'emailVal', 'valMethod');
+  },
+
+  passwordVal: function(password){
+    return password.length > 0;
+  },
+
+  emailVal: function(email){
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+  },
+
+  valMethod: function(value, key, list){
+    this.isValid = this.isValid && this[key](value)
+  },
+
+  validate: function(){
+    _(this.toJSON()).each(this.valMethod);
+  },
+
+
+});
 },{"backbone":"/Users/jared/Projects/Brew-Journal/node_modules/backbone/backbone.js","underscore":"/Users/jared/Projects/Brew-Journal/node_modules/underscore/underscore.js"}],"/Users/jared/Projects/Brew-Journal/namespace.js":[function(require,module,exports){
 var _ = require('underscore'),
     Backbone = require('backbone'),
@@ -1138,8 +1169,8 @@ _.once(function(){
     utils: {
 
       validationTypes: {
-        email_address: this.validateEmail,
-        password: this.validatePassword
+        email_address: 'validateEmail',
+        password: 'validatePassword'
       },
 
       validatePassword: function(password){
@@ -1153,16 +1184,17 @@ _.once(function(){
 
       validateObj: function(value, key, list){
         if(this.obj[key].required && !_(value).isEmpty()){
-          // debugger;
+          debugger;
 
-          // I don't know why this doesn't work
-          // this.validationTypes[key](value)
+          var func = this.validationTypes[key]
+          this[func](value)
         }
       },
 
       validate: function(obj, data){
         this.data = data;
         this.obj = obj;
+        // this.
 
         _(data).each(this.validateObj, this);
       }
@@ -14424,9 +14456,10 @@ module.exports = Backbone.View.extend({
 var _ = require('underscore'),
     app = require('../namespace'),
     Backbone = require('backbone'),
-    ModalView = require('../views/modal'),
     template = require('../templates/main_nav.hbs'),
+    ModalView = require('../views/modal'),
     loginTemplate = require('../templates/login.hbs'),
+    ValidationModel = require('../models/validation'),
     registerTemplate = require('../templates/register.hbs');
 
 module.exports = Backbone.View.extend({
@@ -14472,7 +14505,7 @@ module.exports = Backbone.View.extend({
       onConfirm   : this.onLoginSubmit,
       modalBody   : loginTemplate,
       confirmText : 'Login',
-      showCancel  : false, 
+      showCancel  : false
     });
   },
 
@@ -14488,25 +14521,20 @@ module.exports = Backbone.View.extend({
 
   onLoginSubmit: function(){
     // Should this all be taken care of in the modal class?
+    var loginModel = new ValidationModel({
+      emailVal: this.modalView.$('input[name="email_address"]').val(),
+      passwordVal: this.modalView.$('input[name="password"]').val(),
+    })
 
-    this.modalView.$('.confirm').text('Working...').attr('disabled', 'disabled');
+    loginModel.validate();
 
-    var email = this.modalView.$('input[name="email_address"]').val(),
-        password = this.modalView.$('input[name="password"]').val();
-
-    // TODO: Finalize validation here
-    var isValid = app.utils.validate(this.loginValidation, {
-      email_address: email,
-      password: password
-    });
-
-    // if (isValid){
-      this.login(email, password);
-    // }
-    // else {
-    //   alert('INVALID MOTHER FUCKER')
-    // }
-
+    if (loginModel.isValid){
+      this.modalView.$('.confirm').text('Working...').attr('disabled', 'disabled');
+      this.login(loginModel.get('emailVal'), loginModel.get('passwordVal'));
+    }
+    else {
+      alert('INVALID MOTHER FUCKER')
+    }
   },
 
   onCreateAccountSubmit: function(event){
@@ -14585,7 +14613,7 @@ module.exports = Backbone.View.extend({
   }
 
 });
-},{"../namespace":"/Users/jared/Projects/Brew-Journal/namespace.js","../templates/login.hbs":"/Users/jared/Projects/Brew-Journal/templates/login.hbs","../templates/main_nav.hbs":"/Users/jared/Projects/Brew-Journal/templates/main_nav.hbs","../templates/register.hbs":"/Users/jared/Projects/Brew-Journal/templates/register.hbs","../views/modal":"/Users/jared/Projects/Brew-Journal/views/modal.js","backbone":"/Users/jared/Projects/Brew-Journal/node_modules/backbone/backbone.js","underscore":"/Users/jared/Projects/Brew-Journal/node_modules/underscore/underscore.js"}],"/Users/jared/Projects/Brew-Journal/views/message.js":[function(require,module,exports){
+},{"../models/validation":"/Users/jared/Projects/Brew-Journal/models/validation.js","../namespace":"/Users/jared/Projects/Brew-Journal/namespace.js","../templates/login.hbs":"/Users/jared/Projects/Brew-Journal/templates/login.hbs","../templates/main_nav.hbs":"/Users/jared/Projects/Brew-Journal/templates/main_nav.hbs","../templates/register.hbs":"/Users/jared/Projects/Brew-Journal/templates/register.hbs","../views/modal":"/Users/jared/Projects/Brew-Journal/views/modal.js","backbone":"/Users/jared/Projects/Brew-Journal/node_modules/backbone/backbone.js","underscore":"/Users/jared/Projects/Brew-Journal/node_modules/underscore/underscore.js"}],"/Users/jared/Projects/Brew-Journal/views/message.js":[function(require,module,exports){
 var _ = require('underscore'),
     Backbone = require('backbone'),
     template = require('../templates/message.hbs');
