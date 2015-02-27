@@ -3,10 +3,15 @@ var _ = require('underscore'),
 
 module.exports  = Backbone.Model.extend({
 
-  isValid: true,
-
   initialize: function(options){
     _(this).bindAll('passwordVal', 'emailVal', 'valMethod');
+
+    this.set('valid', true);
+    this.errors = {};
+  },
+
+  isValid: function(){
+    return this.get('valid');
   },
 
   passwordVal: function(password){
@@ -19,11 +24,20 @@ module.exports  = Backbone.Model.extend({
   },
 
   valMethod: function(value, key, list){
-    this.isValid = this.isValid && this[key](value)
+    debugger;
+    var valid = this.get('valid') && this[key](value)
+
+    this.set('valid', valid);
+
+    debugger;
+
+    if (!valid){
+      this.errors[key] = value
+    }
   },
 
   validate: function(){
-    _(this.toJSON()).each(this.valMethod);
+    _(this.get('validation')).each(this.valMethod);
   },
 
 

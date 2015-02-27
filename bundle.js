@@ -1131,10 +1131,15 @@ var _ = require('underscore'),
 
 module.exports  = Backbone.Model.extend({
 
-  isValid: true,
-
   initialize: function(options){
     _(this).bindAll('passwordVal', 'emailVal', 'valMethod');
+
+    this.set('valid', true);
+    this.errors = {};
+  },
+
+  isValid: function(){
+    return this.get('valid');
   },
 
   passwordVal: function(password){
@@ -1147,11 +1152,20 @@ module.exports  = Backbone.Model.extend({
   },
 
   valMethod: function(value, key, list){
-    this.isValid = this.isValid && this[key](value)
+    debugger;
+    var valid = this.get('valid') && this[key](value)
+
+    this.set('valid', valid);
+
+    debugger;
+
+    if (!valid){
+      this.errors[key] = value
+    }
   },
 
   validate: function(){
-    _(this.toJSON()).each(this.valMethod);
+    _(this.get('validation')).each(this.valMethod);
   },
 
 
@@ -1166,39 +1180,7 @@ _.once(function(){
     user: {},
     router: {},
     events: _({}).extend(Backbone.Events),
-    utils: {
-
-      validationTypes: {
-        email_address: 'validateEmail',
-        password: 'validatePassword'
-      },
-
-      validatePassword: function(password){
-        return true;
-      },
-
-      validateEmail: function(email){
-        var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(email);
-      },
-
-      validateObj: function(value, key, list){
-        if(this.obj[key].required && !_(value).isEmpty()){
-          debugger;
-
-          var func = this.validationTypes[key]
-          this[func](value)
-        }
-      },
-
-      validate: function(obj, data){
-        this.data = data;
-        this.obj = obj;
-        // this.
-
-        _(data).each(this.validateObj, this);
-      }
-    }
+    utils: {}
   };
 })();
 
@@ -14096,7 +14078,7 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<form>\n  <div class=\"form-group\">\n    <label for=\"email_address\">Email address</label>\n    <input name=\"email_address\" type=\"email\" class=\"form-control\" placeholder=\"Enter address\">\n  </div>\n  <div class=\"form-group\">\n    <label for=\"password\">Password</label>\n    <input name=\"password\" type=\"password\" class=\"form-control\" placeholder=\"Password\">\n  </div>\n</form>";
+  return "<form>\n  <div class=\"form-group\">\n    <label for=\"email_address\">Email address</label>\n    <input name=\"email_address\" type=\"email\" class=\"form-control\" placeholder=\"Enter email\">\n  </div>\n  <div class=\"form-group\">\n    <label for=\"password\">Password</label>\n    <input name=\"password\" type=\"password\" class=\"form-control\" placeholder=\"Password\">\n  </div>\n</form>";
   },"useData":true});
 
 },{"hbsfy/runtime":"/Users/jared/Projects/Brew-Journal/node_modules/hbsfy/runtime.js"}],"/Users/jared/Projects/Brew-Journal/templates/main_nav.hbs":[function(require,module,exports){
@@ -14464,24 +14446,6 @@ var _ = require('underscore'),
 
 module.exports = Backbone.View.extend({
 
-  loginValidation: {
-    email_address: { 
-      required: true,
-      type: 'email'
-    },
-    password: {
-      required: true,
-      type: 'password'
-    }
-  },
-
-  registerValidation: {
-    user_name: {
-      required: true,
-      type: 'string'
-    }
-  },
-
   events: {
     'click #logout'            : 'onLogoutClick',
     'click #login'             : 'onLoginSubmit',
@@ -14491,8 +14455,6 @@ module.exports = Backbone.View.extend({
 
   initialize: function(options){
     _.bindAll(this, 'login', 'onLogin', 'onSaveUser', 'onAccountCreated', 'onLoginSubmit', 'onCreateAccountSubmit');
-
-    _(this.registerValidation).extend(this.loginValidation);
   },
 
   onLogoutClick: function(){
@@ -14522,17 +14484,28 @@ module.exports = Backbone.View.extend({
   onLoginSubmit: function(){
     // Should this all be taken care of in the modal class?
     var loginModel = new ValidationModel({
-      emailVal: this.modalView.$('input[name="email_address"]').val(),
-      passwordVal: this.modalView.$('input[name="password"]').val(),
+      validation: {
+        email_address: {
+          required : true,
+          value    : this.modalView.$('input[name="email_address"]').val(),
+          type     : 'email'
+        },
+        password: {
+          required : true,
+          value    : this.modalView.$('input[name="password"]').val(),
+          type     : 'password'
+        }
+      }
     })
 
     loginModel.validate();
 
-    if (loginModel.isValid){
+    if (loginModel.isValid()){
       this.modalView.$('.confirm').text('Working...').attr('disabled', 'disabled');
       this.login(loginModel.get('emailVal'), loginModel.get('passwordVal'));
     }
     else {
+      debugger;
       alert('INVALID MOTHER FUCKER')
     }
   },

@@ -9,24 +9,6 @@ var _ = require('underscore'),
 
 module.exports = Backbone.View.extend({
 
-  loginValidation: {
-    email_address: { 
-      required: true,
-      type: 'email'
-    },
-    password: {
-      required: true,
-      type: 'password'
-    }
-  },
-
-  registerValidation: {
-    user_name: {
-      required: true,
-      type: 'string'
-    }
-  },
-
   events: {
     'click #logout'            : 'onLogoutClick',
     'click #login'             : 'onLoginSubmit',
@@ -36,8 +18,6 @@ module.exports = Backbone.View.extend({
 
   initialize: function(options){
     _.bindAll(this, 'login', 'onLogin', 'onSaveUser', 'onAccountCreated', 'onLoginSubmit', 'onCreateAccountSubmit');
-
-    _(this.registerValidation).extend(this.loginValidation);
   },
 
   onLogoutClick: function(){
@@ -67,17 +47,28 @@ module.exports = Backbone.View.extend({
   onLoginSubmit: function(){
     // Should this all be taken care of in the modal class?
     var loginModel = new ValidationModel({
-      emailVal: this.modalView.$('input[name="email_address"]').val(),
-      passwordVal: this.modalView.$('input[name="password"]').val(),
+      validation: {
+        email_address: {
+          required : true,
+          value    : this.modalView.$('input[name="email_address"]').val(),
+          type     : 'email'
+        },
+        password: {
+          required : true,
+          value    : this.modalView.$('input[name="password"]').val(),
+          type     : 'password'
+        }
+      }
     })
 
     loginModel.validate();
 
-    if (loginModel.isValid){
+    if (loginModel.isValid()){
       this.modalView.$('.confirm').text('Working...').attr('disabled', 'disabled');
       this.login(loginModel.get('emailVal'), loginModel.get('passwordVal'));
     }
     else {
+      debugger;
       alert('INVALID MOTHER FUCKER')
     }
   },
