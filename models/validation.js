@@ -4,7 +4,7 @@ var _ = require('underscore'),
 module.exports  = Backbone.Model.extend({
 
   initialize: function(options){
-    _(this).bindAll('passwordVal', 'emailVal', 'valMethod');
+    _(this).bindAll('password', 'email', 'valMethod');
 
     this.set('valid', true);
     this.errors = {};
@@ -14,25 +14,22 @@ module.exports  = Backbone.Model.extend({
     return this.get('valid');
   },
 
-  passwordVal: function(password){
+  password: function(password){
     return password.length > 0;
   },
 
-  emailVal: function(email){
+  email: function(email){
     var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
   },
 
-  valMethod: function(value, key, list){
-    debugger;
-    var valid = this.get('valid') && this[key](value)
+  valMethod: function(data, key, list){
+    var valid = this.get('valid') && this[data.type](data.value)
 
     this.set('valid', valid);
 
-    debugger;
-
     if (!valid){
-      this.errors[key] = value
+      this.errors[key] = data.value
     }
   },
 

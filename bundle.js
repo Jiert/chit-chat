@@ -1132,7 +1132,7 @@ var _ = require('underscore'),
 module.exports  = Backbone.Model.extend({
 
   initialize: function(options){
-    _(this).bindAll('passwordVal', 'emailVal', 'valMethod');
+    _(this).bindAll('password', 'email', 'valMethod');
 
     this.set('valid', true);
     this.errors = {};
@@ -1142,25 +1142,22 @@ module.exports  = Backbone.Model.extend({
     return this.get('valid');
   },
 
-  passwordVal: function(password){
+  password: function(password){
     return password.length > 0;
   },
 
-  emailVal: function(email){
+  email: function(email){
     var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
   },
 
-  valMethod: function(value, key, list){
-    debugger;
-    var valid = this.get('valid') && this[key](value)
+  valMethod: function(data, key, list){
+    var valid = this.get('valid') && this[data.type](data.value)
 
     this.set('valid', valid);
 
-    debugger;
-
     if (!valid){
-      this.errors[key] = value
+      this.errors[key] = data.value
     }
   },
 
@@ -14454,7 +14451,10 @@ module.exports = Backbone.View.extend({
   },
 
   initialize: function(options){
-    _.bindAll(this, 'login', 'onLogin', 'onSaveUser', 'onAccountCreated', 'onLoginSubmit', 'onCreateAccountSubmit');
+    _.bindAll( this, 
+      'login', 'onLogin', 'onSaveUser', 
+      'onAccountCreated', 'onLoginSubmit', 
+      'onCreateAccountSubmit', 'toggleMessage');
   },
 
   onLogoutClick: function(){
@@ -14501,13 +14501,28 @@ module.exports = Backbone.View.extend({
     loginModel.validate();
 
     if (loginModel.isValid()){
+      // TODO: This hurts. These values should be easier to get to
+      var email = loginModel.get('validation').email_address.value,
+          password = loginModel.get('validation').password.value;
+
       this.modalView.$('.confirm').text('Working...').attr('disabled', 'disabled');
-      this.login(loginModel.get('emailVal'), loginModel.get('passwordVal'));
+      this.login(email, password);
     }
     else {
-      debugger;
-      alert('INVALID MOTHER FUCKER')
+      var keys = loginModel.errors && _(loginModel.errors).keys();
+      _(keys).each(this.toggleMessage);
     }
+  },
+
+  toggleMessage: function(input){
+    var $el = this.modalView.$('[name="'+input+'"]');
+
+    $el.tooltip({
+      title: 'Holy tooltip batman',
+      trigger: 'manual focus'
+    })
+
+    $el.tooltip('show')
   },
 
   onCreateAccountSubmit: function(event){
