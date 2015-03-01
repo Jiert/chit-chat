@@ -1138,6 +1138,11 @@ module.exports  = Backbone.Model.extend({
     this.errors = {};
   },
 
+  messages: {
+    email: 'Valid email addresses only please',
+    password: 'A password is required'
+  },
+
   isValid: function(){
     return this.get('valid');
   },
@@ -1157,7 +1162,10 @@ module.exports  = Backbone.Model.extend({
     this.set('valid', valid);
 
     if (!valid){
-      this.errors[key] = data.value
+      this.errors[key] = {
+        data: data.value,
+        message: this.messages[data.type]
+      };
     }
   },
 
@@ -14482,8 +14490,15 @@ module.exports = Backbone.View.extend({
   },
 
   onLoginSubmit: function(){
+    // Kill all of the modals existing tooltips
+    // This doens't work
+    // this.modalView.$('input').tooltip('destroy');
+
+
     // Should this all be taken care of in the modal class?
-    var loginModel = new ValidationModel({
+    this.loginModel = void 0;
+
+    this.loginModel = new ValidationModel({
       validation: {
         email_address: {
           required : true,
@@ -14498,28 +14513,30 @@ module.exports = Backbone.View.extend({
       }
     })
 
-    loginModel.validate();
+    this.loginModel.validate();
 
-    if (loginModel.isValid()){
+    if (this.loginModel.isValid()){
       // TODO: This hurts. These values should be easier to get to
-      var email = loginModel.get('validation').email_address.value,
-          password = loginModel.get('validation').password.value;
+      var email = this.loginModel.get('validation').email_address.value,
+          password = this.loginModel.get('validation').password.value;
 
       this.modalView.$('.confirm').text('Working...').attr('disabled', 'disabled');
       this.login(email, password);
     }
     else {
-      var keys = loginModel.errors && _(loginModel.errors).keys();
+      var keys = this.loginModel.errors && _(this.loginModel.errors).keys();
       _(keys).each(this.toggleMessage);
     }
   },
 
   toggleMessage: function(input){
+    console.log('toggleMessage')
     var $el = this.modalView.$('[name="'+input+'"]');
 
     $el.tooltip({
-      title: 'Holy tooltip batman',
-      trigger: 'manual focus'
+      // TODO:  This.... seems brittle
+      title: this.loginModel.errors[input].message,
+      trigger: 'focus'
     })
 
     $el.tooltip('show')

@@ -10,6 +10,11 @@ module.exports  = Backbone.Model.extend({
     this.errors = {};
   },
 
+  messages: {
+    email: 'Valid email addresses only please',
+    password: 'A password is required'
+  },
+
   isValid: function(){
     return this.get('valid');
   },
@@ -29,7 +34,10 @@ module.exports  = Backbone.Model.extend({
     this.set('valid', valid);
 
     if (!valid){
-      this.errors[key] = data.value
+      this.errors[key] = {
+        data: data.value,
+        message: this.messages[data.type]
+      };
     }
   },
 
