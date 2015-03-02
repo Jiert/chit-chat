@@ -1140,11 +1140,16 @@ module.exports  = Backbone.Model.extend({
 
   messages: {
     email: 'Valid email addresses only please',
-    password: 'A password is required'
+    password: 'A password is required',
+    text: 'This is a required field'
   },
 
   isValid: function(){
     return this.get('valid');
+  },
+
+  text: function(text){
+    return text.length > 0;
   },
 
   password: function(password){
@@ -1172,7 +1177,6 @@ module.exports  = Backbone.Model.extend({
   validate: function(){
     _(this.get('validation')).each(this.valMethod);
   },
-
 
 });
 },{"backbone":"/Users/jared/Projects/Brew-Journal/node_modules/backbone/backbone.js","underscore":"/Users/jared/Projects/Brew-Journal/node_modules/underscore/underscore.js"}],"/Users/jared/Projects/Brew-Journal/namespace.js":[function(require,module,exports){
@@ -14480,7 +14484,7 @@ module.exports = Backbone.View.extend({
   },
 
   onRegisterClick: function(){
-    this.registerModal = this.createSubView( ModalView, {
+    this.modalView = this.createSubView( ModalView, {
       title       : 'Register',
       onConfirm   : this.onCreateAccountSubmit,
       modalBody   : registerTemplate,
@@ -14490,15 +14494,10 @@ module.exports = Backbone.View.extend({
   },
 
   onLoginSubmit: function(){
-    // Kill all of the modals existing tooltips
-    // This doens't work
-    // this.modalView.$('input').tooltip('destroy');
-
-
     // Should this all be taken care of in the modal class?
-    this.loginModel = void 0;
+    this.validationModel = void 0;
 
-    this.loginModel = new ValidationModel({
+    this.validationModel = new ValidationModel({
       validation: {
         email_address: {
           required : true,
@@ -14513,29 +14512,30 @@ module.exports = Backbone.View.extend({
       }
     })
 
-    this.loginModel.validate();
+    this.validationModel.validate();
 
-    if (this.loginModel.isValid()){
+    if (this.validationModel.isValid()){
       // TODO: This hurts. These values should be easier to get to
-      var email = this.loginModel.get('validation').email_address.value,
-          password = this.loginModel.get('validation').password.value;
+      var email = this.validationModel.get('validation').email_address.value,
+          password = this.validationModel.get('validation').password.value;
 
       this.modalView.$('.confirm').text('Working...').attr('disabled', 'disabled');
       this.login(email, password);
     }
     else {
-      var keys = this.loginModel.errors && _(this.loginModel.errors).keys();
+      var keys = this.validationModel.errors && _(this.validationModel.errors).keys();
       _(keys).each(this.toggleMessage);
     }
   },
 
   toggleMessage: function(input){
-    console.log('toggleMessage')
     var $el = this.modalView.$('[name="'+input+'"]');
 
     $el.tooltip({
       // TODO:  This.... seems brittle
-      title: this.loginModel.errors[input].message,
+
+      // RAGE
+      title: this.validationModel.errors[input].message,
       trigger: 'focus'
     })
 
@@ -14543,21 +14543,51 @@ module.exports = Backbone.View.extend({
   },
 
   onCreateAccountSubmit: function(event){
-    this.registerModal.$('.confirm').text('Working...').attr('disabled', 'disabled');
+    this.validationModel = void 0;
 
-    this.email    = this.registerModal.$('input[name="email_address"]').val();
-    this.userName = this.registerModal.$('input[name="user_name"]').val();
-    this.password = this.registerModal.$('input[name="password"]').val();
+    this.validationModel = new ValidationModel({
+      validation: {
+        email_address: {
+          required : true,
+          value    : this.modalView.$('input[name="email_address"]').val(),
+          type     : 'email'
+        },
+        password: {
+          required : true,
+          value    : this.modalView.$('input[name="password"]').val(),
+          type     : 'password'
+        },
+        user_name: {
+          required : true,
+          value    : this.modalView.$('input[name="password"]').val(),
+          type     : 'text'
+        }
+      }
+    })
 
-    // TODO: 
-    // * validate against existing user names
-    // * trim user name
-    // * validate against blank values, and types (email address)
+    this.validationModel.validate();
 
-    app.ref.createUser({
-      email    : this.email,
-      password : this.password
-    }, this.onAccountCreated); 
+    if (this.validationModel.isValid()){
+      this.modalView.$('.confirm').text('Working...').attr('disabled', 'disabled');
+
+      this.email    = this.validationModel.get('email_address');
+      this.userName = this.validationModel.get('user_name');
+      this.password = this.validationModel.get('password');
+
+      // TODO: 
+      // * validate against existing user names
+      // * trim user name
+      // * validate against blank values, and types (email address)
+
+      app.ref.createUser({
+        email    : this.email,
+        password : this.password
+      }, this.onAccountCreated); 
+    }
+    else {
+      var keys = this.validationModel.errors && _(this.validationModel.errors).keys();
+      _(keys).each(this.toggleMessage);
+    }
   },
 
   onAccountCreated: function(error){
@@ -14565,7 +14595,7 @@ module.exports = Backbone.View.extend({
       console.log("User created successfully");
       this.isNewUser = true;
       this.login(this.email, this.password);
-      this.registerModal.hide();
+      this.modalView.hide();
     } 
     else {
       console.log("Error creating user:", error);

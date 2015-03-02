@@ -12,11 +12,16 @@ module.exports  = Backbone.Model.extend({
 
   messages: {
     email: 'Valid email addresses only please',
-    password: 'A password is required'
+    password: 'A password is required',
+    text: 'This is a required field'
   },
 
   isValid: function(){
     return this.get('valid');
+  },
+
+  text: function(text){
+    return text.length > 0;
   },
 
   password: function(password){
@@ -44,6 +49,5 @@ module.exports  = Backbone.Model.extend({
   validate: function(){
     _(this.get('validation')).each(this.valMethod);
   },
-
 
 });
