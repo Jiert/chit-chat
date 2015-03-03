@@ -14543,23 +14543,33 @@ module.exports = Backbone.View.extend({
   },
 
   onCreateAccountSubmit: function(event){
+
+    var email_address = this.modalView.$('input[name="email_address"]').val(),
+        password = this.modalView.$('input[name="password"]').val(),
+        user_name = this.modalView.$('input[name="user_name"]').val();
+
     this.validationModel = void 0;
 
     this.validationModel = new ValidationModel({
+
+      email_address : email_address,
+      password      : password,
+      user_name     : user_name,
+
       validation: {
         email_address: {
           required : true,
-          value    : this.modalView.$('input[name="email_address"]').val(),
+          value    : email_address,
           type     : 'email'
         },
         password: {
           required : true,
-          value    : this.modalView.$('input[name="password"]').val(),
+          value    : password,
           type     : 'password'
         },
         user_name: {
           required : true,
-          value    : this.modalView.$('input[name="password"]').val(),
+          value    : user_name,
           type     : 'text'
         }
       }
@@ -14570,18 +14580,9 @@ module.exports = Backbone.View.extend({
     if (this.validationModel.isValid()){
       this.modalView.$('.confirm').text('Working...').attr('disabled', 'disabled');
 
-      this.email    = this.validationModel.get('email_address');
-      this.userName = this.validationModel.get('user_name');
-      this.password = this.validationModel.get('password');
-
-      // TODO: 
-      // * validate against existing user names
-      // * trim user name
-      // * validate against blank values, and types (email address)
-
       app.ref.createUser({
-        email    : this.email,
-        password : this.password
+        email    : this.validationModel.get('email_address'),
+        password : this.validationModel.get('password')
       }, this.onAccountCreated); 
     }
     else {
@@ -14594,7 +14595,7 @@ module.exports = Backbone.View.extend({
     if (error === null) {
       console.log("User created successfully");
       this.isNewUser = true;
-      this.login(this.email, this.password);
+      this.login(this.validationModel.get('email_address'), this.validationModel.get('password'));
       this.modalView.hide();
     } 
     else {
@@ -14617,7 +14618,7 @@ module.exports = Backbone.View.extend({
     } 
     else if (authData){
       if (this.isNewUser) {
-        _.extend(authData, { userName: this.userName });
+        _.extend(authData, { userName: this.validationModel.get('user_name') });
 
         app.ref.child('users').child(authData.uid).set(authData, this.onSaveUser);
       }
