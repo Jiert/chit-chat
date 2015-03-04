@@ -13,7 +13,7 @@ module.exports  = Backbone.Model.extend({
   messages: {
     email: 'Valid email addresses only please',
     password: 'A password is required',
-    text: 'This is a required field'
+    text: 'Required field'
   },
 
   isValid: function(){

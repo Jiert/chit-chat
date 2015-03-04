@@ -1141,7 +1141,7 @@ module.exports  = Backbone.Model.extend({
   messages: {
     email: 'Valid email addresses only please',
     password: 'A password is required',
-    text: 'This is a required field'
+    text: 'Required field'
   },
 
   isValid: function(){
@@ -14914,6 +14914,7 @@ var _ = require('underscore'),
     ModalView = require('../views/modal'),
     RoomNavView = require('../views/room_nav'),
     template = require('../templates/sidebar_nav.hbs'),
+    ValidationModel = require('../models/validation'),
     createRoom = require('../templates/create_room.hbs');
 
 module.exports = Backbone.View.extend({
@@ -14923,7 +14924,7 @@ module.exports = Backbone.View.extend({
   },
 
   initialize: function(options){
-    _.bindAll( this, 'renderRoom', 'onConfirmRoom');
+    _.bindAll( this, 'renderRoom', 'onConfirmRoom', 'toggleMessage');
 
     this.listenTo(app.rooms, {
       'add' : this.renderRoom
@@ -14955,12 +14956,47 @@ module.exports = Backbone.View.extend({
   // TODO: Sort out the best way to get a 
   // confirmed callback from the modal view
   onConfirmRoom: function(){
-    app.rooms.push({
-      creator: app.user.get('userName'),
-      name: this.modalView.$('input').val()
+    // debugger;
+
+    this.validationModel = new ValidationModel({
+      validation: {
+        name: {
+          required : true,
+          value    : this.modalView.$('input').val(),
+          type     : 'text'
+        }
+      }
     });
 
-    this.modalView.hide();
+    this.validationModel.validate();
+
+    if (this.validationModel.isValid()){
+      app.rooms.push({
+        creator: app.user.get('userName'),
+        name: this.modalView.$('input').val()
+      });
+
+      this.modalView.hide();
+    }
+    else {
+      var keys = this.validationModel.errors && _(this.validationModel.errors).keys();
+      _(keys).each(this.toggleMessage);
+    }
+  },
+
+
+  toggleMessage: function(input){
+    var $el = this.modalView.$('[name="'+input+'"]');
+
+    $el.tooltip({
+      // TODO:  This.... seems brittle
+
+      // RAGE
+      title: this.validationModel.errors[input].message,
+      trigger: 'focus'
+    })
+
+    $el.tooltip('show')
   },
 
   render: function() {
@@ -14976,4 +15012,4 @@ module.exports = Backbone.View.extend({
   }
 
 });
-},{"../namespace":"/Users/jared/Projects/Brew-Journal/namespace.js","../templates/create_room.hbs":"/Users/jared/Projects/Brew-Journal/templates/create_room.hbs","../templates/sidebar_nav.hbs":"/Users/jared/Projects/Brew-Journal/templates/sidebar_nav.hbs","../views/modal":"/Users/jared/Projects/Brew-Journal/views/modal.js","../views/room_nav":"/Users/jared/Projects/Brew-Journal/views/room_nav.js","backbone":"/Users/jared/Projects/Brew-Journal/node_modules/backbone/backbone.js","underscore":"/Users/jared/Projects/Brew-Journal/node_modules/underscore/underscore.js"}]},{},["/Users/jared/Projects/Brew-Journal/init.js"]);
+},{"../models/validation":"/Users/jared/Projects/Brew-Journal/models/validation.js","../namespace":"/Users/jared/Projects/Brew-Journal/namespace.js","../templates/create_room.hbs":"/Users/jared/Projects/Brew-Journal/templates/create_room.hbs","../templates/sidebar_nav.hbs":"/Users/jared/Projects/Brew-Journal/templates/sidebar_nav.hbs","../views/modal":"/Users/jared/Projects/Brew-Journal/views/modal.js","../views/room_nav":"/Users/jared/Projects/Brew-Journal/views/room_nav.js","backbone":"/Users/jared/Projects/Brew-Journal/node_modules/backbone/backbone.js","underscore":"/Users/jared/Projects/Brew-Journal/node_modules/underscore/underscore.js"}]},{},["/Users/jared/Projects/Brew-Journal/init.js"]);
