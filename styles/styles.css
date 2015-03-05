@@ -1,6 +1,9 @@
 body {
   padding-top: 70px;
 }
+body form {
+  margin: 0;
+}
 body input {
   min-width: 175px;
 }
